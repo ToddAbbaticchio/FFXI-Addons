@@ -1,4 +1,4 @@
-include('sharedFunctions.lua')
+include('rTemplate\\sharedFunctions')
 
 -------------------------------------------------------------------------------------------------------------------
 -- dumb name.  is required.
@@ -10,7 +10,7 @@ function get_sets()
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Define sets and vars used by this job file.
+-- Define sets and gear vars used by this job file.
 -------------------------------------------------------------------------------------------------------------------
 function init_gear_sets()
 	
@@ -84,6 +84,9 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
     -- placeholder
 end
 
+function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Special buff/debuff handling
 -------------------------------------------------------------------------------------------------------------------
@@ -125,5 +128,19 @@ function autoActions()
 	-- auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
+	end
+
+	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+		-- When AutoBuff is on:
+		-- EXAMPLE -- 
+		--if not buffactive['BuffName'] then
+		--	send_command('input /ma "Buff" <me>')
+		--	return
+		--end
+
+		-- When AutoBuff and Autofite are on:
+		if auto.fite[auto.fite.index] == 'On' then
+			
+		end
 	end
 end
