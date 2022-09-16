@@ -167,17 +167,39 @@ function strategemCount() -- get number of strategems (assumes sch main TODO: up
     return currentCharges
 end
 
-function partyLowHP(hpLevel) -- if anyone is below hpLevel, returns true
+function partyLowHP(hpLevel, action)
 	local partyInfo = windower.ffxi.get_party()
 	for _,info in pairs(partyInfo) do
 		if type(info) == 'table' and info.mob then
 			local partyMember = info.mob
 			if partyMember.hpp < hpLevel then
-				return true
+				if action == nil then
+					return true
+				else
+					send_command('input /'..action..' '..mostRIP(partyInfo))
+				end
 			end
 		end
 	end
 	return false
+end
+
+function mostRIP(partyInfo)
+	local mostRipHp = nil
+	local mostRipName = nil
+
+	for _,info in pairs(partyInfo) do
+		if type(info) == 'table' and info.mob then
+			local pInfo = info.mob
+			local pMissingHealth = (pInfo.hp / (pInfo.hpp / 100)) - pInfo.hp
+			
+			if mostRipHp == nil or pMissingHealth > mostRipHp then
+				mostRipHp = pMissingHealth
+				mostRipName = pInfo.name
+			end
+		end
+	end
+	return mostRipName
 end
 
 -------------------------------------------------------------------------------------------------------------------
