@@ -198,7 +198,7 @@ function init_modetables()
 	weaponMode = {
 		["index"] = 0,
 		[0] = {name="MeleeDW", set={main="Naegling", sub="Thibron"}},
-		[1] = {name="MagicDW", set={main="Naegling", sub="Bunzi's Rod"}},
+		[1] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
 		[2] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
 	}
 

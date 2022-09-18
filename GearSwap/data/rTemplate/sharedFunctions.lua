@@ -393,6 +393,7 @@ windower.register_event('zone change', function()
 	-- Turn off autobuff and autofite modes when we zone
 	if auto.buff.index == 1 then auto.buff.index = 0 end
 	if auto.fite.index == 1 then auto.fite.index = 0 end
+	modeHud('update')
 end)
 
 windower.register_event('action',function(act)
