@@ -5,8 +5,8 @@ _addon.commands = {'cphelper','ch'}
 
 packets = require('packets')
 
-debug = true
-chatColor = 220
+debug = false
+chatColor = 050
 refPacket = {}
 buyingCpItems = false
 CpNpcZones = T{"Windurst Woods"}
@@ -137,19 +137,23 @@ end
 
 windower.register_event('addon command', function(...)
     local arg = {...}
+	local action = arg[1]
+	local quantity = 1
+	if arg[2] ~= nil then
+		quantity = arg[2]
+	end
 
-	if arg[1]:lower() == 'buy' then
-		if arg[2] ~= nil then
-			for i = arg[2],1,-1 do
-				while(buyingCpItems) do
-					writeLog(debug, chatColor, 'multi-purchase still in progress. sleeping for .1 seconds!')
-					coroutine.sleep(0.1)
-				end
-				checkState()
+	if action:lower() == 'buy' then
+		for i = quantity,1,-1 do
+			while(buyingCpItems) do
+				writeLog(debug, chatColor, 'multi-purchase still in progress. sleeping for .1 seconds!')
+				coroutine.sleep(0.25)
 			end
-		else
+			writeLog(true, chatColor, 'cpHelper queue: '..i..'..')
 			checkState()
 		end
+		writeLog(true, chatColor, '-- CPHELPER VICTORIOUS!!! --')
+		windower.send_command('input //sellnpc mrc.cpt. scythe')
 	end
 
 

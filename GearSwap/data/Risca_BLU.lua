@@ -1,4 +1,4 @@
-include('rTemplate\\sharedFunctions.lua')
+include('RST\\sharedFunctions.lua')
 
 function get_sets()
 	mote_include_version = 2

@@ -1,4 +1,4 @@
-include('sharedFunctions.lua')
+include('RST\\sharedFunctions.lua')
 
 -------------------------------------------------------------------------------------------------------------------
 -- Setup functions for this job.  Generally should not be modified.

@@ -1,4 +1,4 @@
-include('rTemplate\\sharedFunctions')
+include('RST\\sharedFunctions.lua')
 
 -------------------------------------------------------------------------------------------------------------------
 -- dumb name.  is required.
