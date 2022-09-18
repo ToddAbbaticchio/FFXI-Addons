@@ -152,7 +152,7 @@ windower.register_event('addon command', function(...)
 		end
 	end
 
-	
+
 	if arg[1]:lower() == 'debug' then
 		if debug == false then
 			debug = true
