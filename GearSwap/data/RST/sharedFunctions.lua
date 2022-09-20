@@ -350,7 +350,15 @@ windower.raw_register_event('prerender',function()
             local movement = math.sqrt( (player.x-mov.x)^2 + (player.y-mov.y)^2 + (player.z-mov.z)^2 ) > 0.1
             if movement and not moving then
 				moving = true
-                windower.send_command('input //gs equip sets.moveSpeed')
+                if sets.NightMovement ~= nil and sets.DayMovement ~= nil then
+					if world.time >= (17*60) or world.time <= (7*60) then
+						windower.send_command('input //gs equip sets.NightMovement')
+					else
+						windower.send_command('input //gs equip sets.DayMovement')
+					end
+				else
+					windower.send_command('input //gs equip sets.moveSpeed')
+				end
             elseif not movement and moving then
 				moving = false
 				if windower.ffxi.get_player().status == engaged then
