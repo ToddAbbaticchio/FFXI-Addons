@@ -202,6 +202,18 @@ function mostRIP(partyInfo)
 	return mostRipName
 end
 
+function maintainBuff(buffNameOrId, commandString)
+	if type(buff) == 'string' then
+		if not buffactive[buffNameOrId] and not actionInProgress and not moving then
+			send_command('input '..commandString)
+		end
+	elseif type(buff) == 'number' then
+		if not buffIdActive(buffNameOrId) and not moving and not actionInProgress then
+			send_command('input '..commandString)
+		end
+	end
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
