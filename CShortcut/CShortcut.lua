@@ -6,6 +6,17 @@ _addon.commands = {'CShortcut','cs'}
 require('logger')
 require('coroutine')
 
+itemInfo = {
+    [1]={id=26176,english='"Dim. Ring (Holla)"',slot=13},
+    [2]={id=26177,english='"Dim. Ring (Dem)"',slot=13},
+    [3]={id=26178,english='"Dim. Ring (Mea)"',slot=13},
+	--warp ring,
+	--tengu cape?
+	--rabbit hat
+	
+}
+
+
 function useEquip(itemName, itemSlot, readyTime)
 	windower.send_command('input //gs disable '..itemSlot)
 	windower.send_command('input /equip '..itemSlot..' "'..itemName..'"')
