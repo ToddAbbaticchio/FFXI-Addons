@@ -208,7 +208,7 @@ function maintainBuff(buffNameOrId, commandString)
 			send_command('input '..commandString)
 		end
 	elseif type(buff) == 'number' then
-		if not buffIdActive(buffNameOrId) and not moving and not actionInProgress then
+		if not buffIdActive(buffNameOrId) and notactionInProgress and not moving then
 			send_command('input '..commandString)
 		end
 	end
