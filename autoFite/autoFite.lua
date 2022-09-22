@@ -59,11 +59,11 @@ function initializeSessionVars(job, ...)
             --["Valiance"] = "Valiance,One for All",
             --["One for All"] = "Valiance,One for All"
         },
-        --maintainAftermath = true,
+        maintainAftermath = false,
         --ws = "Dimidiation",
         ws = "Resolution",
         targetTp = 1000,
-        pullCommand = '/ma "Poison" '
+        pullCommand = '/ma "Flash" '
     }
 
     vars.SCH = {

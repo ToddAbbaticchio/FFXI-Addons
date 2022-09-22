@@ -46,6 +46,26 @@ function init_gear_sets()
 		right_ring="Shiva Ring +1",
 		back=gear.INTCape,
 	}
+
+	sets.magic = {}
+	sets.magic.nuke = {}
+	sets.magic.acc = {}
+	sets.magic.bluSkill = {}
+
+	sets.precast.FC = {
+		ammo = "Impatiens",
+		head = "Pinga Crown",
+		body = "Pinga Tunic",
+		legs = "Aya. Cosciales +2",
+		hands = "Pinga Mittens",
+		feet = "Carmine Greaves +1",
+		neck = "Orunmila's Torque",
+		waist = "Witful Belt",
+		right_ear = "Loquac. Earring",
+		left_ring = "Jhakri Ring",
+		back = "Swith Cape"
+	}
+
 	sets.baseTank = {
 		ammo="Ginsen",
 		head="Malignance Chapeau",        --06
@@ -92,11 +112,12 @@ function init_gear_sets()
 		back=gear.STRCape,
 	}
 	
+	sets.baseIdle = set_combine(baseTank, {body="Hashishin Mintan +2",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"})
+	
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.obi = {waist="Hachirin-no-obi"}
-    sets.baseIdle = {body="Jhakri Robe +2",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"}
-	
+    
 	--Define Job Ability sets														-- I'd use these if i cared enough to get them:
     sets.buff['Burst Affinity'] = {feet="Hashishin Basmak +2"}
     sets.buff['Chain Affinity'] = {} 												--Mavi Kavuk +2, Assimilator's Charuqs
@@ -111,22 +132,8 @@ function init_gear_sets()
     sets.precast.Waltz = {}
     sets.precast.Waltz['Healing Waltz'] = {}
 
-    -- Fast cast
-   	sets.precast.FC = {
-		ammo = "Impatiens",
-		head = "Pinga Crown",
-		body = "Pinga Tunic",
-		legs = "Aya. Cosciales +2",
-		hands = "Pinga Mittens",
-		feet = "Carmine Greaves +1",
-		neck = "Orunmila's Torque",
-		waist = "Witful Belt",
-		right_ear = "Loquac. Earring",
-		left_ring = "Jhakri Ring",
-		back = "Swith Cape"
-	}
 
-    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +1"})
+    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +2"})
 
     -- Weaponskill sets
     -- Default set for any weaponskill that isn't any more specifically defined
@@ -429,6 +436,13 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 			add_to_chat(122, "BuffActive: "..v)
 		end
 	end
+
+	if cmdParams[1]:lower() == 'test' then
+		local strVar = "asdf"
+		local intVar = 1234
+		
+		add_to_chat(122, "strVar type: "..type(strVar).." intVar type: "..type(intVar))
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -454,39 +468,25 @@ function autoActions()
 		local unbridledRecast = abilRecasts[81]
 
 		if not actionInProgress then
-			-- check for spell haste, because geoHaste is a thing
-			if not buffIdActive(33) then
-				add_to_chat(122,'-- Haste(33) is down. Trying to recast... --')
-				send_command('input /ma "Erratic Flutter" <me>')
-				return
-			end
-			
-			if not buffactive['Refresh'] then
-				add_to_chat(122,'-- Refresh is down. Trying to recast... --')
-				send_command('input /ma "Battery Charge" <me>')
-				return
-			end
+			maintainBuff(33, '/ma "Battery Charge" <me>')
+			maintainBuff('Refresh', '/ma "Battery Charge" <me>')
+			--maintainBuff(700, '/ma "Nat. Meditation" <me>')
+			--maintainBuff('Cocoon', '/ma "Cocoon" <me>')
 
 			if auto.fite[auto.fite.index] == 'On' then
 				if not buffactive['Mighty Guard'] then
 					if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
-						add_to_chat(122,'-- MightyGuard is down. Trying to recast... --')
 						send_command('input /ma "Mighty Guard" <me>')
+						return
 					end
 				end
-
 				--[[ if not buffactive['Carcharian Verve'] and unbridledRecast == 0 and diffusionRecast == 0 then 
 					add_to_chat(122,'-- Carcharian Verve is down. Trying to recast... --')
 					send_command('input /ma "Carcharian Verve" <me>')
 					return
 				end ]]
 
-				if player.hpp < 50 then
-					send_command('/magicfruit')
-				end
-				--[[ if not buffactive['Defense Boost'] then
-					send_command('/cocoon')
-				end ]]
+				partyLowHP(50, 'magicfruit')
 			end
 		end
 	end

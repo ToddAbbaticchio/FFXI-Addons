@@ -597,9 +597,6 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	local abilRecast = windower.ffxi.get_ability_recasts()
-	local runeRecast = abilRecast[92]
-
 	-- auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -609,81 +606,48 @@ function autoActions()
 	if buffactive['Sleep'] and player.status == "Engaged" then 
 		send_command('input //gs equip sets.wakeUp')
 	elseif player.equipment.head == "Frenzy Sallet" and not buffactive['Sleep'] then
-		if player.status == "Engaged" then
-			send_command('input //gs equip sets.engaged')
-		else
-			send_command('input //gs equip sets.idle')
-		end
+		EvalState_equipGear()
 	end
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto rune
 		if not currRune then currRune = 'Tenebrae' end
-		if buffactive[currRune] ~= 3 and auto.rune[auto.rune.index] == 'On' and runeRecast == 0 then
-			windower.send_command('rh userune')
-			return
+		if buffactive[currRune] ~= 3 and auto.rune[auto.rune.index] == 'On' then
+			if windower.ffxi.get_ability_recasts()[92] == 0 then
+				windower.send_command('rh userune')
+				return
+			end
 		end
 
 		-- spells when in tank mode
 		--if gearMode[gearMode.index].name:contains('Tank') then
-			if not buffactive['Aquaveil'] then
-				--actionInProgress = true
-				add_to_chat(122,'-- Aquaveil is down. Trying to recast... --')
-				send_command('input /ma "Aquaveil" <me>')
-				return
-			end
-
-			if not buffactive['Enmity Boost'] then
-				--actionInProgress = true
-				add_to_chat(122,'-- Crusade is down. Trying to recast... --')
-				send_command('input /ma "Crusade" <me>')
-				return
-			end
-
-			if not buffactive['Phalanx'] then
-				--actionInProgress = true
-				add_to_chat(122,'-- Phalanx is down. Trying to recast... --')
-				send_command('input /ma "Phalanx" <me>')
-				return
-			end
-			
-			if player.sub_job == 'BLU' and not buffactive['Defense Boost'] then
-				--actionInProgress = true
-				add_to_chat(122,'-- Cocoon is down. Trying to recast... --')
-				send_command('input /ma "Cocoon" <me>')
-				return
+			maintainBuff('Aquaveil', '/ma "Aquaveil" <me>')
+			maintainBuff('Enmity Boost', '/ma "Crusade" <me>')
+			maintainBuff('Phalanx', '/ma "Phalanx" <me>')
+			if player.sub_job == 'BLU' then
+				maintainBuff('Defense Boost', '/ma "Cocoon" <me>')
 			end
 		--end
 
-		-- Temper
-		if not buffactive['Multi Strikes'] and (player.status == 'Engaged' or gearMode[gearMode.index].name ~= 'SuperTank') then
-			--actionInProgress = true
-			add_to_chat(122,'-- Temper is down. Trying to recast... --')
-			send_command('input /ma "Temper" <me>')
-			return
+		if player.status == 'Engaged' or gearMode[gearMode.index].name ~= 'SuperTank' then
+			maintainBuff('Multi Strikes', '/ma "Temper" <me>')
 		end
 		
-		if not buffactive['Refresh'] and player.mpp < 50 then
-			--actionInProgress = true
-			add_to_chat(122,'-- Refresh is needed. Trying to recast... --')
-			send_command('input /ma "Refresh" <me>')
-			return
+		if player.mpp < 50 then
+			maintainBuff('Refresh', '/ma "Refresh" <me>')
 		end
+		
 
-		-- Autofite only
+		-- Autofite only buffs
 		if auto.fite[auto.fite.index] == 'On' then
-			if not buffactive['Protect'] then
-				send_command('/protect4')
+			maintainBuff('Protect', '/ma "Protect IV" <me>')
+			maintainBuff('Shell', '/ma "Shell V" <me>')
+			if player.hpp < 70 then
+				maintainBuff('Regen', '/ma "Regen IV" <me>')
 			end
-			if not buffactive['Shell'] then
-				send_command('/shell5')
-			end
-			if player.hpp < 80 and not buffactive['Regen'] then
-				send_command('/regen4')
-				return
-			end
+
 			if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) then
-				send_command('/Vivacious Pulse')
+				send_command('input /ja "Vivacious Pulse" <me>')
 			end
 		end
 	end
