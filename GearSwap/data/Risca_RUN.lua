@@ -484,82 +484,7 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		currRune = cmdParams[2]
 	end
 
-	-- spike health for omen healing objective
-	if cmdParams[1]:lower() == 'spikehealth' then
-		equip(sets.naked)
-	end
-
-	-- test bag stuff
-	if cmdParams[1]:lower() == 'asdf' then
-		fileRaw = io.open('C:\\_Games\\FFXI\\Windower\\addons\\GearSwap\\data\\test.lua', "rb")
-		add_to_chat(1, tostring(fileRaw))
-
-		itemInfo = require('rTemplate\\items')
-		local bags = {0,8,10,11,12} --inventory,wardrobe1-4
-		local get_items = windower.ffxi.get_items
-		for i=1,#bags do
-			for _,item in ipairs(get_items(bags[i])) do
-				if item.id > 0 then
-					local itemName = itemInfo[item.id].en
-					
-					if not fileRaw:contains(itemName) then
-						add_to_chat(1, itemName..' not being used by supplied .lua')
-					end
-				end
-			end
-		end
-		add_to_chat(1, '-- Done checking inventory! --')
-	end
-
-	if cmdParams[1]:lower() == 'readfile' then
-		-- see if the file exists
-		function file_exists(file)
-			local f = io.open(file, "rb")
-			if f then f:close() end
-			return f ~= nil
-		end
-		
-		-- get all lines from a file, returns an empty 
-		-- list/table if the file does not exist
-		function lines_from(file)
-			if not file_exists(file) then return {} end
-			local lines = L{}
-			for line in io.lines(file) do
-				lines:append(line)
-				--lines[#lines + 1] = line
-			end
-			return lines
-		end
-		
-		-- tests the functions above
-		local file = 'C:\\_Games\\FFXI\\Windower\\addons\\GearSwap\\data\\test.lua'
-		local lines = lines_from(file)
-		local raw = lines:concat(',')
-		-- print all line numbers and their contents
-		--[[ for k,v in pairs(lines) do
-			print('line[' .. k .. ']', v)
-		end ]]
-
-		if lines:contains('Epeolatry') then
-			print('file DOES contain epeo!')
-		end
-
-	end
-
-	if cmdParams[1]:lower() == 'getfiles' then
-		function scandir(directory)
-			--local i,t, popen = 0, L{}, io.popen
-			local pfile = io.popen('dir "'..directory..'" /b')
-			for filename in pfile:lines() do
-				print('file: '..filename)
-				--t:append(filename)
-			end
-			pfile:close()
-		end
-
-		scandir('C:\\_Games\\FFXI\\Windower\\addons\\GearSwap\\data')
-	end
-
+	-- extended handling of mode changes
 	if cmdParams[1]:lower() == 'togglegearmode' then
 		if gearMode[gearMode.index].name == 'DPS' and auto.fite[auto.fite.index] == 'On' then
 			add_to_chat('no more idle gear!')
@@ -571,6 +496,11 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 			add_to_chat('no more idle gear!')
 			sets.idle = sets.engaged
 		end
+	end
+
+	-- spike health for omen healing objective
+	if cmdParams[1]:lower() == 'spikehealth' then
+		equip(sets.naked)
 	end
 end
 

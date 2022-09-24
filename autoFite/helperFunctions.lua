@@ -330,7 +330,7 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
     if mode == 3 and whitelist:contains(player) then
         local words = {}
         for word in message:gmatch("%w+") do
-            table.insert(words, word.lower())
+            table.insert(words, word:lower())
         end
         
         if not words[1] == 'spag' then
@@ -380,7 +380,7 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
 
         -- startaf example: /t Risca spag startaf start Locus || /t Risca spag startaf assist Walshette
         if words[2] == 'startaf' then
-            if (words[3]:lower() == 'start' or words[3]:lower() == 'assist') and words[4] ~= null then
+            if (words[3] == 'start' or words[3] == 'assist') and words[4] ~= null then
                 if active then
                     windower.send_command('input //af stop')
                     windower.send_command:schedule(.5, 'input /t '..player..' Stopped!')
