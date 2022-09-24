@@ -486,7 +486,7 @@ function autoActions()
 					return
 				end ]]
 
-				partyLowHP(50, 'magicfruit')
+				partyLowHP(50, '/ma "Magic Fruit"')
 			end
 		end
 	end

@@ -330,6 +330,10 @@ function extendedUserSetup()
 	end
 end
 
+function extendedUserUnload()
+	windower.send_command('lua unload runehelper')
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Action/Cast phases
 -------------------------------------------------------------------------------------------------------------------
@@ -363,7 +367,7 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 			send_command('input /ja "Last Resort" ' .. tostring(spell.target.raw))
         end
 	end
-	if player.sub_job == 'DRK' and spell.english == 'Flash' then
+	if player.sub_job == 'DRK' and spell.english == 'Flash' and auto.fite[auto.fite.index] == 'Off' then
 		local spell_recasts = windower.ffxi.get_spell_recasts()
 		if spell_recasts[spell.recast_id] > 0 then
 			eventArgs.cancel = true

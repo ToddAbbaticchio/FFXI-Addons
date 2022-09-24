@@ -39,7 +39,9 @@ function initializeSessionVars(job, ...)
     vars.BLU = {
         autoBuffs = {
             ["Warcry"] = "Warcry",
+            ["Berserk"] = "Berserk",
             ["Nat. Meditation"] = "Attack Boost",
+            ["Erratic Flutter"] = "Haste",
             --["Cocoon"] = "Defense Boost",
         },
         ws = "Savage Blade",
@@ -63,7 +65,9 @@ function initializeSessionVars(job, ...)
         --ws = "Dimidiation",
         ws = "Resolution",
         targetTp = 1000,
-        pullCommand = '/ma "Flash" '
+        pullCommand = '/ma "Flash" ',
+        pullDistance = 441,
+        meleeDistance = 16
     }
 
     vars.SCH = {
@@ -153,7 +157,7 @@ function initializeSessionVars(job, ...)
         jobVars.pullDistance = 460
     end
     if jobVars.meleeDistance == nil then
-        jobVars.meleeDistance = 16
+        jobVars.meleeDistance = 12
     end
     if jobVars.target == nil then
         jobVars.target = {}

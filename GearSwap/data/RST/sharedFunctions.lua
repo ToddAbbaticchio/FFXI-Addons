@@ -96,7 +96,10 @@ function user_unload()
 	windower.send_command('unbind ^F11')
 	windower.send_command('unbind !F11')
 	windower.send_command('unbind F12')
-	windower.send_command('lua unload runehelper')
+
+	if extendedUserUnload ~= nil then
+		extendedUserUnload()
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -168,7 +171,10 @@ function strategemCount() -- get number of strategems (assumes sch main TODO: up
 end
 
 function partyLowHP(hpLevel, action)
+	local mostRipHp = hpLevel
+	local mostRipName = ""
 	local partyInfo = windower.ffxi.get_party()
+	
 	for _,info in pairs(partyInfo) do
 		if type(info) == 'table' and info.mob then
 			local partyMember = info.mob
@@ -176,38 +182,27 @@ function partyLowHP(hpLevel, action)
 				if action == nil then
 					return true
 				else
-					send_command('input /'..action..' '..mostRIP(partyInfo))
+					if partyMember.hpp < mostRipHp then
+						mostRipHp = partyMember.hpp
+						mostRipName = partyMember.name
+					end
 				end
 			end
 		end
 	end
-	return false
-end
-
-function mostRIP(partyInfo)
-	local mostRipHp = nil
-	local mostRipName = nil
-
-	for _,info in pairs(partyInfo) do
-		if type(info) == 'table' and info.mob then
-			local pInfo = info.mob
-			local pMissingHealth = (pInfo.hp / (pInfo.hpp / 100)) - pInfo.hp
-			
-			if mostRipHp == nil or pMissingHealth > mostRipHp then
-				mostRipHp = pMissingHealth
-				mostRipName = pInfo.name
-			end
-		end
+	if action == nil then
+		return false
+	else
+		send_command('input '..action..' '..mostRipName)
 	end
-	return mostRipName
 end
 
 function maintainBuff(buffNameOrId, commandString)
-	if type(buff) == 'string' then
+	if type(buffNameOrId) == 'string' then
 		if not buffactive[buffNameOrId] and not actionInProgress and not moving then
 			send_command('input '..commandString)
 		end
-	elseif type(buff) == 'number' then
+	elseif type(buffNameOrId) == 'number' then
 		if not buffIdActive(buffNameOrId) and notactionInProgress and not moving then
 			send_command('input '..commandString)
 		end
