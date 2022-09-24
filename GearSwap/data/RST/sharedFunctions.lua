@@ -161,7 +161,7 @@ function readyCharges() -- for bst ability 'Ready'
     return currentCharges
 end
 
-function strategemCount() -- get number of strategems (assumes sch main TODO: update for /sch)
+function strategemCount() -- get number of strategems
     local player = windower.ffxi.get_player()
 	local singleStratCooldown
 	local maxStrategems
