@@ -162,10 +162,42 @@ function readyCharges() -- for bst ability 'Ready'
 end
 
 function strategemCount() -- get number of strategems (assumes sch main TODO: update for /sch)
-    local allRecasts = windower.ffxi.get_ability_recasts()
-    local stratsRecast = allRecasts[231]
-    local maxStrategems = 5
-    local fullRechargeTime = maxStrategems * 33
+    local player = windower.ffxi.get_player()
+	local singleStratCooldown
+	local maxStrategems
+	local schLevel
+
+	if player.main_job == 'SCH' then
+		schLevel = player.main_job_level
+	elseif player.sub_job == 'SCH' then
+		schLevel = player.sub_job_level
+	else
+		add_to_chat(122, 'Not main or sub sch! No strategems for you!')
+		return
+	end
+
+	if schLevel == 99 and player.job_points.sch.jp_spent >= 550 then
+		singleStratCooldown = 33
+		maxStrategems = 5
+	elseif schLevel >= 90 then
+		singleStratCooldown = 48
+		maxStrategems = 5
+	elseif schLevel >= 70 then
+		singleStratCooldown = 60
+		maxStrategems = 4
+	elseif schLevel >= 50 then
+		singleStratCooldown = 80
+		maxStrategems = 3
+	elseif schLevel >= 30 then
+		singleStratCooldown = 120
+		maxStrategems = 2
+	elseif schLevel >= 10 then
+		singleStratCooldown = 240
+		maxStrategems = 1
+	end
+
+    local fullRechargeTime = maxStrategems * singleStratCooldown
+	local stratsRecast = windower.ffxi.get_ability_recasts()[231]
     local currentCharges = math.floor(maxStrategems - maxStrategems * stratsRecast / fullRechargeTime)
     return currentCharges
 end
