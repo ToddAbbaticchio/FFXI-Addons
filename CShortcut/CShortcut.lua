@@ -13,12 +13,12 @@ function useEnchantedItem(command)
 	local bags = require('resources').bags
 	local itemUseWarning = true
 	local itemTable = {
-		['holla'] = {id=26176, name='"Dim. Ring (Holla)"', slot=13, disable='ring1'},
-		['dem'] = {id=26177, name='"Dim. Ring (Dem)"', slot=13, disable='ring1'},
-		['mea'] = {id=26178, name='"Dim. Ring (Mea)"', slot=13, disable='ring1'},
-		['warp'] = {id=28540, name="Warp Ring", slot=13, disable='ring1'},
-		['reraise'] = {id=25679, name="Wh. Rarab Cap +1", slot=4, disable='head'},
-		['sneakinvis'] = {id=26273, name="Tengu Shawl", slot=15, disable='back'},
+		['holla'] = {id=26176, name='Dim. Ring (Holla)', slot=13, disable='ring1'},
+		['dem'] = {id=26177, name='Dim. Ring (Dem)', slot=13, disable='ring1'},
+		['mea'] = {id=26178, name='Dim. Ring (Mea)', slot=13, disable='ring1'},
+		['warp'] = {id=28540, name='Warp Ring', slot=13, disable='ring1'},
+		['reraise'] = {id=25679, name='Wh. Rarab Cap +1', slot=4, disable='head'},
+		['sneakinvis'] = {id=26273, name='Tengu Shawl', slot=15, disable='back'},
 	}
 	local findItem = itemTable[command]
 	local itemArr = {}
@@ -48,15 +48,15 @@ function useEnchantedItem(command)
 					coroutine.sleep(1)
 					local ext = extdata.decode(windower.ffxi.get_items(item.bag,item.slot))
 					local delay = ext.activation_time + 18000 - os.time()
-					if delay > 4 then
-						if delay % 5 == 0 then
-							addToChat(204, 'item: '..findItem.name..' delay: '..delay)
+					if delay > 3 then
+						if delay % 10 == 0 then
+							addToChat(204, findItem.name..': '..delay)
 						end
 					elseif delay > 0 then
-						addToChat(204, 'item: '..findItem.name..' delay: '..delay)
+						addToChat(204, findItem.name..': '..delay)
 					elseif itemUseWarning then
 						itemUseWarning = false
-						addToChat(204, 'Using '..findItem.name..' within 3 seconds...')
+						addToChat(204, findItem.name..' goooooooo!!!')
 					end
 				until ext.usable or delay > 30
 			end
