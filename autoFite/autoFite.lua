@@ -3,6 +3,7 @@ _addon.author = 'Risca'
 _addon.version = '1.1.7'
 _addon.commands = {'autoFite', 'af'}
 
+--settings = config.load(defaults)
 require('logger')
 require('coroutine')
 require('vectors')

@@ -89,7 +89,6 @@ function isPullAction(actionId)
     return false
 end
 
-
 -------------------------------------------------------------------------------------------------------------------
 -- Combat Functions
 -------------------------------------------------------------------------------------------------------------------
@@ -321,6 +320,80 @@ windower.register_event('action',function (act)
                 writeLog('Pull command complete', 3)
                 detectedPullAction = true
             end
+        end
+    end
+end)
+
+
+windower.register_event('chat message', function(message, player, mode, is_gm)
+    local whitelist = "Risca,Walshie,Shinyhelmet,Lornkeit,Iyenga,Mikanora"
+    if mode == 3 and whitelist:contains(player) then
+        local words = {}
+        for word in message:gmatch("%w+") do
+            table.insert(words, word.lower())
+        end
+        
+        if not words[1] == 'spag' then
+            return
+        end
+
+        -- invites - example: /t Risca spag invite
+        if words[2] == 'invite' then
+            if windower.ffxi.get_party().p5 then
+                windower.send_command('input /t '..player..' Party is full bro!')
+                return
+            else
+                windower.send_command('input /pcmd add '..player)
+                windower.send_command:schedule(.5, 'input /t '..player..' Invite sent!')
+                return
+            end
+        end
+        
+        -- leader request - example: /t Risca spag leaderme
+        if words[2] == 'leaderme' then
+            windower.send_command('input /pcmd leader '..player)
+            windower.send_command:schedule(.5, 'input /t '..player..' You are the captain now.')
+            return
+        end
+        
+        -- dismiss trusts - example: /t Risca spag riptrusts
+        if words[2] == 'riptrusts' then
+            if active then
+                windower.send_command('input /t '..player..' Nah - not while Im pulling.')
+            else
+                windower.send_command('input /returntrust all')
+                windower.send_command:schedule(.5, 'input /t '..player..' RIP in peace trusts...')
+            end
+            return
+        end
+
+        -- stopaf example: /t Risca spag stopaf
+        if words[2] == 'stopaf' then
+            if active then
+                windower.send_command('input //af stop')
+                windower.send_command:schedule(.5, 'input /t '..player..' Stopped!')
+            else
+                windower.send_command('input /t '..player..' Cant stop if Im not going!')
+            end
+            return
+        end
+
+        -- startaf example: /t Risca spag startaf start Locus || /t Risca spag startaf assist Walshette
+        if words[2] == 'startaf' then
+            if (words[3]:lower() == 'start' or words[3]:lower() == 'assist') and words[4] ~= null then
+                if active then
+                    windower.send_command('input //af stop')
+                    windower.send_command:schedule(.5, 'input /t '..player..' Stopped!')
+                    coroutine.sleep(1)
+                end
+            
+                windower.send_command('input //af '..words[3]..' '..words[4])
+                windower.send_command:schedule(.5, 'input /t '..player..' Input: //af '..words[3]..' '..words[4])
+            else
+                windower.send_command('input /t '..player..' Syntax looks bad. Try something like:')
+                windower.send_command:scheudule(.5, 'input /t '..player..' "/t Risca spag start start Locus" OR "/t Risca spag start assist Walshette"')
+            end
+            return
         end
     end
 end)
