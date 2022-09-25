@@ -67,8 +67,6 @@ function initializeSessionVars(job, ...)
         ws = "Resolution",
         targetTp = 1000,
         pullCommand = '/ma "Flash" ',
-        pullDistance = 441,
-        meleeDistance = 16
     }
 
     vars.SCH = {
@@ -166,10 +164,10 @@ function initializeSessionVars(job, ...)
         jobVars.maintainAftermath = false
     end
     if jobVars.pullDistance == nil then
-        jobVars.pullDistance = 460
+        jobVars.pullDistance = 441
     end
     if jobVars.meleeDistance == nil then
-        jobVars.meleeDistance = 12
+        jobVars.meleeDistance = 16
     end
     if jobVars.target == nil then
         jobVars.target = {}
