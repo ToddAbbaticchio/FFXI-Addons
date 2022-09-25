@@ -13,12 +13,12 @@ function useEnchantedItem(command)
 	local bags = require('resources').bags
 	local itemUseWarning = true
 	local itemTable = {
-		['holla'] = {id=26176, name='Dim. Ring (Holla)', slot=13, disable='ring1'},
-		['dem'] = {id=26177, name='Dim. Ring (Dem)', slot=13, disable='ring1'},
-		['mea'] = {id=26178, name='Dim. Ring (Mea)', slot=13, disable='ring1'},
-		['warp'] = {id=28540, name='Warp Ring', slot=13, disable='ring1'},
-		['reraise'] = {id=25679, name='Wh. Rarab Cap +1', slot=4, disable='head'},
-		['sneakinvis'] = {id=26273, name='Tengu Shawl', slot=15, disable='back'},
+		['holla'] = {id=26176, name='Dim. Ring (Holla)', slot=13, disable='ring1', displayRecast='600'},
+		['dem'] = {id=26177, name='Dim. Ring (Dem)', slot=13, disable='ring1', displayRecast='600'},
+		['mea'] = {id=26178, name='Dim. Ring (Mea)', slot=13, disable='ring1', displayRecast='600'},
+		['warp'] = {id=28540, name='Warp Ring', slot=13, disable='ring1', displayRecast='600'},
+		['reraise'] = {id=25679, name='Wh. Rarab Cap +1', slot=4, disable='head', displayRecast=nil},
+		['sneakinvis'] = {id=26273, name='Tengu Shawl', slot=15, disable='back', displayRecast=nil},
 	}
 	local findItem = itemTable[command]
 	local itemArr = {}
@@ -62,6 +62,9 @@ function useEnchantedItem(command)
 			end
 			sendCommand('input /item "'..findItem.name..'" <me>')
 			sendCommand('input //gs enable '..findItem.disable)
+			if findItem.displayRecast ~= nil then
+				sendCommand('input //timers c "'..findItem.name..'" 600 down spells/00014.png')
+			end
 		end
 	elseif item and not item.bag_enabled then
 		addToChat(122, 'Can not access '..findItem.name..' from ' .. bags[item.bag].name ..' at this time!')

@@ -136,6 +136,17 @@ function initializeSessionVars(job, ...)
         meleeDistance = 12,
         pullCommand = '/ma "Stone" '
     }
+
+    vars.RDM = {
+        autoBuffs = {
+            ["Dark Arts"] = "Addendum: Black"
+            --["Light Arts"] = "Addendum: White"
+        },
+        --ws = "Myrkr",
+        --ws = "Starlight",
+        --targetTp = 3000,
+        pullCommand = '/ma "Diaga" '
+    }
     -----------------------------------------------------------------------------------------------------------
     --  END USER SETUP  ---------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------------------
