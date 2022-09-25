@@ -67,6 +67,10 @@ function job_self_command(cmdParams, eventArgs)
 	if extendedJobSelfCommand ~= nil then
 		extendedJobSelfCommand(cmdParams, eventArgs)
 	end
+
+	if cmdParams[1]:lower() == 'test' then
+		-- debug/testing stuff goes hererereereere
+	end
 end
 
 function user_setup()
@@ -138,6 +142,32 @@ function dayWeatherIntensity(spellElement) -- feed spellElement, get back 0-3.  
         intensity = intensity + get_weather_intensity()
     end
     return intensity
+end
+
+function bestObiElement()
+	local elements = {
+		[0] = "Wind",
+		[1] = "Light",
+		[2] = "Fire",
+		[3] = "Ice",
+		[4] = "Earth",
+		[5] = "Lightning",
+		[6] = "Water",
+		[7] = "Dark"
+	}
+	
+	local maxIntensityEle = world.day_element
+	local maxIntensity = 1
+	for _,element in pairs(elements) do
+		local thisVal = dayWeatherIntensity(element)
+		--add_to_chat(122, 'element: '..element..' intensity: '..thisVal)
+		if thisVal > maxIntensity then
+			maxIntensity = thisVal
+			maxIntensityEle = element
+		end
+	end
+
+	return maxIntensityEle
 end
 
 function buffIdActive(buffId) -- is buff active? using buffId not name
