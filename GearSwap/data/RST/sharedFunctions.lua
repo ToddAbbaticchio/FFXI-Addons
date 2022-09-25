@@ -134,7 +134,6 @@ function dayWeatherIntensity(spellElement) -- feed spellElement, get back 0-3.  
     if world.day_element == spellElement then
         intensity = intensity + 1
     end
-    
     if world.weather_element == spellElement then
         intensity = intensity + get_weather_intensity()
     end
