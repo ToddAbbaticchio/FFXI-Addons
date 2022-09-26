@@ -136,13 +136,9 @@ function initializeSessionVars(job, ...)
     }
 
     vars.RDM = {
-        autoBuffs = {
-            ["Dark Arts"] = "Addendum: Black"
-            --["Light Arts"] = "Addendum: White"
-        },
-        --ws = "Myrkr",
-        --ws = "Starlight",
-        --targetTp = 3000,
+        autoBuffs = {},
+        ws = "Savage Blade",
+        targetTp = 1000,
         pullCommand = '/ma "Diaga" '
     }
     -----------------------------------------------------------------------------------------------------------
@@ -167,7 +163,7 @@ function initializeSessionVars(job, ...)
         jobVars.pullDistance = 441
     end
     if jobVars.meleeDistance == nil then
-        jobVars.meleeDistance = 16
+        jobVars.meleeDistance = 12
     end
     if jobVars.target == nil then
         jobVars.target = {}
@@ -233,7 +229,9 @@ function doStuff(mode, currStatus)
             
             if currStatus == idle then
                 if assistTarget.status == engaged then
-                    pressKey('escape', 0.1)
+                    if windower.ffxi.get_mob_by_target('t') ~= nil and not isAutofiteTarget(windower.ffxi.get_mob_by_target('t')) then
+                        pressKey('escape', 0.1)
+                    end
                     windower.chat.input:schedule(0.5, "/assist " .. assistTarget.name)
                     windower.chat.input:schedule(1.5, '/attack on')
                 end

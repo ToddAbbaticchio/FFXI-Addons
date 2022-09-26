@@ -149,7 +149,7 @@ function init_gear_sets()
 		--body="Manasa Chasuble", ???
 		hands="Runeist's Mitons +3",      --15
 		legs="Carmine Cuisses +1",        --18
-		feet="Carmine Greaves +1",
+		--feet="Carmine Greaves +1",
 		neck="Incanter's Torque",         --10
 		waist="Olympus Sash",             --05
 		ear1="Andoaa Earring",        --05
