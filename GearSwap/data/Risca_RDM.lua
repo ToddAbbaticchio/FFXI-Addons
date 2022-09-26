@@ -31,6 +31,21 @@ function init_gear_sets()
 		right_ring="Ilabrat Ring",
 		back=gear.STRCape,
 	}
+	sets.baseTank = {
+		ammo="Ginsen",
+		head="Malignance Chapeau",        --06
+		body="Malignance Tabard",         --09
+		hands="Malignance Gloves",        --05
+		legs="Malignance Tights",         --07
+		feet="Malignance Boots",           --07
+		neck="Combatant's Torque",
+		waist="Grunfeld Rope",
+		left_ear="Telos Earring",
+		right_ear="Suppanomimi",
+		left_ring="Epona's Ring",
+		right_ring="Ilabrat Ring",
+		back=gear.STRCape,                --05
+	}
 	sets.baseMagic = {
 		ammo="Ombre Tathlum +1",
 		--head="Jhakri Coronal +2",
@@ -66,21 +81,7 @@ function init_gear_sets()
 		back = "Swith Cape"
 	}
 
-	sets.baseTank = {
-		ammo="Ginsen",
-		head="Malignance Chapeau",        --06
-		body="Malignance Tabard",         --09
-		hands="Malignance Gloves",        --05
-		legs="Malignance Tights",         --07
-		feet="Malignance Boots",           --07
-		neck="Combatant's Torque",
-		waist="Grunfeld Rope",
-		left_ear="Telos Earring",
-		right_ear="Cessance Earring",
-		left_ring="Epona's Ring",
-		right_ring="Ilabrat Ring",
-		back=gear.STRCape,                --05
-	}
+	
 	sets.evaTank = {
 		ammo="Amar Cluster",
 		head="Malignance Chapeau",
@@ -98,9 +99,9 @@ function init_gear_sets()
 	}
     sets.precast.WS = {
 		ammo="Oshasha's Treatise",
-		head="Hashishin Kavuk +2",
-		body="Assim. Jubbah +3",
-		legs="Luhlaza Shalwar +3",
+		head="Nyame Helm",
+		body="Nyame Mail",
+		legs="Nyame Flanchard",
 		hands="Jhakri Cuffs +2",
 		feet="Jhakri Pigaches +2",
 		neck="Fotia Gorget",
@@ -144,42 +145,19 @@ function init_gear_sets()
 
 	sets.precast.WS['Flat Blade'] = equip(sets.baseMelee)
 
-    -- Midcast Sets
-    sets.midcast['Blue Magic'] = {}
-	sets.midcast['Elemental Magic'] = sets.baseMagic
-	sets.midcast['Battery Charge'] = {waist="Gishdubar Sash"}
-    
-    -- Physical Spells --
-    sets.midcast['Blue Magic'].Physical = set_combine(sets.precast.WS, {body="Assim. Jubbah +3",neck="Mirage Stole",waist="Eschan Stone"})
-    sets.midcast['Blue Magic'].PhysicalAcc = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalStr = set_combine(sets.midcast['Blue Magic'].Physical, {left_ring="Ifrit Ring",right_ear="Kuwunga Earring",left_ear="Corybant Pearl",})
-    sets.midcast['Blue Magic'].PhysicalDex = set_combine(sets.midcast['Blue Magic'].Physical, {left_ring="Thundersoul Ring",left_ear="Ilabrat Ring",right_ear="Odr Earring",head="Malignance Chapeau",hands="Malignance Gloves"})
-    sets.midcast['Blue Magic'].PhysicalVit = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalAgi = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalInt = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalMnd = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalChr = set_combine(sets.midcast['Blue Magic'].Physical, {})
-    sets.midcast['Blue Magic'].PhysicalHP = set_combine(sets.midcast['Blue Magic'].Physical, {})
+	sets.emDuration = {}
+	sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash"})
+	sets.midcast['Enhancing Magic'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
+	sets.midcast['Crusade'] = set_combine(sets.baseTank, sets.interrupt, sets.emDuration)
+	sets.midcast['Temper'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
+    sets.midcast['Phalanx'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration, {body="Taeon Tabard", hands="Taeon Gloves", feet="Taeon Boots"})
+    sets.midcast['Aquaveil'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration, sets.interrupt, {})
+    sets.midcast['Regen'] = set_combine(sets.baseTank, sets.emDuration, {head="Rune. Bandeau +3",neck="Sacro Gorget",waist="Sroda Belt",ear2="Erilaz Earring"})
+	sets.midcast['Cure'] = set_combine(sets.baseTank, {waist="Sroda Belt"})
+    sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +2",})
+	sets.midcast['Cocoon'] = sets.baseTank
+	sets.midcast['Stoneskin'] = set_combine(sets.baseTank, sets.emSkill, {waist="Siegel Sash",})
 
-    -- Magical Spells --
-    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {})
-    sets.midcast['Blue Magic'].Magical.Resistant = set_combine(sets.midcast['Blue Magic'].Magical, {})
-    sets.midcast['Blue Magic'].MagicalMnd = set_combine(sets.midcast['Blue Magic'].Magical, {})
-	sets.midcast['Blue Magic'].MagicalChr = set_combine(sets.midcast['Blue Magic'].Magical, {})
-    sets.midcast['Blue Magic'].MagicalVit = set_combine(sets.midcast['Blue Magic'].Magical, {})
-    sets.midcast['Blue Magic'].MagicalDex = set_combine(sets.midcast['Blue Magic'].Magical, {})
-    sets.midcast['Blue Magic'].MagicAccuracy = set_combine(sets.midcast['Blue Magic'].Magical, {waist="Yamabuki-no-Obi",neck="Incanter's Torque",head="Malignance Chapeau",body="Malignance Tabard",hands="Malignance Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Stikini Ring +1",ring2="Stikini Ring +1"})
-
-    -- Breath Spells --
-    sets.midcast['Blue Magic'].Breath = {}
-
-    -- Other --
-    sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
-    sets.midcast['Blue Magic']['White Wind'] = {}
-    sets.midcast['Blue Magic'].Healing = set_combine(sets.baseMagic, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
-    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt",head="Mirage Keffiyeh",neck="Mirage Stole",})
-    sets.midcast['Blue Magic'].Buff = {}
-	sets.midcast['Blue Magic'].Enmity = {}
     
     -- Gear for learning spells: +skill and AF hands.
     sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt",head="Mirage Keffiyeh",neck="Mirage Stole",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
@@ -229,120 +207,7 @@ function init_modetables()
 end
 
 function job_setup()
-    blue_magic_maps = {}
-	-- Physical spells with no particular (or known) stat mods
-    blue_magic_maps.Physical = S{
-        'Bilgestorm'
-    }
-    -- Spells with heavy accuracy penalties, that need to prioritize accuracy first.
-    blue_magic_maps.PhysicalAcc = S{
-        'Heavy Strike',
-    }
-    -- Physical spells with Str stat mod
-    blue_magic_maps.PhysicalStr = S{
-	'Asuran Claws','Bilgestorm','Battle Dance','Bludgeon','Bloodrake','Death Scissors','Dimensional Death',
-	'Empty Thrash','Quadrastrike','Uppercut','Tourbillion','Sinker Drill','Thrashing Assault','Vertical Cleave',
-	'Whirl of Rage','Saurian Slide','Spinal Cleave','Paralyzing Triad'
-	}
-    -- Physical spells with Dex stat mod
-    blue_magic_maps.PhysicalDex = S{
-	'Amorphic Spikes','Barbed Crescent','Claw Cyclone','Disseverment','Foot Kick','Frenetic Rip','Goblin Rush',
-	'Hysteric Barrage','Seedspray','Vanity Dive'
-	}
-    -- Physical spells with Vit stat mod
-    blue_magic_maps.PhysicalVit = S{
-	'Cannonball','Delta Thrust','Glutinous Dart','Grand Slam','Quad. Continuum','Sprout Smack','Sweeping Gouge'
-    }
-    -- Physical spells with Agi stat mod
-    blue_magic_maps.PhysicalAgi = S{
-	'Benthic Typhoon','Helldive','Hydro Shot','Jet Stream','Pinecone Bomb','Wild Oats','Spiral Spin'
-    }
-    -- Physical spells with Int stat mod
-    blue_magic_maps.PhysicalInt = S{
-        'Mandibular Bite','Queasyshroom'
-    }
-    -- Physical spells with Mnd stat mod
-    blue_magic_maps.PhysicalMnd = S{
-        'Ram Charge','Screwdriver','Tourbillion'
-    }
-    -- Physical spells with Chr stat mod
-    blue_magic_maps.PhysicalChr = S{
-        'Bludgeon'
-    }
-    -- Physical spells with HP stat mod
-    blue_magic_maps.PhysicalHP = S{
-        'Final Sting'
-    }
-
-    -- Magical spells with the typical Int mod
-    blue_magic_maps.Magical = S{
-		'Acrid Stream','Anvil Lightning','Crashing Thunder','Charged Whisker','Droning Whirlwind','Firespit',
-		'Foul Waters','Gates of Hades','Leafstorm','Molting Plumage','Nectarous Deluge','Polar Roar','Regurgitation',
-		'Rending Deluge','Scouring Spate','Searing Tempest','Silent Storm','Spectral Floe','Subduction','Tem. Upheaval',
-		'Thermal Pulse','Thunderbolt','Uproot','Water Bomb','Dark Orb','Death Ray','Eyes On Me','Evryone. Grudge',
-		'Palling Salvo','Tenebral Crush'
-    }
-    -- Magical spells with a primary Mnd mod
-    blue_magic_maps.MagicalMnd = S{
-		'Blinding Fulgor','Diffusion Ray','Magic Hammer','Rail Cannon','Retinal Glare'
-    }
-    -- Magical spells with a primary Chr mod
-    blue_magic_maps.MagicalChr = S{
-		'Eyes On Me','Mysterious Light'
-    }
-    -- Magical spells with a Vit stat mod (on top of Int)
-    blue_magic_maps.MagicalVit = S{
-		'Embalming Earth','Entomb','Sandspin'
-    }
-    -- Magical spells with a Dex stat mod (on top of Int)
-    blue_magic_maps.MagicalDex = S{
-		'Charged Whisker','Gates of Hades'
-    }
-    -- Magical spells (generally debuffs) that we want to focus on magic accuracy over damage.
-    -- Add Int for damage where available, though.
-    blue_magic_maps.MagicAccuracy = S{
-		'1000 Needles','Absolute Terror','Auroral Drape','Awful Eye','Blastbomb','Blank Gaze','Blistering Roar','Blitzstrahl',
-		'Blood Drain','Blood Saber','Chaotic Eye','Cimicine Discharge','Cold Wave','Digest','Corrosive Ooze','Demoralizing Roar',
-		'Dream Flower','Enervation','Feather Tickle','Filamented Hold','Frightful Roar','Geist Wall','Hecatomb Wave','Infrasonics',
-		'Light of Penance','Lowing','Mind Blast','Mortal Ray','MP Drainkiss','Osmosis','Reaving Wind','Sheep Song','Soporific',
-		'Sound Blast','Stinking Gas','Venom Shell','Voracious Trunk','Yawn'
-    }
-    -- Breath-based spells
-    blue_magic_maps.Breath = S{
-		'Bad Breath','Flying Hip Press','Final Sting','Frost Breath','Heat Breath','Magnetite Cloud','Poison Breath','Radiant Breath',
-		'Self Destruct','Thunder Breath','Vapor Spray','Wind Breath','Blood Saber'
-    }
-    -- Stun spells
-    blue_magic_maps.Stun = S{
-		'Blitzstrahl','Frypan','Head Butt','Sudden Lunge','Tail slap','Temporal Shift',
-		'Thunderbolt','Whirl of Rage'
-    }
-    -- Healing spells
-    blue_magic_maps.Healing = S{
-		'Healing Breeze','Magic Fruit','Plenilune Embrace','Pollen','Restoral','Wild Carrot'
-    }
-    -- Buffs that depend on blue magic skill
-    blue_magic_maps.SkillBasedBuff = S{
-		'Barrier Tusk','Diamondhide','Magic Barrier','Metallic Body','Plasma Charge',
-		'Pyric Bulwark','Reactor Cool',
-    }
-    -- Other general buffs
-    blue_magic_maps.Buff = S{
-        'Amplification','Animating Wail','Battery Charge','Carcharian Verve','Cocoon',
-        'Erratic Flutter','Exuviation','Fantod','Feather Barrier','Harden Shell',
-        'Memento Mori','Nat. Meditation','Occultation','Orcish Counterstance','Refueling',
-        'Regeneration','Saline Coat','Triumphant Roar','Warm-Up','Winds of Promyvion',
-        'Zephyr Mantle'
-    }
-	blue_magic_maps.Enmity = S{
-		'Actinic Burst','Temporal Shift','Jettatura','Exuviation','Fantod','Geist Wall','Blank Gaze',
-	}
-    -- Spells that require Unbridled Learning to cast.
-    unbridled_spells = S{
-        'Absolute Terror','Bilgestorm','Blistering Roar','Bloodrake','Carcharian Verve',
-        'Crashing Thunder','Droning Whirlwind','Gates of Hades','Harden Shell','Polar Roar',
-        'Pyric Bulwark','Thunderbolt','Tourbillion','Uproot','Mighty Guard'
-    }
+    
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -350,7 +215,6 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Setup vars that are user-dependent.
 function extendedUserSetup()
-	send_command('lua l azuresets')
 	--Set default macro book / page
     set_macro_page(1, 2)
 
@@ -359,7 +223,6 @@ function extendedUserSetup()
 end
 
 function extendedUserUnload()
-	send_command('lua unload azuresets')
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -468,29 +331,15 @@ end
 function autoActions()
 	if auto.buff[auto.buff.index] == 'On' and not moving then
 		local abilRecasts = windower.ffxi.get_ability_recasts()
-		local diffusionRecast = abilRecasts[184]
-		local unbridledRecast = abilRecasts[81]
+		local composureRecast = abilRecasts[419]
 
 		if not actionInProgress then
-			maintainBuff(33, '/ma "Battery Charge" <me>')
-			maintainBuff('Refresh', '/ma "Battery Charge" <me>')
-			--maintainBuff(700, '/ma "Nat. Meditation" <me>')
-			--maintainBuff('Cocoon', '/ma "Cocoon" <me>')
+			maintainBuff('Composure', '/ja "Composure" <me>')
+			maintainBuff(33, '/ma "Haste" <me>')
+			maintainBuff('Refresh', '/ma "Refresh" <me>')
 
 			if auto.fite[auto.fite.index] == 'On' then
-				if not buffactive['Mighty Guard'] then
-					if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
-						send_command('input /ma "Mighty Guard" <me>')
-						return
-					end
-				end
-				--[[ if not buffactive['Carcharian Verve'] and unbridledRecast == 0 and diffusionRecast == 0 then 
-					add_to_chat(122,'-- Carcharian Verve is down. Trying to recast... --')
-					send_command('input /ma "Carcharian Verve" <me>')
-					return
-				end ]]
-
-				partyLowHP(50, '/ma "Magic Fruit"')
+				partyLowHP(40, '/ma "Cure V"')
 			end
 		end
 	end
