@@ -9,9 +9,9 @@ debug = false
 chatColor = 050
 refPacket = {}
 buyingCpItems = false
-CpNpcZones = T{"Windurst Woods"}
+CpNpcZones = T{"Windurst Waters", "Port Windurst", "Windurst Woods"}
 CpNpcZones = {
-	[238] = {npc="Puroiki-Maiko, W.W.", menu=32759, option=32800, unknown1=0}, --Windurst Waters
+	[238] = {npc="Puroiko-Maiko, W.W.", menu=32759, option=32800, unknown1=0}, --Windurst Waters
 	[240] = {npc="Milma-Hapilma, W.W.", menu=32759, option=32800, unknown1=0}, --Port Windurst
 	[241] = {npc="Harara, W.W.", menu=32759, option=32800, unknown1=0}, -- Windurst Woods
 }
