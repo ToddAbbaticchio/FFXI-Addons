@@ -94,11 +94,11 @@ function init_gear_sets()
 		--[[ back=gear.INTCape, ]]
 	}
 
-	sets.noTPFeed = {
+	sets.enspellDmg = {
 		ammo="Ombre Tathlum +1",
-		head="Malignance Chapeau",
+		head="Umuthi Hat",
 		body="Malignance Tabard",
-		hands="Leyline Gloves",
+		hands="Aya. Manopolas +2",
 		legs="Malignance Tights",
 		feet="Malignance Boots",
 		waist="Penitent's Rope",
@@ -106,7 +106,7 @@ function init_gear_sets()
 		ear2="Friomisi Earring",
 		ring1="Shiva Ring +1",
 		ring2="Shiva Ring +1",
-		--back=gear.INTCape
+		back="Ghostfyre Cape"
 	}
 
 	sets.magic = {}
@@ -123,8 +123,9 @@ function init_gear_sets()
 		ear2="Mimir Earring",        --10
 		ring1="Stikini Ring +1",      --08
 		ring2="Stikini Ring +1",     --08
-		back="Merciful Cape",}             --05
-	sets.magic.emDuration = {body='Telchine Chasuble', legs='Telchine Braconi', feet='Telchine Pigaches', ear1='Lethargy Earring'}
+		back="Merciful Cape",
+	}
+	sets.magic.emDuration = {body='Telchine Chasuble', hands='Telchine Gloves', legs='Telchine Braconi', feet='Telchine Pigaches', waist='Embla Sash', ear1='Lethargy Earring', back='Ghostfyre Cape'}
 	sets.magic.enfeebSkill = {head="Befouled Crown", neck="Incanter's Torque", ring1="Stikini Ring +1", ring2="Stikini Ring +1",}
 	sets.magic.fastCast = {
 		ammo = "Impatiens",
@@ -148,7 +149,7 @@ function init_gear_sets()
 	sets.obi = {waist="Hachirin-no-obi"}
 	sets.baseIdle = { ammo="Homiliary", head="Befoulded Crown", body="Jhakri Robe +2", neck="Sibyl Scarf", ring1="Stikini Ring +1", ring2="Stikini Ring +1"}
     
-	--Define Job Ability sets														-- I'd use these if i cared enough to get them:
+	--Define Job Ability sets
     
     -- Weaponskill sets
     -- Default set for any weaponskill that isn't any more specifically defined
@@ -189,7 +190,7 @@ function init_modetables()
 		["index"] = 0,
 		[0] = {name="Tank", idle=set_combine(sets.baseTank, sets.baseIdle), engaged=sets.baseTank},
 		[1] = {name="DPS", idle=set_combine(sets.baseMelee, sets.baseIdle), engaged=sets.baseMelee},
-		[3] = {name="NoDmg", idle=set_combine(sets.noTPFeed, sets.baseIdle), engaged=sets.noTPFeed},
+		[2] = {name="EnspellDmg", idle=set_combine(sets.enspellDmg, sets.baseIdle), engaged=sets.enspellDmg},
 	}
 	
 	--Setup weaponMode
@@ -309,15 +310,6 @@ end
 -------------------------------------------------------------------------------------------------------------------
 --  Helper functions
 -------------------------------------------------------------------------------------------------------------------
-function job_get_spell_map(spell, default_spell_map)
-    if spell.skill == 'Blue Magic' then
-        for category,spell_list in pairs(blue_magic_maps) do
-            if spell_list:contains(spell.english) then
-				return category
-			end
-        end
-    end
-end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction Handler
@@ -334,10 +326,20 @@ function autoActions()
 			maintainBuff('Haste', '/ma "Haste II" <me>')
 			maintainBuff('Refresh', '/ma "Refresh III" <me>')
 			maintainBuff('Phalanx', '/ma "Phalanx" <me>')
-			maintainBuff(80, '/ma "Gain STR" <me>')
+			maintainBuff(119, '/ma "Gain STR" <me>')
+			
+			partyLowHP(40, '/ma "Cure IV"')
+
+
+			-- garbage buffs for naegling
 			maintainBuff('Enaero', '/ma "Enaero" <me>')
 			maintainBuff('Baraero', '/ma "Baraero" <me>')
 			maintainBuff('Barsleep', '/ma "Barsleep" <me>')
+			maintainBuff('Aquaveil', '/ma "Aquaveil" <me>')
+			maintainBuff('Protect', '/ma "Protect V" <me>')
+			maintainBuff('Shell', '/ma "Shell V" <me>')
+			
+
 
 			if auto.fite[auto.fite.index] == 'On' then
 				if player.mpp < 30 then
