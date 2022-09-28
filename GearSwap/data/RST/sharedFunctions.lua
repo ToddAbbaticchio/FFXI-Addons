@@ -355,15 +355,24 @@ function modeHud(action)
 		-- hud doesn't exist yet.  create it!
 		if modeHudWindow == nil then
 			hud = require('texts')
-			modeHud_xPos = 1250
+			modeHud_xPos = 0
 			modeHud_yPos = 0
 			modeHudWindow = texts.new("")	
 		end
 
 		local hudText = L{}
 		-- add current weapon and gear modes
-		hudText:append('WeaponMode: '..weaponMode[weaponMode.index].name)
-		hudText:append('GearMode: '..gearMode[gearMode.index].name)
+		if weaponMode[weaponMode.index].color ~= nil then
+			hudText:append('WeaponMode: '..weaponMode[weaponMode.index].color..weaponMode[weaponMode.index].name..white)
+		else
+			hudText:append('WeaponMode: '..white..weaponMode[weaponMode.index].name..white)
+		end
+
+		if gearMode[gearMode.index].color ~= nil then
+			hudText:append('GearMode: '..gearMode[gearMode.index].color..gearMode[gearMode.index].name..white)
+		else
+			hudText:append('GearMode: '..white..gearMode[gearMode.index].name..white)
+		end
 		
 		-- if extendedModeHud function exists in main job .lua, call that
 		if (extendedModeHud) ~= nil then
