@@ -35,7 +35,13 @@ function init_gear_sets()
     }
 
     -- Random one-off sets or small sets
-    sets.baseIdle = {feet="Jute Boots +1"}
+    sets.baseIdle = {
+        feet="Jute Boots +1",
+        head="Nyame Helm",
+        body="Nyame Mail", --body="Samnuha Coat",
+        hands="Nyame Gauntlets", --hands="Maxixi Bangles +3",
+        legs="Nyame Flanchard", --legs="Horos Tights +3",
+    }
     sets.moveSpeed = {feet="Jute Boots +1"}
     sets.wakeUp = {}
     sets.Obi = {} --{waist="Hachirin-no-Obi"}
@@ -186,6 +192,8 @@ function init_gear_sets()
     })
 
     sets.midcast['Poisonga'] = sets.TH
+    sets.midcast['Horde Lullaby'] = sets.TH
+    sets.midcast['Horde Lullaby II'] = sets.TH
 
     -- Actions we want to use to tag TH.
     sets.precast.Step = sets.TH

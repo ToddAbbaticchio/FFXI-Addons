@@ -1,7 +1,4 @@
 include('sharedFunctions.lua')
--------------------------------------------------------------------------------------------------------------------
--- dumb name.  is required.
--------------------------------------------------------------------------------------------------------------------
 function get_sets()
     mote_include_version = 2
     include('Mote-Include.lua')
@@ -17,30 +14,29 @@ function init_gear_sets()
     gear.evisCape = {name="Senuna's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','Crit.hit rate+10',}}
     
     sets.baseMelee = {
-        ammo="Coiste Bodhar", --ammo="Aurgelmir Orb +1",
+        ammo="Coiste Bodhar", -- Aurgelmir Orb +1 > Yamarang
         head="Adhemar Bonnet +1",
-        body="Adhemar Jacket +1", --body="Macu. Casaque +1",  
+        body="Adhemar Jacket +1", -- Horos Casaque +3
         hands="Adhemar Wristbands +1",
         legs="Samnuha Tights",
-        feet="Herculean Boots", --feet=gear.Taeon_DW_feet,
-        neck="Etoile Gorget +2", --neck="Charis Necklace",
+        feet="Herculean Boots", -- Horos Toe Shoes +3
+        neck="Etoile Gorget +2",
         ear1="Brutal Earring",
         ear2="Sherida Earring",
         ring1="Gere Ring",
         ring2="Epona's Ring",
         back=gear.tpCape,
-        waist="Windbuffet Belt +1", --waist="Reiki Yotai",
+        waist="Windbuffet Belt +1", 
     }
 
     sets.meleeAcc = {
         --ammo="C. Palug Stone",
         --body="Maxixi Casaque +3",
-        --hands="Gazu Bracelet +1",
-        --legs="Horos Tights +3",
+        --legs="Maxixi Tights +3",
         --ear2="Mache Earring +1",
         --ring1="Regal Ring",
         --ring2={name="Chirich Ring +1", bag="wardrobe4"},
-        --waist="Olseni Belt",
+        --waist="Kentarch Belt +1",
     }
 
     sets.meleeHybrid = set_combine(sets.baseMelee, {
@@ -114,7 +110,7 @@ function init_gear_sets()
 
     sets.moveSpeed = {feet="Tandava Crackows"}
     sets.Obi = {waist="Hachirin-no-Obi"}
-    sets.TH = {waist='Chaac Belt', ammo='Per. Lucky Egg'}
+    sets.TH = {head="Wh. Rarab Cap +1", waist='Chaac Belt', ammo='Per. Lucky Egg'}
    
     sets.naked = {head=empty, body=empty, hands=empty, legs=empty, feet=empty, neck=empty, waist=empty, ear1=empty, ear2=empty, ring1=empty, ring2=empty, back=empty}
 
@@ -131,7 +127,7 @@ function init_gear_sets()
         --ring1="Carb. Ring +1",
         --ring2="Metamor. Ring +1",
         --back=gear.DNC_WTZ_Cape,
-        --waist="Aristo Belt",
+        waist="Aristo Belt",
     }
 
     sets.precast.WaltzSelf = set_combine(sets.precast.Waltz, {
@@ -240,18 +236,16 @@ function init_gear_sets()
 
     sets.precast.WS['Evisceration'] = set_combine(sets.baseWS, {
         ammo="Charis Feather",
-        head="Adhemar Bonnet +1", --head=gear.Adhemar_B_head,
+        head="Adhemar Bonnet +1",
         neck="Fotia Gorget",
-        body="Meg. Cuirie +2", --body="Abnoba Kaftan",
+        body="Meg. Cuirie +2",
         hands="Mummu Wrists +2",
         legs="Samnuha Tights", --legs="Lustr. Subligar +1",
         feet="Mummu Gamashes +2",   
         ear1="Odr Earring",
         ear2="Sherida Earring",
-        --ear2="Mache Earring +1",
-        --ring1="Begrudging Ring",
         ring1="Ilabrat Ring",
-        ring2="Mummu Ring",
+        ring2="Mummu Ring", -- Regal Ring
         back=gear.evisCape,--back=gear.DNC_WS3_Cape,
         waist="Fotia Belt",
     })
@@ -317,6 +311,7 @@ function init_modetables()
 	weaponMode = {
 		["index"] = 0,
 		[0] = {name="Tauret-Gleti", set={main="Tauret", sub="Gleti's Knife"}},
+        [1] = {name="LowDmg", set={main="Qutrub Knife", sub="Gleti's Knife"}},        
 	}
 
 	--Setup autoBuff
@@ -332,6 +327,48 @@ function init_modetables()
 			[1] = "On",
 		},
 	}
+
+    stepMode = {
+        ["index"] = 0,
+        [0] = {step="Box Step", command="/boxstep", msg="Sluggish Daze: DEF down", color="\\cs(240,128,128)"}, -- DPS Color (Coral)
+        [1] = {step="Quickstep", command="/quickstep", msg="Lethargic Daze: EVA down", color="\\cs(135,206,250)"}, -- Tank Color
+        [2] = {step="Stutter Step", command="/stutterstep", msg="Weakened Daze: mEVA down", color="\\cs(240,230,140)"}, -- Utility Color
+        [3] = {step="Feather Step", command="/featherstep", msg="Bewildered Daze: Crit EVA down", color="\\cs(255,165,0)"}, -- DPS Color (Orange)        
+    }
+
+    flourish1Mode = {
+        ["index"] = 0,
+        [0] = {flourish="Animated Flourish", command="/animatedflourish", msg="(Group 1: FM 1-2) Provoke", color="\\cs(135,206,250)"}, -- Tank Color
+        [1] = {flourish="Desperate Flourish", command="/desperateflourish", msg="(Group 1: FM 1) Gravity", color="\\cs(240,230,140)"}, -- Utility Color
+        [2] = {flourish="Violent Flourish", command="/violentflourish", msg="(Group 1: FM 1) Stun", color="\\cs(240,230,140)"}, -- Utility Color
+    }
+
+    flourish2Mode = {
+        ["index"] = 0,
+        [0] = {flourish="Reverse Flourish", command="/reverseflourish", msg="(Group 2: FM 1-5) Convert FM to TP", color="\\cs(240,128,128)"}, -- DPS Color (Coral)
+        [1] = {flourish="Building Flourish", command="/buildingflourish", msg="(Group 2: FM 1-3) WSD Boost", color="\\cs(255,165,0)"}, -- DPS Color (Orange)
+        [2] = {flourish="Wild Flourish", command="/wildflourish", msg="(Group 2: FM 2) Ready for SC", color="\\cs(255,165,0)"}, -- DPS Color (Orange)      
+    }
+
+    flourish3Mode = {
+        ["index"] = 0,
+        [0] = {flourish="Climactic Flourish", command="/climacticflourish", msg="(Group 3: FM 1-5) Critical Hits", color="\\cs(240,128,128)"}, -- DPS Color (Coral),   
+        [1] = {flourish="Striking Flourish", command="/strikingflourish", msg="(Group3: FM 1-3) Double Attack", color="\\cs(255,165,0)"}, -- DPS Color (Orange)
+        [2] = {flourish="Ternary Flourish", command="/ternaryflourish", msg="(Group 3: FM 2) Triple Attack", color="\\cs(255,165,0)"}, -- DPS Color (Orange)    
+    }
+
+    sambaMode = {
+        ["index"] = 0,
+        [0] = {samba="Haste Samba", command="/hastesamba", msg="Haste Samba: JA Haste", color="\\cs(240,128,128)"}, -- DPS Color (Coral)     
+        [1] = {samba="Drain Samba III", command="/drainsamba3", msg="Drain Samba: HP Drain", color="\\cs(135,206,250)"}, -- Tank Color
+        [2] = {samba="Aspir Samba II", command="/aspirsamba2", msg="Aspir Samba: MP Drain", color="\\cs(240,230,140)"}, -- Utility Color    
+    }
+
+    danceMode = {
+        ["index"] = 0,
+        [0] = {dance="Saber Dance", command="/saberdance", msg="Saber Dance: Double Attack (no Waltz)", color="\\cs(240,128,128)"}, -- DPS Color (Coral)   
+        [1] = {dance="Fan Dance", command="/fandance", msg="Fan Dance: -PDT, +Enmity (no Samba)", color="\\cs(135,206,250)"}, -- Tank Color
+    }
 
 	sets.idle = gearMode[gearMode.index].idle
 	sets.engaged = gearMode[gearMode.index].engaged
@@ -351,7 +388,13 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function extendedUserSetup()
 	-- Setup my binds
-	
+    send_command('bind @5 gs c cycleStep')
+    send_command('bind @6 gs c cycleFlourish1')
+    send_command('bind @7 gs c cycleFlourish2')
+    send_command('bind @8 gs c cycleFlourish3')
+    send_command('bind @9 gs c cycleSamba')
+    send_command('bind @0 gs c cycleDance')
+
 	-- Set default macro book / page
     set_macro_page(1, 5)
 	
@@ -364,18 +407,8 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Action/Cast phases
 -------------------------------------------------------------------------------------------------------------------
-function extendedJobPrecast(spell, action, spellMap, eventArgs)
-	
-	-- Utsusemi helper
-	if spell.english:contains('Utsusemi') then
-        if buffactive['Copy Image (3)'] or buffactive['Copy Image (4+)'] then
-            eventArgs.cancel = true
-            add_to_chat(123, '**!! ' .. spell.english .. ' Canceled: [3+ IMAGES] !!**')
-        elseif buffactive['Copy Image'] or buffactive['Copy Image (2)'] then
-            send_command('cancel 66; cancel 444; cancel Copy Image; cancel Copy Image (2)')
-        end
-    end
-
+function extendedJobPrecast(spell, action, spellMap, eventArgs)	
+	-- Utsusemi helper already in sharedFunctions
 end
 
 function job_post_precast(spell, action, spellMap, eventArgs)
@@ -391,10 +424,10 @@ end
 
 function job_pretarget(spell, action, spellMap, eventArgs)
     if spell.type == 'Step' then
-        local allRecasts = windower.ffxi.get_ability_recasts()
-        local prestoCooldown = allRecasts[236]
+        local abilRecast = windower.ffxi.get_ability_recasts()
+        local prestoRecast = abilRecast[236]
 
-        if player.main_job_level >= 77 and prestoCooldown < 1 then --and under3FMs then
+        if prestoRecast == 0 then
             cast_delay(1.1)
             send_command('input /ja "Presto" <me>')
         end
@@ -404,6 +437,8 @@ end
 function extendedJobMidcast(spell, action, spellMap, eventArgs)
 
 end
+
+
 
 -------------------------------------------------------------------------------------------------------------------
 -- Special buff/debuff handling
@@ -430,10 +465,79 @@ function extendedTWM(cmdParams, eventArgs)
 end
 
 function extendedJobSelfCommand(cmdParams, eventArgs)	
-	-- spike health for omen healing objective
-	if cmdParams[1]:lower() == 'spikehealth' then
+	--[[ Spike health for Omen healing objective ]]--
+	if cmdParams[1] == 'spikehealth' then
 		equip(sets.naked)
 	end
+
+    --[[ Cycle different Dancer ability groups ]]--
+    if cmdParams[1] == 'cycleStep' then
+        stepMode.index = stepMode.index + 1
+        if stepMode.index > #stepMode then
+            stepMode.index = 0
+        end
+        windower.add_to_chat(122,'[Step: '..stepMode[stepMode.index].step..' -- '..stepMode[stepMode.index].msg..']')
+    end
+    if cmdParams[1] == 'useStep' then
+        windower.send_command(stepMode[stepMode.index].command)
+    end
+
+    if cmdParams[1] == 'cycleFlourish1' then
+        flourish1Mode.index = flourish1Mode.index + 1
+        if flourish1Mode.index > #flourish1Mode then
+            flourish1Mode.index = 0
+        end
+        windower.add_to_chat(122,'[Flourish 1: '..flourish1Mode[flourish1Mode.index].flourish..' -- '..flourish1Mode[flourish1Mode.index].msg..']')
+    end
+    if cmdParams[1] == 'useFlourish1' then
+        windower.send_command(flourish1Mode[flourish1Mode.index].command)
+    end
+
+    if cmdParams[1] == 'cycleFlourish2' then
+        flourish2Mode.index = flourish2Mode.index + 1
+        if flourish2Mode.index > #flourish2Mode then
+            flourish2Mode.index = 0
+        end
+        windower.add_to_chat(122,'[Flourish 2: '..flourish2Mode[flourish2Mode.index].flourish..' -- '..flourish2Mode[flourish2Mode.index].msg..']')
+    end
+    if cmdParams[1] == 'useFlourish2' then
+        windower.send_command(flourish2Mode[flourish2Mode.index].command)
+    end
+
+    if cmdParams[1] == 'cycleFlourish3' then
+        flourish3Mode.index = flourish3Mode.index + 1
+        if flourish3Mode.index > #flourish3Mode then
+            flourish3Mode.index = 0
+        end
+        windower.add_to_chat(122,'[Flourish 3: '..flourish3Mode[flourish3Mode.index].flourish..' -- '..flourish3Mode[flourish3Mode.index].msg..']')
+    end
+    if cmdParams[1] == 'useFlourish3' then
+        windower.send_command(flourish3Mode[flourish3Mode.index].command)
+    end
+
+    if cmdParams[1] == 'cycleSamba' then
+        sambaMode.index = sambaMode.index + 1
+        if sambaMode.index > #sambaMode then
+            sambaMode.index = 0
+        end
+        windower.add_to_chat(122,'[Samba: '..sambaMode[sambaMode.index].samba..' -- '..sambaMode[sambaMode.index].msg..']')
+    end
+    if cmdParams[1] == 'useSamba' then
+        windower.send_command(sambaMode[sambaMode.index].command)
+    end
+
+    if cmdParams[1] == 'cycleDance' then
+        danceMode.index = danceMode.index + 1
+        if danceMode.index > #danceMode then
+            danceMode.index = 0
+        end
+        windower.add_to_chat(122,'[Dance: '..danceMode[danceMode.index].dance..' -- '..danceMode[danceMode.index].msg..']')
+    end
+    if cmdParams[1] == 'useDance' then
+        windower.send_command(danceMode[danceMode.index].command)
+    end
+
+    modeHud('update')
 end
 
 function extendedEvalState_equipGear()
@@ -441,10 +545,10 @@ function extendedEvalState_equipGear()
 end
 
 function extendedModeHud(hudText)
-	-- job specific location override?
-	modeHud_xPos = 550
-	modeHud_yPos = 0
-	
+    hudText:append(white..'Step[5]: '..stepMode[stepMode.index].color..stepMode[stepMode.index].step..white)
+    hudText:append(white..'Flourishes[6,7,8]: '..'1: '..flourish1Mode[flourish1Mode.index].color..flourish1Mode[flourish1Mode.index].flourish..white..' | 2: '..flourish2Mode[flourish2Mode.index].color..flourish2Mode[flourish2Mode.index].flourish..white.. ' | 3: '..flourish3Mode[flourish3Mode.index].color..flourish3Mode[flourish3Mode.index].flourish..white)
+    hudText:append(white..'Samba[9]: '..sambaMode[sambaMode.index].color..sambaMode[sambaMode.index].samba..white)
+    hudText:append(white..'Dance[0]: '..danceMode[danceMode.index].color..danceMode[danceMode.index].dance..white)
 	return hudText
 end
 
@@ -477,15 +581,62 @@ function autoActions()
     local flourish2Recast = abilRecast[222]  
     local flourish3Recast = abilRecast[226]  
     local prestoRecast = abilRecast[236]
+    local tranceRecast = abilRecast[0]
+    local grandPasRecast = abilRecast[254]
     local fm = currentFM()
     local me = windower.ffxi.get_player()    
     
-    -- Autofite only (while engaged)
-    --if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving and me.status == 1 then
-    if not actionInProgress and not moving and me.status == 1 then
-        local enemy = windower.ffxi.get_mob_by_target('t')		
+    -- Autobuff (Saber Dance, Samba, Presto, Step, Flourish)
+    if (auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
+        local enemy = windower.ffxi.get_mob_by_target('t')
+        
+        -- Use currently selected Dance
+        if not buffactive['Saber Dance'] and not buffactive['Fan Dance'] then
+            add_to_chat(122, '['..danceMode[danceMode.index].dance..']')
+            send_command(danceMode[danceMode.index].command)
+            return
+        end
+                
+        -- Use currently selected Samba (if Fan Dance isn't in effect)
+        if (((player.tp >= 350 and player.tp < 1000) or player.tp>=1350) and not buffactive['Haste Samba'] and not buffactive['Fan Dance']) then                
+            add_to_chat(122, '['..sambaMode[sambaMode.index].samba..']')
+            send_command(sambaMode[sambaMode.index].command)
+            return
+        end
 
-        if player.tp >= 200 and curingWaltzRecast == 0 then
+        -- Auto Presto when mob has high HP
+        if (enemy.hpp >= 85 and prestoRecast == 0) then
+            add_to_chat(122, '[Presto]')
+            send_command('/presto')
+            return
+        end
+
+        -- Auto Step when mob has high HP OR just use it if Presto is on
+        if (((player.tp >= 100 and player.tp < 1000) or player.tp>=1100) and (enemy.hpp >= 80 or buffactive['Presto']) and stepRecast == 0) then
+            add_to_chat(122, '['..stepMode[stepMode.index].step..']')
+            send_command(stepMode[stepMode.index].command)
+            return
+        end
+
+        -- Auto Flourish #2 (Offensive)
+        if (currentFM() > 2 and flourish2Recast == 0 and player.tp < 1000) then
+            add_to_chat(122, '['..flourish2Mode[flourish2Mode.index].flourish..']')
+            send_command(flourish2Mode[flourish2Mode.index].command)
+            return
+        end     
+        
+        -- Auto Flourish #3 (when Flourish 2 isn't near ready)
+        if (currentFM() > 2 and flourish2Recast >= 10 and flourish3Recast == 0) then
+            add_to_chat(122, '['..flourish3Mode[flourish3Mode.index].flourish..']')
+            send_command(flourish3Mode[flourish3Mode.index].command)
+            return
+        end     
+    end
+
+    -- Autofite (Cure & 1-hr)
+    if (auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
+        -- Auto Cure (if Saber Dance isn't in effect)
+        if (player.tp >= 200 and curingWaltzRecast == 0 and not buffactive['Saber Dance']) then
             for _, data in pairs(windower.ffxi.get_party()) do
                 if type(data) == 'table' and data.mob then
                     local pInfo = data.mob
@@ -497,45 +648,23 @@ function autoActions()
                 end
             end
         end
-
-        if player.tp >= 350 and not buffactive['Haste Samba'] then
-            add_to_chat(122, '[Haste Samba]')
-            send_command('/haste samba')
+        
+        -- Auto 1-hr
+        if tranceRecast == 0 then
+            add_to_chat(122, '[~ Trance ~]')
+            send_command('/trance')
+            return
+        end
+        if grandPasRecast == 0 then
+            add_to_chat(122, '[~ Grand Pas ~]')
+            send_command('/grandpas')
             return
         end
 
-        -- Automatically use Presto if mob HP still high
-        if(enemy.hpp >= 90 and prestoRecast == 0) then
-            add_to_chat(122, '[Presto]')
-            send_command('/presto')
-            return
-        end
-        -- Automatically use x Step when >y% HP
-        if(player.tp >= 100 and enemy.hpp >= 80 and stepRecast == 0) then
-            add_to_chat(122, '[Box Step]')
-            send_command('/boxstep')
-            return
-        end
-        -- Flourishes:  Prioritize Climactic Flourish, if it's not up, use others
         --[[
-        if(currentFM() > 2 and flourish3Recast == 0) then
-            add_to_chat(122, '[Climactic Flourish]')
-            send_command('/climacticflourish')
+        if not buffactive['Food'] then
+            send_command('input /item "Grape Daifuku" <me>')
             return
-        end
-        ]]--
-        -- Use Building Flourish when 3+ moves
-        --[[if (currentFM() > 2 and flourish2Recast == 0) then
-            add_to_chat(122, '[Building Flourish]')
-            send_command('/buildingflourish')
-            return
-        end       
-        ]]--
-        -- Use Reverse Flourish otherwise (when TP low, if high then double WS)
-        if (currentFM() > 2 and flourish2Recast == 0 and player.tp < 1000) then
-            add_to_chat(122, '[Reverse Flourish]')
-            send_command('/reverseflourish')
-            return
-        end
+        end]]--
     end
 end

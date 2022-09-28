@@ -1,6 +1,3 @@
--------------------------------------------------------------------------------------------------------------------
--- Handle imports
--------------------------------------------------------------------------------------------------------------------
 include('sharedFunctions.lua')
 function get_sets()
     mote_include_version = 2
@@ -16,6 +13,10 @@ function init_gear_sets()
 	gear.magicAccCape = {name="Intarabus's Cape", augments={'CHR+20',}}
     gear.savageCape = {name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
 
+    gear.ghorn = {name="Gjallarhorn"}
+    gear.harp = {name="Blurred Harp +1"}
+    gear.linos = {name="Linos"}
+
 	------------------------------------------------------------------------------------------------
     ---------------------------------------- Precast Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
@@ -30,12 +31,12 @@ function init_gear_sets()
         --feet="Volte Gaiters", --6
         --neck="Orunmila's Torque", --5
         --ear1="Loquac. Earring", --2
-        --ear2="Etiolation Earring", --1
+        ear2="Etiolation Earring", --1
         --ring1="Weather. Ring +1", --5
         --ring2="Kishar Ring", --4
         --back=gear.BRD_Song_Cape, --10
         --waist="Embla Sash", --5
-        }
+    }
 
 	--sets.precast.FC['Enhancing Magic'] = sets.precast.FC
     --sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash"})
@@ -50,17 +51,18 @@ function init_gear_sets()
         feet="Vanya Clogs",
         ring1="Stikini Ring",
         ring2="Stikini Ring",
-        })
+    })
 
     sets.precast.FC.BardSong = set_combine(sets.precast.FC, {
         --head="Fili Calot +1", --14
         --body="Brioso Justau. +3", --15
-        --feet="Bihu Slippers +3", --9
+        feet="Brioso Slippers +3", 
         --neck="Loricate Torque +1",
         --ear1="Odnowa Earring +1",
         --ring2="Defending Ring",
         neck="Mnbw. Whistle +1",
-        })
+        --range="Blurred Harp +1",
+    })
 
     sets.precast.FC.SongPlaceholder = set_combine(sets.precast.FC.BardSong, {range=info.ExtraSongInstrument})
 
@@ -68,7 +70,7 @@ function init_gear_sets()
 
     -- Precast sets to enhance JAs
 
-    sets.precast.JA.Nightingale = {} --{feet="Bihu Slippers +3"}
+    sets.precast.JA.Nightingale = {feet="Brioso Slippers +3"} --{feet="Bihu Slippers +3"}
     sets.precast.JA.Troubadour = {} --{body="Bihu Jstcorps. +3"}
     sets.precast.JA['Soul Voice'] = {} --{legs="Bihu Cannions +3"}
 
@@ -91,7 +93,7 @@ function init_gear_sets()
         --ear2="Magnetic Earring", --8
         --ring2="Evanescence Ring", --5
         --waist="Rumination Sash", --10
-        }
+    }
 
     sets.midcast.Utsusemi = sets.midcast.SpellInterrupt
 
@@ -136,7 +138,7 @@ function init_gear_sets()
         --body="Fili Hongreline +1",
         --hands="Fili Manchettes +1",
         legs="Inyanga Shalwar +2",
-        --feet="Brioso Slippers +3",
+        feet="Brioso Slippers +3",
         neck="Mnbw. Whistle +1",
         --ear1="Odnowa Earring +1",
         --ear2="Etiolation Earring",
@@ -157,7 +159,7 @@ function init_gear_sets()
         --body="Brioso Justau. +3",
         --hands="Brioso Cuffs +3",
         --legs="Brioso Cannions +3",
-        --feet="Brioso Slippers +3",
+        feet="Brioso Slippers +3",
         neck="Mnbw. Whistle +1",
         --ear1="Digni. Earring",
         --ear2="Regal Earring",
@@ -198,14 +200,14 @@ function init_gear_sets()
         ring2="Stikini Ring", --ring2="Haoma's Ring",
         --back="Solemnity Cape", --7
         --waist="Bishop's Sash",
-        }
+    }
 
     sets.midcast.Curaga = set_combine(sets.midcast.Cure, {
         --neck="Nuna Gorget +1",
         --ring1={name="Stikini Ring +1", bag="wardrobe3"},
         --ring2="Metamor. Ring +1",
         --waist="Luminary Sash",
-        })
+    })
 
     sets.midcast.StatusRemoval = {
         --head="Vanya Hood",
@@ -218,14 +220,14 @@ function init_gear_sets()
         --ring2="Haoma's Ring",
         --back=gear.BRD_Song_Cape,
         --waist="Bishop's Sash",
-        }
+    }
 
     sets.midcast.Cursna = set_combine(sets.midcast.StatusRemoval, {
         --hands="Hieros Mittens",
         --neck="Debilis Medallion",
         --ear1="Beatific Earring",
         --back="Oretan. Cape +1",
-        })
+    })
 
     sets.midcast['Enhancing Magic'] = {
         --main="Carnwenhan",
@@ -244,7 +246,7 @@ function init_gear_sets()
         --ring2={name="Stikini Ring +1", bag="wardrobe4"},
         --back="Fi Follet Cape +1",
         --waist="Embla Sash",
-        }
+    }
 
     sets.midcast.Regen = set_combine(sets.midcast['Enhancing Magic'], {head="Inyanga Tiara +2"})
     sets.midcast.Haste = sets.midcast['Enhancing Magic']
@@ -263,8 +265,8 @@ function init_gear_sets()
         --body="Cohort Cloak +1",
         --hands="Brioso Cuffs +3",
         --legs="Brioso Cannions +3",
-        --feet="Brioso Slippers +3",
-        --neck="Mnbw. Whistle +1",
+        feet="Brioso Slippers +3",
+        neck="Mnbw. Whistle +1",
         --ear1="Digni. Earring",
         --ear2="Vor Earring",
 		ring1="Stikini Ring",
@@ -395,16 +397,16 @@ function init_gear_sets()
     ------------------------------------------------------------------------------------------------
 
     sets.engaged = {
-        --range=gear.Linos_TP,
+        --range="Linos", --range=gear.Linos_TP,
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
         --legs="Ayanmo Cosciales +2", --legs="Zoar Subligar +1",
         --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
         neck="Bard's Charm",     
-		ear1="Steelflash Earring", --ear1="Cessance Earring",
+		ear1="Cessance Earring",
 		ear2="Tripudio Earring", --ear2="Telos Earring",
-		ring1="Apate Ring", --ring1={name="Chirich Ring +1", bag="wardrobe3"},
+		ring1="Chirich Ring +1",
 		ring2="Dhanurveda Ring", --ring2={name="Chirich Ring +1", bag="wardrobe4"},
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
@@ -413,16 +415,16 @@ function init_gear_sets()
     }
 
     sets.engaged.DW = {
-        --range=gear.Linos_TP,
+        --range="Linos", --range=gear.Linos_TP,
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
         --legs="Ayanmo Cosciales +2", --legs="Zoar Subligar +1",
         --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
         neck="Bard's Charm",     
-        ear1="Steelflash Earring", --ear1="Cessance Earring",
+        ear1="Cessance Earring",
         ear2="Tripudio Earring", --ear2="Telos Earring",
-        ring1="Apate Ring", --ring1={name="Chirich Ring +1", bag="wardrobe3"},
+        ring1="Chirich Ring +1",
         ring2="Dhanurveda Ring", --ring2={name="Chirich Ring +1", bag="wardrobe4"},
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
@@ -464,29 +466,23 @@ function init_gear_sets()
     sets.Naegling = {} --{main="Naegling", sub="Centovente"}
 
     sets.DefaultShield = {} --{sub="Genmei Shield"}
-
 end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Setup tables that control our various 'modes'
 -------------------------------------------------------------------------------------------------------------------
 function init_modetables()
-	--Setup gearMode
-	--TODO: replace these with the modes you want. Give name, set desired idle/engaged sets when in that mode.
 	gearMode = {
 		["index"] = 0,
 		[0] = {name="DPS", idle=set_combine(sets.engaged, sets.idle), engaged=sets.engaged},
 	}
-	
-	--Setup weaponMode
-	--TODO: replace these with the weapon modes you want.
-	weaponMode = {
+
+    weaponMode = {
 		["index"] = 0,
-		[0] = {name="Naegling", set={main="Naegling", sub="Fusetto +2"}},
-		[1] = {name="Kali", set={main="Kali", sub=""}},
+		[0] = {name="Fusetto", set={main="Naegling", sub="Fusetto +2"}},
+        [1] = {name="Kali", set={main="Naegling", sub="Kali"}},        
 	}
 
-	--Setup autoBuff
 	auto = {
 		["buff"] = {
 			["index"] = 0,
@@ -497,14 +493,18 @@ function init_modetables()
 			["index"] = 0,
 			[0] = "Off",
 			[1] = "On",
-		}		
+		},		
+        ["sing"] = {
+			["index"] = 0,
+			[0] = "Off",
+			[1] = "On",
+		},	
 	}	
 
-	--sets.idle = gearMode[gearMode.index].idle
+	sets.idle = gearMode[gearMode.index].idle
 	sets.engaged = gearMode[gearMode.index].engaged
 	sets.weapons = weaponMode[weaponMode.index].set
-	
-	evalState_equipGear()
+	modeHud('update')
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -516,7 +516,8 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- User setup: Keybinds, set macro page, stylelock, etc
 -------------------------------------------------------------------------------------------------------------------
-function extendedUser_Setup()
+function extendedUserSetup()
+    send_command('bind @q gs c cycleSing')
 	set_macro_page(1, 2)
 end
 
@@ -532,6 +533,39 @@ function job_buff_change(buff, active)
 end
 
 -------------------------------------------------------------------------------------------------------------------
+-- Action/Cast Phase Extensions
+-------------------------------------------------------------------------------------------------------------------
+function extendedJobPrecast(spell, action, spellMap, eventArgs)	
+    if spell.type == 'BardSong' then
+        if buffactive['Clarion Call'] then -- Buff ID: 499
+            equip({ranged="Blurred Harp +1"})
+        else
+            equip({ranged="Gjallarhorn"})
+        end
+    end
+end
+
+function extendedJobMidcast(spell, action, spellMap, eventArgs)	
+    if spell.type == 'BardSong' then
+        if buffactive['Clarion Call'] then -- Buff ID: 499
+            equip({ranged="Blurred Harp +1"})
+        else
+            equip({ranged="Gjallarhorn"})
+        end
+    end
+end
+
+function extendedJobPostMidcast(spell, action, spellMap, eventArgs)	
+    if spell.type == 'BardSong' then
+        if buffactive['Clarion Call'] then -- Buff ID: 499
+            equip({ranged="Blurred Harp +1"})
+        else
+            equip({ranged="Gjallarhorn"})
+        end
+    end
+end
+
+-------------------------------------------------------------------------------------------------------------------
 -- Self Command Handling
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobSelfCommand(cmdParams, eventArgs)
@@ -539,18 +573,115 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 	if cmdParams[1]:lower() == 'spikehealth' then
 		equip(sets.naked)
 	end
+
+    --[[ Cycle Auto Sing ]]--
+    if cmdParams[1] == 'cycleSing' then
+        auto.sing.index = auto.sing.index + 1
+        if auto.sing.index > #auto.sing then
+            auto.sing.index = 0
+        end
+        windower.add_to_chat(122,'[Sing: '..auto.sing[auto.sing.index]..']')
+    end
+
+    modeHud('update')
+end
+
+function extendedModeHud(hudText)
+    skyblue = '\\cs(135,206,250)'
+    red = '\\cs(255,0,0)'
+	green = '\\cs(0,255,0)'
+    textColor = red
+    if auto.sing[auto.sing.index] == 'On' then
+        textColor = green
+    end
+
+    hudText:append(skyblue..'Sing: '..textColor..auto.sing[auto.sing.index]..white)
+	return hudText
 end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction function: called ~once per second
 -------------------------------------------------------------------------------------------------------------------
+song1 = "Valor Minuet V"
+song2 = "Valor Minuet IV"
+song3 = "Victory March"
+song4 = "Valor Minuet III"
+songTimer = os.time()
+baseSongDuration = 180
+baseSongInterval = 10
+
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()
     local curingWaltzRecast = abilRecast[186]
+    local svRecast = abilRecast[0]
+    local clarionRecast = abilRecast[254]
+    local nightingaleRecast = abilRecast[109]
+    local troubadourRecast = abilRecast[110]
+    local marcatoRecast = abilRecast[48]
     local me = windower.ffxi.get_player()  
 
-    -- Autofite emergency heals
-    if auto.fite[auto.fite.index] == 'On'and not actionInProgress and not movingthen and me.status == 1 then
+    if auto.sing[auto.sing.index] == 'On' then
+        local songTimeRemaining = songTimer - os.time()
+
+        -- Plan A: If SV & Clarion are up, re-sing songs with Nitro/Marcato, short interval (1.5?) between, and no concern for current song duration
+        if clarionRecast == 0 and svRecast == 0 then
+            add_to_chat(122, '[~ Soul Voice ~]')
+            send_command('input //af off')
+            send_command('input /ja Nightingale <me>')
+		    send_command:schedule(0.5, 'input /ja Troubadour <me>')
+		    send_command:schedule(1.0, 'input /ja Marcato <me>')
+            send_command:schedule(1.5, 'input /ja "Soul Voice" <me>')
+            send_command:schedule(2.0, 'input /ja "Clarion Call" <me>')
+            send_command:schedule(2.5, 'input /ma "'..song1..'" <me>')
+            send_command:schedule(5.0, 'input /ma "'..song2..'" <me>')
+            send_command:schedule(7.5, 'input /ma "'..song3..'" <me>')
+            send_command:schedule(9.0, 'input /ma "'..song4..'" <me>')            
+            send_command:schedule(10.5, 'input //af on')
+            songTimer = os.time() + (baseSongDuration * 2)
+            return
+        -- Plan B: Use Nitro/Marcato if SV/Clarion are > 10 min away, re-sing songs when nearest is < 10 secs remaining
+        elseif clarionRecast > 600 and svRecast > 600 and songTimeRemaining < 10 and nightingaleRecast == 0 and troubadourRecast == 0 and marcatoRecast == 0 then
+            add_to_chat(122, '[~ Nitro ~]')
+            send_command('input //af off')
+            send_command('input /ja Nightingale <me>')
+		    send_command:schedule(0.5, 'input /ja Troubadour <me>')
+		    send_command:schedule(1.0, 'input /ja Marcato <me>')
+            send_command:schedule(1.5, 'input /ma "'..song1..'" <me>')
+            send_command:schedule(1.5+baseSongInterval, 'input /ma "'..song2..'" <me>')
+            send_command:schedule(1.5+baseSongInterval*2, 'input /ma "'..song3..'" <me>')
+            send_command:schedule(1.5+baseSongInterval*3, 'input /ma "'..song4..'" <me>')
+            send_command:schedule(1.5+baseSongInterval*4, 'input //af on')
+            songTimer = os.time() + (baseSongDuration * 2)
+            return
+        -- Plan C: Re-sing songs normally when nearest is < 10 secs remaining
+        elseif songTimeRemaining < 10 then
+            add_to_chat(122, '[~ Basic Re-sing ~]')            
+            send_command('input //af off')            
+            send_command('input /ma "'..song1..'" <me>')
+            send_command:schedule(baseSongInterval, 'input /ma "'..song2..'" <me>')
+            send_command:schedule(baseSongInterval*2, 'input /ma "'..song3..'" <me>')
+            send_command:schedule(baseSongInterval*3, 'input /ma "'..song4..'" <me>')
+            send_command:schedule(baseSongInterval*4, 'input //af on')
+            songTimer = os.time() + baseSongDuration
+            return
+        end
+
+        add_to_chat(122, '[Current Time: '..os.time()..' | Song Timer: '..songTimer..' | Song Time Remaining: '..songTimeRemaining..']')
+    end
+
+    --[[ Haste Samba handing when auto.buff is on ]]--
+    --[[
+	if auto.buff[auto.buff.index] == 'On' and player.sub_job == 'DNC' then
+		if player.tp >= 350 and not buffactive['Haste Samba'] then
+			add_to_chat(122, '[Haste Samba]')
+			send_command('/haste samba')
+			return
+		end
+	end
+    ]]--
+
+    --[[ Emergency /DNC heals when auto.fite is on ]]
+    if auto.fite[auto.fite.index] == 'On'and not actionInProgress and not movingthen and me.status == 1 and me.sub_job == 'DNC' then
         local enemy = windower.ffxi.get_mob_by_target('t')		
         if player.tp >= 200 and curingWaltzRecast == 0 then
             for _, data in pairs(windower.ffxi.get_party()) do
@@ -564,5 +695,5 @@ function autoActions()
                 end
             end
         end
-    end    
+    end   
 end
