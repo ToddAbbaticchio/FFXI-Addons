@@ -326,14 +326,16 @@ end)
 
 
 windower.register_event('chat message', function(message, player, mode, is_gm)
-    local whitelist = "Risca,Walshie,Shinyhelmet,Lornkeit,Iyenga,Mikanora"
+    local whitelist = "Add,Names,Here,Like,This"
+    local secret = "spag"
+    
     if mode == 3 and whitelist:contains(player) then
         local words = {}
         for word in message:gmatch("%w+") do
             table.insert(words, word:lower())
         end
         
-        if not words[1] == 'spag' then
+        if not words[1] == secret then
             return
         end
 

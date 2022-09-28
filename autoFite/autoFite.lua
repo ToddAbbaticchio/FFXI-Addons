@@ -139,7 +139,7 @@ function initializeSessionVars(job, ...)
         autoBuffs = {},
         ws = "Savage Blade",
         targetTp = 1000,
-        pullCommand = '/ma "Diaga" '
+        pullCommand = '/ma "Dia III" '
     }
     -----------------------------------------------------------------------------------------------------------
     --  END USER SETUP  ---------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ function doStuff(mode, currStatus)
                 end
 
                 -- If target moves out of range
-                if monster.distance >= jobVars.meleeDistance then
+                if windower.ffxi.get_mob_by_target('t').distance >= jobVars.meleeDistance then
                     writeLog('Engaged, but enemy too far away! Pulling!', 3)
                     tryPull(monster)
                 end
