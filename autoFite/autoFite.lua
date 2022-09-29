@@ -67,6 +67,7 @@ function initializeSessionVars(job, ...)
         ws = "Resolution",
         targetTp = 1000,
         pullCommand = '/ma "Flash" ',
+        meleeDistance = 16,
     }
 
     vars.SCH = {

@@ -163,6 +163,15 @@ function findTargetV2()
     local player = windower.ffxi.get_player()
     if detectedPullAction == nil then detectedPullAction = false end
 
+    if player.in_combat and not player.status == engaged then
+        if windower.ffxi.get_mob_by_target('bt') ~= nil then
+            writeLog('Detected state: InCombat but not Engaged. Engaging battle target', 3)
+            windower.chat.input('/attack <bt>')
+        else
+            writeLog('Detected state: InCombat, not Engaged, no battle target. WTF are we in combat with?', 3)
+        end
+    end
+
     -- the actual pullin' bits
     if not player.in_combat and not detectedPullAction then
         -- if <bt> isn't dead, grab it
@@ -326,13 +335,13 @@ end)
 
 
 windower.register_event('chat message', function(message, player, mode, is_gm)
-    local whitelist = "Add,Names,Here,Like,This"
+    local whitelist = "Risca,Walshie,Walshette,Shinyhelmet,Lornkeit,Iyenga,Mikanora,Hisuwei"
     local secret = "spag"
     
     if mode == 3 and whitelist:contains(player) then
         local words = {}
         for word in message:gmatch("%w+") do
-            table.insert(words, word:lower())
+            table.insert(words, word)
         end
         
         if not words[1] == secret then
@@ -340,7 +349,7 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
         end
 
         -- invites - example: /t Risca spag invite
-        if words[2] == 'invite' then
+        if words[2]:lower() == 'invite' then
             if windower.ffxi.get_party().p5 then
                 windower.send_command('input /t '..player..' Party is full bro!')
                 return
@@ -352,14 +361,14 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
         end
         
         -- leader request - example: /t Risca spag leaderme
-        if words[2] == 'leaderme' then
+        if words[2]:lower() == 'leaderme' then
             windower.send_command('input /pcmd leader '..player)
             windower.send_command:schedule(.5, 'input /t '..player..' You are the captain now.')
             return
         end
         
         -- dismiss trusts - example: /t Risca spag riptrusts
-        if words[2] == 'riptrusts' then
+        if words[2]:lower() == 'riptrusts' then
             if active then
                 windower.send_command('input /t '..player..' Nah - not while Im pulling.')
             else
@@ -370,7 +379,7 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
         end
 
         -- stopaf example: /t Risca spag stopaf
-        if words[2] == 'stopaf' then
+        if words[2]:lower() == 'stopaf' then
             if active then
                 windower.send_command('input //af stop')
                 windower.send_command:schedule(.5, 'input /t '..player..' Stopped!')
@@ -381,19 +390,18 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
         end
 
         -- startaf example: /t Risca spag startaf start Locus || /t Risca spag startaf assist Walshette
-        if words[2] == 'startaf' then
-            if (words[3] == 'start' or words[3] == 'assist') and words[4] ~= null then
+        if words[2]:lower() == 'startaf' then
+            if (words[3]:lower() == 'start' or words[3]:lower() == 'assist') and words[4] ~= null then
                 if active then
                     windower.send_command('input //af stop')
-                    windower.send_command:schedule(.5, 'input /t '..player..' Stopped!')
                     coroutine.sleep(1)
                 end
             
                 windower.send_command('input //af '..words[3]..' '..words[4])
-                windower.send_command:schedule(.5, 'input /t '..player..' Input: //af '..words[3]..' '..words[4])
+                windower.send_command:schedule(1, 'input /t '..player..' Input: //af '..words[3]..' '..words[4])
             else
                 windower.send_command('input /t '..player..' Syntax looks bad. Try something like:')
-                windower.send_command:scheudule(.5, 'input /t '..player..' "/t Risca spag start start Locus" OR "/t Risca spag start assist Walshette"')
+                windower.send_command:scheudule(1, 'input /t '..player..' "/t Risca spag start start Locus" OR "/t Risca spag start assist Walshette"')
             end
             return
         end

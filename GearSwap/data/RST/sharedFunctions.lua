@@ -355,7 +355,7 @@ function modeHud(action)
 		-- hud doesn't exist yet.  create it!
 		if modeHudWindow == nil then
 			hud = require('texts')
-			modeHud_xPos = 0
+			modeHud_xPos = 1250
 			modeHud_yPos = 0
 			modeHudWindow = texts.new("")	
 		end

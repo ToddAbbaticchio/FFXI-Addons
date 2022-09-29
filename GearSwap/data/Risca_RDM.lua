@@ -101,11 +101,11 @@ function init_gear_sets()
 		hands="Aya. Manopolas +2",
 		legs="Malignance Tights",
 		feet="Malignance Boots",
-		waist="Penitent's Rope",
+		waist="Sailfi Belt +1",
 		ear1="Suppanomimi",
-		ear2="Friomisi Earring",
-		ring1="Shiva Ring +1",
-		ring2="Shiva Ring +1",
+		ear2="Eabani Earring",
+		ring1="Petrov Ring",
+		ring2="Rajas Ring",
 		back="Ghostfyre Cape"
 	}
 
@@ -125,8 +125,31 @@ function init_gear_sets()
 		ring2="Stikini Ring +1",     --08
 		back="Merciful Cape",
 	}
+	sets.magic.enfeebSkill = {
+		head="Befouled Crown",
+		neck="Incanter's Torque",
+		legs='Chironic Hose',
+		ring1="Stikini Ring +1",
+		ring2="Stikini Ring +1",
+	}
 	sets.magic.emDuration = {body='Telchine Chasuble', hands='Telchine Gloves', legs='Telchine Braconi', feet='Telchine Pigaches', waist='Embla Sash', ear1='Lethargy Earring', back='Ghostfyre Cape'}
-	sets.magic.enfeebSkill = {head="Befouled Crown", neck="Incanter's Torque", ring1="Stikini Ring +1", ring2="Stikini Ring +1",}
+	
+	sets.magic.acc = {
+		ammo="Ombre Tathlum +1",
+		head="Malignance Chapeau",
+		body="Malignance Tabard",
+		hands="Malignance Gloves",
+		legs="Malignance Tights",
+		feet="Malignance Boots",
+		neck="Incanter's Torque",
+		waist="Eschan Stone",
+		ear1="Lethargy Earring",
+		ear2="Malignance Earring",
+		ring1="Stikini Ring +1",
+		ring2="Stikini Ring +1",
+		back="Ghostfyre Cape",
+	}
+	
 	sets.magic.fastCast = {
 		ammo = "Impatiens",
 		head = "Merlinic Hood",
@@ -140,9 +163,10 @@ function init_gear_sets()
 		right_ear = "Loquac. Earring",
 		left_ring = "Kishar Ring",
 		right_ring = "Jhakri Ring",
-		back = "Swith Cape",}
+		back = "Swith Cape",
+	}
+
 	sets.magic.nuke = {}
-	sets.magic.acc = {}
 
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
@@ -163,6 +187,7 @@ function init_gear_sets()
 
 	sets.precast.FC = sets.magic.fastCast
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.magic.fastCast, {waist="Siegel Sash"})
+	sets.midcast['Enfeebling Magic'] = set_combine(sets.magic.acc, sets.magic.enfeebSkill)
 	sets.midcast['Enhancing Magic'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration)
 	sets.midcast['Temper'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
     sets.midcast['Phalanx'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration, {body="Taeon Tabard", hands="Taeon Gloves", feet="Taeon Boots"})
@@ -326,11 +351,8 @@ function autoActions()
 			maintainBuff('Haste', '/ma "Haste II" <me>')
 			maintainBuff('Refresh', '/ma "Refresh III" <me>')
 			maintainBuff('Phalanx', '/ma "Phalanx" <me>')
-			maintainBuff(119, '/ma "Gain STR" <me>')
+			maintainBuff('Str Boost', '/ma "Gain STR" <me>')
 			
-			partyLowHP(40, '/ma "Cure IV"')
-
-
 			-- garbage buffs for naegling
 			maintainBuff('Enaero', '/ma "Enaero" <me>')
 			maintainBuff('Baraero', '/ma "Baraero" <me>')
