@@ -580,7 +580,7 @@ function autoActions()
 				maintainBuff('Regen', '/ma "Regen IV" <me>')
 			end
 
-			if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) then
+			if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) and windower.ffxi.get_ability_recasts()[242] == 0 then
 				send_command('input /ja "Vivacious Pulse" <me>')
 			end
 		end
