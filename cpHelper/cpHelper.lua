@@ -5,6 +5,8 @@ _addon.commands = {'cphelper','ch'}
 
 packets = require('packets')
 
+nearNPC = false
+
 debug = false
 chatColor = 050
 refPacket = {}
@@ -110,6 +112,7 @@ function checkState()
 
 			if distance > 36 then
 				writeLog(true, chatColor, 'Too far from the target: '..npcName..'!!!')
+				nearNPC = false
 				return
 			end
 
@@ -144,6 +147,9 @@ windower.register_event('addon command', function(...)
 	if arg[2] ~= nil then
 		quantity = arg[2]
 	end
+	if arg[3] ~= nil then
+		nearNPC = true
+	end
 
 	if action:lower() == 'buy' then
 		for i = quantity,1,-1 do
@@ -156,6 +162,23 @@ windower.register_event('addon command', function(...)
 		end
 		writeLog(true, chatColor, '-- CPHELPER VICTORIOUS!!! --')
 		windower.send_command('input //sellnpc mrc.cpt. scythe')
+		
+		--this works near Baehu-Faehu as long as windy owns Sarutabaruta  *highly likely* run away when done 
+		if nearNPC == true then
+			windower.send_command('input /targetnpc')
+		
+			coroutine.sleep(3)
+			pressKey('enter',0.1)
+			coroutine.sleep(3)
+			for i = 4, 1, -1 do
+				pressKey('escape', 0.1)
+			end
+			coroutine.sleep(3)
+		
+			--lets go again....   
+			windower.send_command('input //ch buy ' ..arg[2].. ' '..arg[3])
+		end
+		
 	end
 
 
