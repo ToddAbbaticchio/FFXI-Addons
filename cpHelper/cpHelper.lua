@@ -266,22 +266,20 @@ windower.register_event('incoming chunk', function(id, data, amount, flag)
 
         for field in check[id]:it() do
             local msg = '%s: %s (%s)':format(player_name, field, comma_value(packet[field]))
-			currentCurrencyValue = packet[field]
+		currentCurrencyValue = packet[field]
 
-            writeLog(true, chatColor, msg)
-			writeLog(true, chatColor, currentCurrencyValue)
+            	writeLog(true, chatColor, msg)
 			
-			--hard coded for merc captain scythe amount.    will change later if needed 
-			if currentCurrencyValue > (repeatamount * 4000) then 
-				windower.send_command('input //ch buy ' ..repeatamount.. ' true')
-			else 
-				nearNPC = false
-				writeLog(true, chatColor, '--You are done sir, good day.--')
-				writeLog(true, chatColor, '--I SAID GOOD DAY SIR!-- ')
-			end
 			
+		--hard coded for merc captain scythe amount.    will change later if needed 
+		if currentCurrencyValue > (repeatamount * 4000) then 
+			windower.send_command('input //ch buy ' ..repeatamount.. ' true')
+		else 
+			nearNPC = false
+			writeLog(true, chatColor, '--You are done sir, good day.--')
+			writeLog(true, chatColor, '--I SAID GOOD DAY SIR!-- ')
+		end	
         end
-
         check[id] = nil
     end
 end)
