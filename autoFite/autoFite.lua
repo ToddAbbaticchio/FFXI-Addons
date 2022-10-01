@@ -131,7 +131,7 @@ function autoFite()
     end
 
     -- check buffs regardless of mode (but not if we're stopped)
-    if windower.ffxi.get_player().status == engaged and active == true then
+    if player.status == engaged and active == true then
         autoBuffHandler()
     end
 end
