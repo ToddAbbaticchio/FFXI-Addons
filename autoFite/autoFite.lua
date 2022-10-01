@@ -110,7 +110,7 @@ function autoFite()
 
     -- Assist mode logic
     if mode == "assist" and active == true then
-        if currStatus == idle then
+        if player.status == idle then
             local assistTarget = windower.ffxi.get_mob_by_name(jobVars.target.assist) or nil
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
@@ -119,7 +119,7 @@ function autoFite()
             end
         end
 
-        if currStatus == engaged then
+        if player.status == engaged then
             local currentTarget = windower.ffxi.get_mob_by_target('t') or nil
             if currentTarget.distance > jobVars.meleeDistance then
                 approachTarget(0.1, 'enemy')
@@ -213,6 +213,10 @@ windower.register_event('addon command', function(...)
             ["Category"] = 0x02
         })
         packets.inject(engagePacket)
+    end
+
+    if afAction:lower() == 'fix' then
+        pressKey('enter',0.1)
     end
 end)
 
