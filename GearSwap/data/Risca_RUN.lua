@@ -29,7 +29,7 @@ function init_gear_sets()
 		feet="Herculean Boots",
 		neck="Anu Torque",
 		--neck="Combatant's Torque",
-		waist="Grunfeld Rope",
+		waist="Sailfi Belt +1",
 		ear1="Telos Earring",
 		ear2="Sherida Earring",
 		ring1="Epona's Ring",

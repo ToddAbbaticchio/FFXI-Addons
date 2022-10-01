@@ -79,7 +79,7 @@ function init_gear_sets()
 	}
 	
 	sets.baseMagic = {
-		ammo="Ombre Tathlum +1",
+		ammo="Pemphredo Tathlum",
 		--head="Jhakri Coronal +2",
 		body="Cohort Cloak +1",
 		hands="Amalric Gages +1",  
@@ -95,7 +95,7 @@ function init_gear_sets()
 	}
 
 	sets.enspellDmg = {
-		ammo="Ombre Tathlum +1",
+		ammo="Pemphredo Tathlum",
 		head="Umuthi Hat",
 		body="Malignance Tabard",
 		hands="Aya. Manopolas +2",
@@ -135,7 +135,7 @@ function init_gear_sets()
 	sets.magic.emDuration = {body='Telchine Chasuble', hands='Telchine Gloves', legs='Telchine Braconi', feet='Telchine Pigaches', waist='Embla Sash', ear1='Lethargy Earring', back='Ghostfyre Cape'}
 	
 	sets.magic.acc = {
-		ammo="Ombre Tathlum +1",
+		ammo="Pemphredo Tathlum",
 		head="Malignance Chapeau",
 		body="Malignance Tabard",
 		hands="Malignance Gloves",

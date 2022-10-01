@@ -16,7 +16,7 @@ function init_gear_sets()
 	sets.Nuke = {                         --Burst Bonus
 		--main = "Akademos",                --10
 		--sub = "Enki Strap",
-		ammo = "Ombre Tathlum +1",
+		ammo = "Pemphredo Tathlum",
 		head = "Agwu's Cap",                --07
 		body = "Agwu's Robe",               --10
 		hands = "Amalric Gages +1",         --6*
@@ -32,7 +32,7 @@ function init_gear_sets()
 	}
 
 	sets.FreeNuke = {                         --Burst Bonus
-		ammo = "Ombre Tathlum +1",
+		ammo = "Pemphredo Tathlum",
 		head = "Agwu's Cap",                --07
 		body = "Agwu's Robe",               --10
 		hands = "Amalric Gages +1",         --6*
@@ -50,7 +50,7 @@ function init_gear_sets()
 	sets.Cure = {
 		--main = "Daybreak",
 		--sub = "Sors Shield",
-		ammo = "Ombre Tathlum +1",
+		ammo = "Pemphredo Tathlum",
 		head = "Pinga Crown",
 		body = "Jhakri Robe +2",
 		hands = "Telchine Gloves",

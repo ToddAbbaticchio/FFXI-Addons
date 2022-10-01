@@ -32,7 +32,7 @@ function init_gear_sets()
 		back=gear.STRCape,
 	}
 	sets.baseMagic = {
-		ammo="Ombre Tathlum +1",
+		ammo="Pemphredo Tathlum",
 		--head="Jhakri Coronal +2",
 		body="Cohort Cloak +1",
 		hands="Amalric Gages +1",  
@@ -195,7 +195,7 @@ function init_modetables()
 		[0] = {name="Tank", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
 		[1] = {name="DPS", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
 		[2] = {name="EvaTank", idle=sets.evaTank, engaged=sets.evaTank},
-		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Ombre Tathlum +1",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Ombre Tathlum +1",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}},
+		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}},
 		[4] = {name="Learning", idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
 		[5] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)}
 	}

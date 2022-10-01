@@ -110,6 +110,15 @@ function faceTarget()
     return true
 end
 
+function engageMonster(targetId, targetIndex)
+    local engagePacket = packets.new('outgoing', 0x01A, {
+        ["Target"] = targetId,
+        ["Target Index"] = targetIndex,
+        ["Category"] = 0x02
+    })
+    packets.inject(engagePacket)
+end
+
 -- Run forward (in the currently facing direction for duration seconds)
 function approachTarget(duration, target)
     if windower.ffxi.get_mob_by_target('t') == nil then
@@ -163,24 +172,17 @@ function findTargetV2()
     local player = windower.ffxi.get_player()
     if detectedPullAction == nil then detectedPullAction = false end
 
-    if player.in_combat and not player.status == engaged then
-        if windower.ffxi.get_mob_by_target('bt') ~= nil then
-            writeLog('Detected state: InCombat but not Engaged. Engaging battle target', 3)
-            windower.chat.input('/attack <bt>')
-        else
-            writeLog('Detected state: InCombat, not Engaged, no battle target. WTF are we in combat with?', 3)
-        end
+    local bt = windower.ffxi.get_mob_by_target('bt') or nil
+    if bt and player.status ~= engaged then
+        engageMonster(bt.id, bt.index)
     end
 
     -- the actual pullin' bits
     if not player.in_combat and not detectedPullAction then
-        -- if <bt> isn't dead, grab it
-        if windower.ffxi.get_mob_by_target('bt') ~= nil then
-            local bt = windower.ffxi.get_mob_by_target('bt')
-            if bt.hpp > 0 then
-                tryPull(bt)
-                coroutine.sleep(0.5)
-            end
+        local bt = windower.ffxi.get_mob_by_target('bt') or nil
+        if bt and bt.hpp > 0 then
+            tryPull(bt)
+            coroutine.sleep(0.5)
         end
 
         -- pick a new pullTarget
@@ -253,54 +255,13 @@ function wsHandler()
     end
 end
 
--- Spam TAB key until we find a target with the correct name
---[[ function findTarget(targetName)
-    --pullInProgress = true
-    writeLog('-- findTarget loop entered. pullInProgress set to true --', 3)
-
-    windower.send_command('setkey right down')
-    local searchTarget = windower.ffxi.get_mob_by_target('t')
-    while (searchTarget == nil) or ((not searchTarget.name:contains(targetName)) or searchTarget.distance > jobVars.pullDistance) do
-        pressKey('TAB', 0.1)
-        searchTarget = windower.ffxi.get_mob_by_target('t')
-    end
-    windower.send_command('setkey right up')
-        
-    -- Found valid target! Pull it!
-    targetId = searchTarget.id
-    if not targetPulled then
-        windower.chat.input(jobVars.pullCommand .. '<t>')
-    end
-
-    -- Now we should be in_combat, but not engaged
-    if windower.ffxi.get_player().in_combat == true then
-        if windower.ffxi.get_player().status == idle then
-            if allowApproach == true then
-                approachTarget()
-            end
-        end
-
-        -- In range!  Swords out
-        if windower.ffxi.get_mob_by_target('<t>').distance < jobVars.meleeDistance then
-            writeLog('FunctionStart: startFite - Attempting to engage!', 3)
-            windower.chat.input('/attack on')
-        end
-    end
-
-    --pullInProgress = false
-    writeLog('pullInProgress set to false', 3)
-end ]]
-
 -------------------------------------------------------------------------------------------------------------------
 -- Event Listeners
 -------------------------------------------------------------------------------------------------------------------
 windower.register_event('action',function (act)
-    if not windower.ffxi.get_mob_by_id(act.actor_id) then
-        -- bail if we can't pull a valid actor for an action
-        return
-    end
+    local actor = windower.ffxi.get_mob_by_id(act.actor_id) or nil
+    if actor == nil then return end
 
-    local actor = windower.ffxi.get_mob_by_id(act.actor_id)
 	local self = windower.ffxi.get_player()
 	local category = act.category
     local param = act.param
@@ -403,6 +364,16 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
                 windower.send_command('input /t '..player..' Syntax looks bad. Try something like:')
                 windower.send_command:scheudule(1, 'input /t '..player..' "/t Risca spag start start Locus" OR "/t Risca spag start assist Walshette"')
             end
+            return
+        end
+
+        -- some debug stuff:
+        if words[2]:lower() == 'youbroke' then
+            local me = windower.ffxi.get_player()
+            local currTarget = windower.ffxi.get_mob_by_target('bt').name
+            local battleTarget = windower.ffxi.get_mob_by_target('t').name
+            
+            windower.send_command('input /t '..player..' in_combat: '..tostring(me.in_combat)..' engaged: '..me.status..' currTarget: '..currTarget..' battleTarget: '..battleTarget)
             return
         end
     end
