@@ -65,10 +65,8 @@ function initializeSessionVars(job, ...)
         if jobVars.target.pull == nil then
             jobVars.target.pull = pullTarget
         end
-        if jobVars.target.assist == nil then
-            jobVars.target.assist = assistTarget
-        end
     end
+    jobVars.target.assist = assistTarget
     wsCommand = '/ws "' .. jobVars.ws .. '" '
 
     local startMsg = 'autoFite started!  Mode: '..mode..' pullTarget: '..jobVars.target.pull
