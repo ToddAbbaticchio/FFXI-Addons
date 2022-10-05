@@ -67,12 +67,15 @@ function onCooldown(actionName)
     -- determine correct recast function to check
     local actionInfo = spellAbilityTable[actionName]
     local actionRecastId = actionInfo.recastId
+    local recast = 0
+
     if actionInfo.command == "/ma" then
         recast = windower.ffxi.get_spell_recasts()[actionRecastId]
     end
     if actionInfo.command == "/ja" then
         recast = windower.ffxi.get_ability_recasts()[actionRecastId]
     end
+
     if recast ~= nil and recast > 0 then
         return true
     end
@@ -93,18 +96,26 @@ end
 -- Combat Functions
 -------------------------------------------------------------------------------------------------------------------
 -- Turn to face target. (take that stupid pathing bats!)
-function faceTarget()
-    if windower.ffxi.get_mob_by_target('t') == nil then
-        return false
+function faceTarget(theTarget)
+    -- if no target passed, try to use current target
+    if theTarget == nil then
+        theTarget = windower.ffxi.get_mob_by_target('t') or nil
+        if not theTarget then
+            return false
+        end
     end
 
-    local M = windower.ffxi.get_mob_by_target('t')
-    local P = windower.ffxi.get_mob_by_target('me')
+    local toFace = windower.ffxi.get_mob_by_id(theTarget.id) or nil
+    if toFace == nil then
+        return false
+    end
+    
+    local player = windower.ffxi.get_mob_by_target('me')
     local delta = {
-        Y = (P.y - M.y),
-        X = (P.x - M.x)
+        Y = (player.y - toFace.y),
+        X = (player.x - toFace.x)
     }
-    local angleInDegrees = (math.atan2(delta.Y, delta.X) * 180 / math.pi) * -1
+    local angleInDegrees = (math.atan2(delta.Y, delta.X) * 180 / math.pi) * - 1
     local mult = 10 ^ 0
     windower.ffxi.turn(((math.floor(angleInDegrees * mult + 0.5) / mult) + 180):radian())
     return true
@@ -120,31 +131,16 @@ function engageMonster(targetId, targetIndex)
 end
 
 -- Run forward (in the currently facing direction for duration seconds)
-function approachTarget(duration, target)
-    if windower.ffxi.get_mob_by_target('t') == nil then
-        writeLog('Attempted to call approachTarget() but dont have a valid target!',3)
-        return
-    end
-
-    local approachTarget = windower.ffxi.get_mob_by_target('t')
-    if mode == 'assist' then
-        local assistTarget = windower.ffxi.get_mob_by_name(jobVars.target.assist)
-        if not assistTarget then
-            writeLog('Attempted to call approachTarget() but dont have a valid assistTarget. Aborting adventure mode!',3)
-            return
-        end
-
-        local facedTarget = faceTarget()
-        if approachTarget.distance > jobVars.meleeDistance and assistTarget.distance <= 25 and facedTarget then
-            windower.ffxi.run(true)
-            windower.ffxi.run:schedule(duration, false)
-        end
+function approachTarget(target, maxDistance, moveDuration)
+    if target.distance > maxDistance then
+        local facedTarget = faceTarget(target)
+        windower.ffxi.run(true)
+        windower.ffxi.run:schedule(moveDuration, false)
     end
 end
 
 -- perform the pull action!
 function tryPull(monster)
-    -- give a default value in this is the first pull attempt
     if lastPullTime == nil then
         lastPullTime = 1
     end
@@ -169,20 +165,25 @@ end
 
 -- Find valid targets and try to pull them
 function findTargetV2()
+    if detectedPullAction == nil then
+        detectedPullAction = false
+    end
+    
     local player = windower.ffxi.get_player()
-    if detectedPullAction == nil then detectedPullAction = false end
-
     local bt = windower.ffxi.get_mob_by_target('bt') or nil
-    if bt and player.status ~= engaged then
+    if bt and bt.hpp > 0 and player.status == idle then
         engageMonster(bt.id, bt.index)
+        return
     end
 
     -- the actual pullin' bits
     if not player.in_combat and not detectedPullAction then
-        local bt = windower.ffxi.get_mob_by_target('bt') or nil
-        if bt and bt.hpp > 0 then
+        if bt and bt.hpp > 0 and isAutofiteTarget(bt) then
             tryPull(bt)
             coroutine.sleep(0.5)
+            if detectedPullAction then
+                return
+            end
         end
 
         -- pick a new pullTarget
@@ -195,6 +196,7 @@ function findTargetV2()
         end
     end
 
+    -- recover after 10 seconds if we get 'stuck' after a pull without engaging
     if detectedPullAction and player.status ~= engaged then
         if startEngageAttemptTime == nil then
             startEngageAttemptTime = os.time()    
@@ -205,7 +207,7 @@ function findTargetV2()
             writeLog('Attempting to engage for 10+ seconds without succes.  Bail out!', 3)
         else 
             writeLog('Attempting to engage!', 3)
-            windower.chat.input('/attack <bt>')
+            engageMonster(bt.id, bt.index)
         end
     end
 end
@@ -216,11 +218,7 @@ function autoBuffHandler()
         local currentBuffs = windower.ffxi.get_player().buffs
         for action, buffName in pairs(jobVars.autoBuffs) do
             --writeLog('action: '..action..' buffName: '..buffName, 1)
-            local onCoolDown = onCooldown(action)
-            local isActive = buffActive(currentBuffs, buffName)
-
-            if not onCoolDown and not isActive then
-                -- writeLog('action: '..action..' is not active and not on cooldown! attempting to cast!', 1)
+            if not buffActive(currentBuffs, buffName) and not onCooldown(action) then
                 windower.chat.input(spellAbilityTable[action].command .. ' "' .. action .. '" <me>')
                 break
             end
@@ -234,12 +232,10 @@ function wsHandler()
     if jobVars.maintainAftermath == true then
         if buffActive(player.buffs, "Aftermath: Lv.3") == false then
             if player.vitals.tp == 3000 then
-                -- windower.chat.input(wsCommand..targetId)
                 windower.chat.input(wsCommand .. '<t>')
             end
         else
             if player.vitals.tp >= jobVars.targetTp then
-                -- windower.chat.input(wsCommand..targetId)
                 windower.chat.input(wsCommand .. '<t>')
             end
         end
@@ -248,7 +244,6 @@ function wsHandler()
             if wsCommand:contains('Starlight') then
                 windower.chat.input(wsCommand .. ' <me>')
             else
-                -- windower.chat.input(wsCommand..targetId)
                 windower.chat.input(wsCommand .. '<t>')
             end
         end
@@ -260,13 +255,12 @@ end
 -------------------------------------------------------------------------------------------------------------------
 windower.register_event('action',function (act)
     local actor = windower.ffxi.get_mob_by_id(act.actor_id) or nil
-    if actor == nil then return end
+    local player = windower.ffxi.get_player()
+    if actor == nil or player == nil then return end
 
-	local self = windower.ffxi.get_player()
 	local category = act.category
     local param = act.param
-   
-    if actor.id == self.id and active then
+    if actor.id == player.id and active then
         if category == 8 or category == 4 then
             if isPullAction(param) == true then
                 -- casting success
@@ -293,7 +287,6 @@ windower.register_event('action',function (act)
         end
     end
 end)
-
 
 windower.register_event('chat message', function(message, player, mode, is_gm)
     local whitelist = "Risca,Walshie,Walshette,Shinyhelmet,Lornkeit,Iyenga,Mikanora,Hisuwei"

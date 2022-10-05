@@ -81,37 +81,39 @@ end
 -- Main action handler - Decides what we should do
 function autoFite()
     local player = windower.ffxi.get_player()
-    -- Main mode logic
+    -- Pull mode logic
     if mode == "pull" then
-        if active == true then
-            if player.status == idle and findingTarget ~= true then
-                findingTarget = true
-                findTargetV2()
-                findingTarget = false
+        if player.status == idle and findingTarget == false then
+            findingTarget = true
+            findTargetV2()
+            findingTarget = false
+        end
+
+        if player.status == engaged then
+            startEngageAttemptTime = nil
+            detectedPullAction = false
+            faceTarget()
+            if jobVars.ws ~= nil then
+                wsHandler()
             end
 
-            if player.status == engaged then
-                startEngageAttemptTime = nil
-                detectedPullAction = false
-                local monster = windower.ffxi.get_mob_by_target('t')
-                faceTarget()
-                if jobVars.ws ~= nil then
-                    wsHandler()
-                end
-
-                -- If target moves out of range
-                if windower.ffxi.get_mob_by_target('t').distance >= jobVars.meleeDistance then
-                    writeLog('Engaged, but enemy too far away! Pulling!', 3)
-                    tryPull(monster)
-                end
+            -- If target moves out of range
+            local monster = windower.ffxi.get_mob_by_target('t') or nil
+            if monster and monster.distance >= jobVars.meleeDistance then
+                writeLog('Engaged, but enemy too far away! Pulling!', 3)
+                tryPull(monster)
             end
         end
     end
 
     -- Assist mode logic
-    if mode == "assist" and active == true then
+    if mode == "assist" then
+        local assistTarget = windower.ffxi.get_mob_by_name(jobVars.target.assist) or nil
+        
         if player.status == idle then
-            local assistTarget = windower.ffxi.get_mob_by_name(jobVars.target.assist) or nil
+            if assistTarget and assistTarget.distance > 1 then
+                approachTarget(assistTarget, 1, 0.5)
+            end
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
                 local enemy = monsterList[assistTarget.target_index]
@@ -121,17 +123,20 @@ function autoFite()
 
         if player.status == engaged then
             local currentTarget = windower.ffxi.get_mob_by_target('t') or nil
-            if currentTarget.distance > jobVars.meleeDistance then
-                approachTarget(0.1, 'enemy')
-            else
-                faceTarget()
-                wsHandler()
+            if currentTarget ~= nil and assistTarget ~= nil then
+                if assistTarget and assistTarget.distance < 2 then
+                    approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
+                end
+            elseif currentTarget ~= nil then
+                approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
             end
+            faceTarget()
+            wsHandler()
         end
     end
 
     -- check buffs regardless of mode (but not if we're stopped)
-    if player.status == engaged and active == true then
+    if player.status == engaged then
         autoBuffHandler()
     end
 end
@@ -180,7 +185,7 @@ windower.register_event('addon command', function(...)
     local stopCommands = "stop,disable,end,no,off"
     if stopCommands:contains(afAction:lower()) then
         active = false
-        writeLog('autoFite deactivated!', 1)
+        windower.chat.input('//lua u autoFite')
     end
 
     if afAction:lower() == 'logmode' then
@@ -197,22 +202,23 @@ windower.register_event('addon command', function(...)
 
     -- Some testing / debug commands because apparently we hate having a working console
     if afAction:lower() == 'distance' then
-        windower.add_to_chat(200, '-- Distance: ' .. windower.ffxi.get_mob_by_target('t').distance .. ' meleeDistance: '..jobVars.meleeDistance..' --')
+        windower.add_to_chat(200, '-- Distance from target: ' .. windower.ffxi.get_mob_by_target('t').distance .. ' meleeDistance: '..jobVars.meleeDistance..' --')
+        windower.add_to_chat(200, '-- Distance from assist: ' .. windower.ffxi.get_mob_by_name(jobVars.target.assist).distance)
     end
 
     if afAction:lower() == 'test' then
-        --local monsters = windower.ffxi.get_mob_array()
-        --local shiny = windower.ffxi.get_mob_by_name('Shinyhelmet')
-        --local shinyTarget = monsters[shiny.target_index]
-        --writeLog('name: '..shinyTarget.name..' id: '..shinyTarget.id, 1);
-
-        local target = windower.ffxi.get_mob_by_target('t')
-        local engagePacket = packets.new('outgoing', 0x01A, {
-            ["Target"] = target.id,
-            ["Target Index"] = target.index,
-            ["Category"] = 0x02
-        })
-        packets.inject(engagePacket)
+        local toFace = windower.ffxi.get_mob_by_target('t') or nil
+        if toFace == nil then
+            return
+        end
+        local player = windower.ffxi.get_mob_by_target('me')
+        local delta = {
+            Y = (player.y - toFace.y),
+            X = (player.x - toFace.x)
+        }
+        local angleInDegrees = (math.atan2(delta.Y, delta.X) * 180 / math.pi) * - 1
+        local mult = 10 ^ 0
+        windower.ffxi.turn(((math.floor(angleInDegrees * mult + 0.5) / mult) + 180):radian())
     end
 
     if afAction:lower() == 'fix' then
@@ -232,5 +238,5 @@ end)
 
 -- zone change event to unload the addon
 windower.register_event('zone change', function()
-    windower.chat.input('//lua u  autoFite')
+    windower.chat.input('//lua u autoFite')
 end)
