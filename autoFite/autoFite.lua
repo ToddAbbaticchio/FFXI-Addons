@@ -113,11 +113,14 @@ function autoFite()
         if player.status == idle then
             if assistTarget and assistTarget.distance > 1 then
                 approachTarget(assistTarget, 1, 0.3)
+                return
             end
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
-                local enemy = monsterList[assistTarget.target_index]
-                engageMonster(enemy.id, enemy.index)
+                local enemy = monsterList[assistTarget.target_index] or nil
+                if enemy then
+                    engageMonster(enemy.id, enemy.index)
+                end
             end
         end
 
