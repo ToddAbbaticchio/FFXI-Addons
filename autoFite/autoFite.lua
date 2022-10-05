@@ -65,8 +65,10 @@ function initializeSessionVars(job, ...)
         if jobVars.target.pull == nil then
             jobVars.target.pull = pullTarget
         end
+        if jobVars.target.assist == nil then
+            jobVars.target.assist = assistTarget
+        end
     end
-    jobVars.target.assist = assistTarget
     wsCommand = '/ws "' .. jobVars.ws .. '" '
 
     local startMsg = 'autoFite started!  Mode: '..mode..' pullTarget: '..jobVars.target.pull
@@ -110,7 +112,7 @@ function autoFite()
         
         if player.status == idle then
             if assistTarget and assistTarget.distance > 1 then
-                approachTarget(assistTarget, 1, 0.5)
+                approachTarget(assistTarget, 1, 0.3)
             end
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
