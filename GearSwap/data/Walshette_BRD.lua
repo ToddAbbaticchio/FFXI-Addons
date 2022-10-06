@@ -121,7 +121,7 @@ function init_gear_sets()
     sets.midcast.Mambo = {} --{feet="Mou. Crackows +1"}
     sets.midcast.March = {} --{hands="Fili Manchettes +1"}
     sets.midcast.Minne = {} --{legs="Mou. Seraweels +1"}
-    sets.midcast.Minuet = {} --{body="Fili Hongreline +1"}
+    sets.midcast.Minuet = {body="Fili Hongreline"} -- +1
     sets.midcast.Paeon = {} --{head="Brioso Roundlet +3"}
     sets.midcast.Threnody = {} --{body="Mou. Manteel +1"}
     sets.midcast['Adventurer\'s Dirge'] = {} --{range="Marsyas", hands="Bihu Cuffs +3"}
@@ -407,7 +407,7 @@ function init_gear_sets()
 		ear1="Cessance Earring",
 		ear2="Tripudio Earring", --ear2="Telos Earring",
 		ring1="Chirich Ring +1",
-		ring2="Dhanurveda Ring", --ring2={name="Chirich Ring +1", bag="wardrobe4"},
+		ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
         legs="Nyame Flanchard",
@@ -425,7 +425,7 @@ function init_gear_sets()
         ear1="Cessance Earring",
         ear2="Tripudio Earring", --ear2="Telos Earring",
         ring1="Chirich Ring +1",
-        ring2="Dhanurveda Ring", --ring2={name="Chirich Ring +1", bag="wardrobe4"},
+        ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
         legs="Nyame Flanchard",
@@ -458,7 +458,7 @@ function init_gear_sets()
 	sets.Obi = {}
     --sets.Obi = {waist="Hachirin-no-Obi"}
 
-	sets.moveSpeed = {}
+	sets.moveSpeed = {feet="Fili Cothurnes +1"}
 
     sets.Carnwenhan = {} --{main="Carnwenhan", sub="Ternion Dagger +1"}
     sets.Twashtar = {} --{main="Twashtar", sub="Taming Sari"}
@@ -553,6 +553,10 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
             equip({ranged="Gjallarhorn"})
         end
     end
+
+    if spell.name:contains('Minuet') then
+        equip({body="Fili Hongreline"})
+    end
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)	
@@ -620,6 +624,7 @@ function autoActions()
     local marcatoRecast = abilRecast[48]
     local me = windower.ffxi.get_player()  
 
+    --[[
     if auto.sing[auto.sing.index] == 'On' then
         local songTimeRemaining = songTimer - os.time()
 
@@ -668,19 +673,15 @@ function autoActions()
 
         add_to_chat(122, '[Current Time: '..os.time()..' | Song Timer: '..songTimer..' | Song Time Remaining: '..songTimeRemaining..']')
     end
-
-    --[[ Haste Samba handing when auto.buff is on ]]--
-    --[[
-	if auto.buff[auto.buff.index] == 'On' and player.sub_job == 'DNC' then
-		if player.tp >= 350 and not buffactive['Haste Samba'] then
-			add_to_chat(122, '[Haste Samba]')
-			send_command('/haste samba')
-			return
-		end
-	end
     ]]--
+    --[[ Haste Samba handing when auto.buff is on ]]--
+	if auto.buff[auto.buff.index] == 'On' and player.sub_job == 'DNC' and player.tp >= 350 and not buffactive['Haste Samba'] then
+        add_to_chat(122, '[Haste Samba]')
+        send_command('/haste samba')
+        return
+	end
 
-    --[[ Emergency /DNC heals when auto.fite is on ]]
+    --[[ Emergency /DNC heals when auto.fite is on ]]--
     if auto.fite[auto.fite.index] == 'On'and not actionInProgress and not movingthen and me.status == 1 and me.sub_job == 'DNC' then
         local enemy = windower.ffxi.get_mob_by_target('t')		
         if player.tp >= 200 and curingWaltzRecast == 0 then
@@ -696,4 +697,10 @@ function autoActions()
             end
         end
     end   
+
+    --[[
+    if not buffactive['Food'] then
+        send_command('input /item "B.E.W. Pitaru" <me>')
+        return
+    end]]--
 end
