@@ -194,7 +194,7 @@ function init_gear_sets()
 		ring2="Apate Ring",-- Upgrade to ring2="Epaminondas's Ring",
 		back=gear.sWSDCape,
 		waist="Fotia Belt", --waist="Sailfi Belt +1", seems to underperform
-		legs="Nyame Flanchard", -- Upgrade to Herculean STR/Att/Acc/WSD
+		legs="Herculean Trousers", -- Upgrade to Herculean STR/Att/Acc/WSD
 		feet="Lanun Bottes +3",
 	})
 	-- Evisceration [Physical;DEX]
@@ -202,7 +202,7 @@ function init_gear_sets()
 		head="Adhemar Bonnet +1",
 		body="Meg. Cuirie +2",-- Upgrade to body="Abnoba Kaftan",
 		hands="Mummu Wrists +2",
-		legs="Meg. Chausses +2",-- Upgrade to legs="Zoar Subligar +1",
+		legs="Samnuha Tights",-- Upgrade to legs="Zoar Subligar +1" or Herculean
 		feet="Mummu Gamash. +2",
 		neck="Fotia Gorget",
 		ear1="Moonshade Earring",
@@ -242,7 +242,7 @@ function init_gear_sets()
 	-- QD (DMG)
 	sets.midcast.CorsairShot = {
 		ammo=gear.QDbullet,
-		head="Laksa. Tricorne +3", -- Upgrade to head=gear.Herc_MAB_head,
+		head="Herculean Helm", 
 		body="Lanun Frac +3",
 		hands="Carmine Fin. Ga. +1",
 		legs="Herculean Trousers",
@@ -386,9 +386,10 @@ function init_modetables()
 	end
 
 	gunMode = {
-		[0] = {name="Ataktos", set={ranged="Ataktos"}},
-        [1] = {name="Death Penalty", set={ranged="Death Penalty"}},  
-		[2] = {name="Armageddon", set={ranged="Armageddon"}}, 
+		["index"] = 0,
+		[0] = {name="Ataktos", set={ranged="Ataktos"}, color="\\cs(218,165,32)"},
+        [1] = {name="Death Penalty", set={ranged="Death Penalty"}, color="\\cs(0,191,255)"},  
+		[2] = {name="Armageddon", set={ranged="Armageddon"}, color="\\cs(250,128,114)"}, 
 		--TODO: Low Dmg Gun  
 	}
 
@@ -407,7 +408,7 @@ function init_modetables()
 
 	--[[ COR Specific ]]--
 	-- Quick Draw Mode includes only base elements -- Light and Dark shots are expected to be their own macros
-	-- Add macro with //console //gs c useQD
+	-- Add macro with /console gs c useQD
 	-- Requires shortcuts addon
     qdMode = {
         ["index"] = 0,
@@ -420,6 +421,7 @@ function init_modetables()
     }
 
 	-- Shot Mode determines which QD set to use
+	-- Ataktos will AUTOMATICALLY use the Store TP set for elemental QDs
 	shotMode = {
 		["index"] = 0,
 		[0] = {shot="DMG", msg="Shot Mode: DMG" , color="\\cs(250,128,114)"}, -- salmon
@@ -487,6 +489,7 @@ function extendedUserSetup()
     send_command('bind @q gs c cycleQD')	
 	send_command('bind @w gs c cycleRollMode')
 	send_command('bind @e gs c cycleShotMode')
+	send_command('bind @r gs c cycleGunMode')
 
 	-- Set default macro book / page
     set_macro_page(1, 4)
@@ -502,6 +505,7 @@ function extendedUserUnload()
     send_command('unbind @q')
 	send_command('unbind @w')
 	send_command('unbind @e')
+	send_command('unbind @r')
 	send_command('lua u rolltracker')
 end
 
@@ -585,9 +589,9 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 	end
 
 	-- Handle equipping appropriate roll set depending on selected rollMode
-	if (spell.type == 'CorsairRoll' or spell.english == "Double-Up") and rollMode.index == "Full" then
+	if (spell.type == 'CorsairRoll' or spell.english == "Double-Up") and rollMode[rollMode.index].roll == "Full" then
 		equip(sets.precast.CorsairRoll.Full)
-	elseif (spell.type == 'CorsairRoll' or spell.english == "Double-Up") and rollMode.index == "Lock" then
+	elseif (spell.type == 'CorsairRoll' or spell.english == "Double-Up") and rollMode[rollMode.index].roll == "Lock" then
 		equip(sets.precast.CorsairRoll)
 	end
 
@@ -602,6 +606,8 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 	elseif spell.type == 'CorsairShot' then
 		if spell.english == 'Light Shot' or spell.english == 'Dark Shot' then
 			equip(sets.midcast.CorsairShot.Acc)
+		elseif player.equipment.ranged == "Ataktos" then
+			equip(sets.midcast.CorsairShot.STP)
 		elseif shotMode[shotMode.index].shot == 'DMG' then
 			equip(sets.midcast.CorsairShot)
 		elseif shotMode[shotMode.index].shot == 'Acc' then
@@ -646,6 +652,12 @@ end
 function extendedJobAftercast(spell, action, spellMap, eventArgs)
 	-- Put RA bullet back on after whatever just happened
 	equip({ammo=gear.RAbullet})	
+
+	-- Put weapons/gun back on if we just rolled
+	if (spell.type == 'CorsairRoll' or spell.english == "Double-Up")  and rollMode[rollMode.index].roll == "Full" then
+		equip(weaponMode[weaponMode.index].set)
+		equip(gunMode[gunMode.index].set)
+	end
 end
 
 --[[ To prevent having more listeners, this is excluded, which means we're assuming if you're shooting that you have Flurry and not Haste, and that it's Flurry II
@@ -723,7 +735,7 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
         if rollMode.index > #rollMode then
             rollMode.index = 0
         end
-        windower.add_to_chat(122,'[Shot Mode: '..rollMode[rollMode.index].shot..' -- '..rollMode[rollMode.index].msg..']')
+        windower.add_to_chat(122,'[Roll Mode: '..rollMode[rollMode.index].roll..' -- '..rollMode[rollMode.index].msg..']')
     end
 
 	if cmdParams[1] == 'cycleShotMode' then
@@ -731,7 +743,16 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
         if shotMode.index > #shotMode then
             shotMode.index = 0
         end
-        windower.add_to_chat(122,'[Roll Mode: '..shotMode[shotMode.index].shot..' -- '..shotMode[shotMode.index].msg..']')
+        windower.add_to_chat(122,'[Shot Mode: '..shotMode[shotMode.index].shot..' -- '..shotMode[shotMode.index].msg..']')
+    end
+
+	if cmdParams[1] == 'cycleGunMode' then
+        gunMode.index = gunMode.index + 1
+        if gunMode.index > #gunMode then
+            gunMode.index = 0
+        end
+        windower.add_to_chat(122,'[Gun Mode: '..gunMode[gunMode.index].name..']')
+		equip(gunMode[gunMode.index].set)
     end
 
     modeHud('update')
@@ -746,6 +767,7 @@ function extendedModeHud(hudText)
     hudText:append(white..'Quick Draw [Q]: '..qdMode[qdMode.index].color..qdMode[qdMode.index].qd..white)    
 	hudText:append(white..'Roll Mode [W]: '..rollMode[rollMode.index].color..rollMode[rollMode.index].roll..white)    
 	hudText:append(white..'Shot Mode [E]: '..shotMode[shotMode.index].color..shotMode[shotMode.index].shot..white)
+	hudText:append(white..'Gun Mode [R]: '..gunMode[gunMode.index].color..gunMode[gunMode.index].name..white)
 	return hudText
 end
 
@@ -803,12 +825,13 @@ function autoActions()
             send_command('/wildcard')
             return
         end
-        if cuttingCardsRecast == 0 and wildCardRecast > 10 and wildCardRecast < 2500 then
+		--[[
+        if cuttingCardsRecast == 0 and wildCardRecast > 2200 and wildCardRecast < 2600 then
             add_to_chat(122, '[! Cutting Cards !]')
-            send_command('/cuttingcards <p1>')
+            send_command('/cuttingcards <p5>')
             return
         end
-
+]]--
         --[[ Auto Food ?
         if not buffactive['Food'] then
             send_command('input /item "Grape Daifuku" <me>')
