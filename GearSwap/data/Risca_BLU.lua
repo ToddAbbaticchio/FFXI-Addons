@@ -389,13 +389,18 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 	-- auto pop unbridled learning when we try to cast a spell that requires it (saves a button on macro bar)
 	if unbridled_spells:contains(spell.english) and unbridledRecast == 0 then
 		eventArgs.cancel = true
-
+		
+		-- mighty guard (and sometimes cacharian verve) deserve diffusion if its ready
 		if diffusionRecast == 0 and spell.name == 'Mighty Guard' or spell.name == 'Carcharian Verve' then
-			send_command('input /ja "Diffusion" <me>; wait 1.5; input /ja "Unbridled Learning" <me>; wait 1.5; input /ma "'..spell.name..'" '..tostring(spell.target.raw))
+			send_command('input /ja "Diffusion" <me>')
+			send_command:schedule(1.5, 'input /ja "Unbridled Learning" <me>')
+			send_command:schedule(3, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
 			return
 		end
-
-		send_command('input /ja "Unbridled Learning" <me>; wait 1.5; input /ma "'..spell.name..'" '..tostring(spell.target.raw))
+		
+		-- All other unbridled learning spells
+		send_command('input /ja "Unbridled Learning" <me>')
+		send_command:schedule(1.5, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
 	end
 end
 

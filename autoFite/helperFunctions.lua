@@ -122,6 +122,10 @@ function faceTarget(theTarget)
 end
 
 function engageMonster(targetId, targetIndex)
+    if targetIndex == nil then
+        targetIndex = getMobIndex(targetId)
+    end
+ 
     local engagePacket = packets.new('outgoing', 0x01A, {
         ["Target"] = targetId,
         ["Target Index"] = targetIndex,
@@ -130,84 +134,48 @@ function engageMonster(targetId, targetIndex)
     packets.inject(engagePacket)
 end
 
+function getMobIndex(lookupId)
+    local monsters = windower.ffxi.get_mob_array()
+    for index,monster in pairs(monsters) do
+        if monster.id == lookupId then
+            return index
+        end
+    end
+end
+
 -- Run forward (in the currently facing direction for duration seconds)
 function approachTarget(target, maxDistance, moveDuration)
     if target.distance > maxDistance then
         local facedTarget = faceTarget(target)
-        windower.ffxi.run(true)
-        windower.ffxi.run:schedule(moveDuration, false)
+        if facedTarget then
+            windower.ffxi.run(true)
+            windower.ffxi.run:schedule(moveDuration, false)
+        end
     end
 end
 
 -- perform the pull action!
 function tryPull(monster)
-    if lastPullTime == nil then
-        lastPullTime = 1
-    end
-
-    -- don't pull if it hasn't been 10 seconds since our last successful pull command
-    local currTime = os.time()
-    if currTime - lastPullTime < 10 then
-        writeLog('Pull command canceled! Hasnt been 10 seconds yet!', 3)
+    if pulledMonster or not isAutofiteTarget(monster) then
         return
     end
 
-    -- don't pull if its not a valid target
-    if not isAutofiteTarget(monster) then
-        writeLog('Pull command canceled! Not a valid target! '..monster.name, 3)
-        return
-    end
-
-    -- do pull if we made it here
     writeLog('Trying to pull: '..monster.name..' validTarget: '..tostring(monster.valid_target)..' at distance: '..monster.distance..' (pull distance set to: '..jobVars.pullDistance, 3)
     windower.chat.input(jobVars.pullCommand..monster.id)
 end
 
 -- Find valid targets and try to pull them
 function findTargetV2()
-    if detectedPullAction == nil then
-        detectedPullAction = false
-    end
-    
-    local player = windower.ffxi.get_player()
-    local bt = windower.ffxi.get_mob_by_target('bt') or nil
-    if bt and bt.hpp > 0 and player.status == idle then
-        engageMonster(bt.id, bt.index)
+    if pulledMonster then
+        engageMonster(pulledMonster)
         return
     end
 
-    -- the actual pullin' bits
-    if not player.in_combat and not detectedPullAction then
-        if bt and bt.hpp > 0 and isAutofiteTarget(bt) then
-            tryPull(bt)
+    local monsters = windower.ffxi.get_mob_array()
+    for _,monster in pairs(monsters) do
+        if isAutofiteTarget(monster) and not pulledMonster then
+            tryPull(monster)
             coroutine.sleep(0.5)
-            if detectedPullAction then
-                return
-            end
-        end
-
-        -- pick a new pullTarget
-        local monsters = windower.ffxi.get_mob_array()
-        for _,monster in pairs(monsters) do
-            if isAutofiteTarget(monster) and not detectedPullAction then
-                tryPull(monster)
-                coroutine.sleep(0.5)
-            end
-        end
-    end
-
-    -- recover after 10 seconds if we get 'stuck' after a pull without engaging
-    if detectedPullAction and player.status ~= engaged then
-        if startEngageAttemptTime == nil then
-            startEngageAttemptTime = os.time()    
-        end 
-        if os.time() > startEngageAttemptTime + 10 then
-            detectedPullAction = false
-            startEngageAttemptTime = nil
-            writeLog('Attempting to engage for 10+ seconds without succes.  Bail out!', 3)
-        else 
-            writeLog('Attempting to engage!', 3)
-            engageMonster(bt.id, bt.index)
         end
     end
 end
@@ -217,7 +185,6 @@ function autoBuffHandler()
     if jobVars.autoBuffs ~= nil then
         local currentBuffs = windower.ffxi.get_player().buffs
         for action, buffName in pairs(jobVars.autoBuffs) do
-            --writeLog('action: '..action..' buffName: '..buffName, 1)
             if not buffActive(currentBuffs, buffName) and not onCooldown(action) then
                 windower.chat.input(spellAbilityTable[action].command .. ' "' .. action .. '" <me>')
                 break
@@ -265,24 +232,21 @@ windower.register_event('action',function (act)
             if isPullAction(param) == true then
                 -- casting success
                 if category == 4 then
-                    writeLog('Pull command complete', 3)
                     lastPullTime = os.time()
-                    detectedPullAction = true
+                    pulledMonster = act.targets[1].id or nil
                 end
             end
         end
 
         -- pulled with ranged attack
         if category == 2 then
-            writeLog('Pulled <t> with ranged attack!', 3)
-            detectedPullAction = true
+            pulledMonster = act.targets[1].id or nil
         end
 
         -- action is a ja and matches pull command
         if category == 6 then
             if isPullAction(param) == true then
-                writeLog('Pull command complete', 3)
-                detectedPullAction = true
+                pulledMonster = act.targets[1].id or nil
             end
         end
     end

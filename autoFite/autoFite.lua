@@ -81,9 +81,10 @@ end
 -- Main action handler - Decides what we should do
 function autoFite()
     local player = windower.ffxi.get_player()
+
     -- Pull mode logic
     if mode == "pull" then
-        if player.status == idle and findingTarget == false then
+        if player.status == idle and not findingTarget then
             findingTarget = true
             findTargetV2()
             findingTarget = false
@@ -92,6 +93,7 @@ function autoFite()
         if player.status == engaged then
             startEngageAttemptTime = nil
             detectedPullAction = false
+            pulledMonster = nil
             faceTarget()
             if jobVars.ws ~= nil then
                 wsHandler()
@@ -188,7 +190,7 @@ windower.register_event('addon command', function(...)
     local stopCommands = "stop,disable,end,no,off"
     if stopCommands:contains(afAction:lower()) then
         active = false
-        windower.chat.input('//lua u autoFite')
+        --windower.chat.input('//lua u autoFite')
     end
 
     if afAction:lower() == 'logmode' then
@@ -226,6 +228,13 @@ windower.register_event('addon command', function(...)
 
     if afAction:lower() == 'fix' then
         pressKey('enter',0.1)
+    end
+
+    if afAction:lower() == 'report' then
+        local ct = windower.ffxi.get_mob_by_target('t')
+        local bt = windower.ffxi.get_mob_by_target('bt')
+        
+        writeLog('ct '..ct.name..' id/index: '..ct.id..'/'..ct.index..' bt '..bt.name..' id/index: '..bt.id..'/'..bt.index, 1)
     end
 end)
 

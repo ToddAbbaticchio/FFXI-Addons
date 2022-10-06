@@ -95,12 +95,13 @@ function init_gear_sets()
 	}
 
 	sets.enspellDmg = {
-		ammo="Pemphredo Tathlum",
+		ammo="Voluspa Tathlum",
 		head="Umuthi Hat",
 		body="Malignance Tabard",
 		hands="Aya. Manopolas +2",
 		legs="Malignance Tights",
 		feet="Malignance Boots",
+		neck="Combatant's Torque",
 		waist="Sailfi Belt +1",
 		ear1="Suppanomimi",
 		ear2="Eabani Earring",
@@ -188,7 +189,7 @@ function init_gear_sets()
 	sets.precast.FC = sets.magic.fastCast
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.magic.fastCast, {waist="Siegel Sash"})
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magic.acc, sets.magic.enfeebSkill)
-	sets.midcast['Enhancing Magic'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration)
+	sets.midcast['Enhancing Magic'] = set_combine(sets.magic.emSkill, sets.magic.emDuration)
 	sets.midcast['Temper'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
     sets.midcast['Phalanx'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration, {body="Taeon Tabard", hands="Taeon Gloves", feet="Taeon Boots"})
     sets.midcast['Aquaveil'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration, sets.interrupt, {})
@@ -296,6 +297,11 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
+	local enspells = "Enfire,Enblizzard,Enaero,Enstone,Enthunder,Enwater"
+	if enspells:contains(spell.name) then
+		equip(sets.magic.emSkill)
+	end
+	
 	if spell.element == 'Dark' then
 		equip{head="Pixie Hairpin +1", body="Jhakri Robe +2"}
 	end

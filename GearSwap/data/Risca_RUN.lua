@@ -375,11 +375,16 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 		end
 	end
 
-	--[[ if player.sub_job == 'DRK' and spell.english == 'Flash' then
-		eventArgs.cancel = true
-		send_command('input /ma "Stun" ' .. tostring(spell.target.raw))
-	end ]]
-	
+	-- Don't laugh, it kind of works in a pinch?
+	if player.sub_job == 'SCH' and auto.fite[auto.fite.index] == 'On' and strategemCount() >= 1 then
+		local spellsToAoe = "Regen IV,Phalanx"
+		if spellsToAoe:contains(spell.english) and not buffactive['Accession'] then
+			eventArgs.cancel = true
+			send_command('input /ja "Accession" <me>')
+			send_command:schedule(2, 'input /ma "'..spell.english..'" <me>')
+		end
+	end
+
 	-- /BLU Spell/ability audibles
 	if player.sub_job == 'BLU' and spell.english == 'Geist Wall' then
 		local spell_recasts = windower.ffxi.get_spell_recasts()
@@ -531,6 +536,7 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
+	local recasts = windower.ffxi.get_ability_recasts()
 	-- auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -547,10 +553,29 @@ function autoActions()
 		-- auto rune
 		if not currRune then currRune = 'Tenebrae' end
 		if buffactive[currRune] ~= 3 and auto.rune[auto.rune.index] == 'On' then
-			if windower.ffxi.get_ability_recasts()[92] == 0 then
+			if recasts[92] == 0 then
 				windower.send_command('rh userune')
 				return
 			end
+		end
+
+		-- LOL /SCH
+		if player.sub_job == 'SCH' then
+			if not buffactive['Light Arts'] then
+				send_command('input /ja "Light Arts" <me>')
+			end
+
+			if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and recasts[234] == 0 then
+				send_command('input /ja "Sublimation" <me>')
+				return
+			end
+			if buffactive['sublimation: complete'] and player.mpp < 40 and recasts[234] == 0 then
+				add_to_chat(122,'-- MP below 40% - Popping Sublimation! --')
+				send_command('input /ja "Sublimation" <me>')
+				return
+			end
+
+			maintainBuff('Regen', '/ma "Regen IV" <me>')
 		end
 
 		-- spells when in tank mode
@@ -567,7 +592,7 @@ function autoActions()
 			maintainBuff('Multi Strikes', '/ma "Temper" <me>')
 		end
 		
-		if player.mpp < 50 then
+		if player.mpp < 50 and player.sub_job ~= 'SCH' then
 			maintainBuff('Refresh', '/ma "Refresh" <me>')
 		end
 		
@@ -576,12 +601,14 @@ function autoActions()
 		if auto.fite[auto.fite.index] == 'On' then
 			maintainBuff('Protect', '/ma "Protect IV" <me>')
 			maintainBuff('Shell', '/ma "Shell V" <me>')
-			if player.hpp < 70 then
+			--[[ if player.hpp < 70 then
 				maintainBuff('Regen', '/ma "Regen IV" <me>')
-			end
+			end ]]
 
-			if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) and windower.ffxi.get_ability_recasts()[242] == 0 then
-				send_command('input /ja "Vivacious Pulse" <me>')
+			if recasts[242] == 0 then
+				if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) then
+					send_command('input /ja "Vivacious Pulse" <me>')
+				end
 			end
 		end
 	end

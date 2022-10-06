@@ -274,7 +274,7 @@ end
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
 function job_precast(spell, action, spellMap, eventArgs)
-	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type..)
+	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type)
 	
 	-- don't try to do stuff if we can't do stuff (stop gearswap from switching gear if we can't act)
 	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] then
