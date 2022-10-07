@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.1.7'
+_addon.version = '1.2.0'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -114,13 +114,12 @@ function autoFite()
         end
 
         if player.status == idle then
-            if assistTarget.distance > 1 then
-                sendCommand('input /follow '..jobVars.taret.assist)
-                return
-            else
-                sendCommand('input /follow off')
-            end
-
+            while assistTarget.distance > 1 do
+                windower.ffxi.follow(assistTarget.index)
+                assistTarget.distance = windower.ffxi.get_mob_by_name(jobVars.target.assist).distance
+            end 
+            windower.ffxi.follow() -- follow with no target stops follow
+            
             if assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
                 local enemy = monsterList[assistTarget.target_index] or nil

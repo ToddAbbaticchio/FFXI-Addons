@@ -146,11 +146,8 @@ end
 -- Run forward (in the currently facing direction for duration seconds)
 function approachTarget(target, maxDistance, moveDuration)
     if target.distance > maxDistance then
-        local facedTarget = faceTarget(target)
-        if facedTarget then
-            windower.ffxi.run(true)
-            windower.ffxi.run:schedule(moveDuration, false)
-        end
+        windower.ffxi.run(true)
+        windower.ffxi.run:schedule(moveDuration, false)
     end
 end
 
