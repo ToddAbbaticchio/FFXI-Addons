@@ -109,14 +109,19 @@ function autoFite()
     -- Assist mode logic
     if mode == "assist" then
         local assistTarget = windower.ffxi.get_mob_by_name(jobVars.target.assist) or nil
-        
+        if not assistTarget then
+            writeLog('Cant get targetInfo for assistTarget: '..jobVars.target.assist..' - This is a problem.', 1)
+        end
+
         if player.status == idle then
-            if assistTarget and assistTarget.distance > 1 then
-                approachTarget(assistTarget, 1, 0.3)
+            if assistTarget.distance > 1 then
+                sendCommand('input /follow '..jobVars.taret.assist)
                 return
+            else
+                sendCommand('input /follow off')
             end
-            
-            if assistTarget and assistTarget.status == engaged then
+
+            if assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
                 local enemy = monsterList[assistTarget.target_index] or nil
                 if enemy and enemy.id then

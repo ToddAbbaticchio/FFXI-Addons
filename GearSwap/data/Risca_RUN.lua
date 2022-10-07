@@ -543,10 +543,14 @@ function autoActions()
 	end
 
 	-- handle auto wake on sleep with frenzy sallet
-	if buffactive['Sleep'] and player.status == "Engaged" then 
+	if buffactive['Sleep'] and player.status == engaged then 
 		send_command('input //gs equip sets.wakeUp')
 	elseif player.equipment.head == "Frenzy Sallet" and not buffactive['Sleep'] then
 		EvalState_equipGear()
+	end
+
+	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
+		return
 	end
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
@@ -588,7 +592,7 @@ function autoActions()
 			end
 		--end
 
-		if player.status == 'Engaged' or gearMode[gearMode.index].name ~= 'SuperTank' then
+		if player.status == engaged or gearMode[gearMode.index].name ~= 'SuperTank' then
 			maintainBuff('Multi Strikes', '/ma "Temper" <me>')
 		end
 		
