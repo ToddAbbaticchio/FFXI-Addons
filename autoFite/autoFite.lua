@@ -115,6 +115,7 @@ function autoFite()
                 approachTarget(assistTarget, 1, 0.3)
                 return
             end
+            
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
                 local enemy = monsterList[assistTarget.target_index] or nil
@@ -126,11 +127,10 @@ function autoFite()
 
         if player.status == engaged then
             local currentTarget = windower.ffxi.get_mob_by_target('t') or nil
-            if currentTarget and assistTarget and assistTarget.distance < 2 then
-                    approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
-            elseif currentTarget then
+            if currentTarget and assistTarget.distance < 2 then
                 approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
             end
+            
             faceTarget()
             wsHandler()
         end
