@@ -27,7 +27,7 @@ function init_gear_sets()
 		ear2="Suppanomimi",
 		ring1="Petrov Ring",
 		ring2="Ilabrat Ring",
-		back="Mecistopins Mantle",
+		--back="Mecistopins Mantle",
 	}
 	
 	sets.baseTank = {
@@ -43,7 +43,7 @@ function init_gear_sets()
 		ear2="Suppanomimi",
 		ring1="Petrov Ring",
 		ring2="Ilabrat Ring",
-		back="Mecistopins Mantle",
+		--back="Mecistopins Mantle",
 	}
     
 	sets.baseWS = {
@@ -172,7 +172,7 @@ function init_gear_sets()
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.obi = {waist="Hachirin-no-obi"}
-	sets.baseIdle = { ammo="Homiliary", head="Befoulded Crown", body="Jhakri Robe +2", neck="Sibyl Scarf", ring1="Stikini Ring +1", ring2="Stikini Ring +1"}
+	sets.baseIdle = { ammo="Homiliary", head="Befouled Crown", body="Jhakri Robe +2", neck="Sibyl Scarf", ring1="Stikini Ring +1", ring2="Stikini Ring +1"}
     
 	--Define Job Ability sets
     
@@ -257,10 +257,10 @@ end
 -- Setup vars that are user-dependent.
 function extendedUserSetup()
 	--Set default macro book / page
-    --set_macro_page(1, 2)
+    set_macro_page(1, 6)
 
 	--Set style lock
-	--send_command('wait 2; input /lockstyleset 3')
+	send_command:schedule(4, 'input /lockstyleset 19')
 end
 
 function extendedUserUnload()

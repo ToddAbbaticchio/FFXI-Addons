@@ -75,7 +75,7 @@ function initializeSessionVars(job, ...)
     if jobVars.target.assist then
         startMsg = startMsg..' assistTarget: '..jobVars.target.assist
     end
-    writeLog(startMsg ,1)
+    writeLog(startMsg, 1)
 end
 
 -- Main action handler - Decides what we should do
@@ -91,8 +91,6 @@ function autoFite()
         end
 
         if player.status == engaged then
-            startEngageAttemptTime = nil
-            detectedPullAction = false
             pulledMonster = nil
             faceTarget()
             if jobVars.ws ~= nil then
@@ -120,7 +118,7 @@ function autoFite()
             if assistTarget and assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
                 local enemy = monsterList[assistTarget.target_index] or nil
-                if enemy then
+                if enemy and enemy.id then
                     engageMonster(enemy.id, enemy.index)
                 end
             end
@@ -128,11 +126,9 @@ function autoFite()
 
         if player.status == engaged then
             local currentTarget = windower.ffxi.get_mob_by_target('t') or nil
-            if currentTarget ~= nil and assistTarget ~= nil then
-                if assistTarget and assistTarget.distance < 2 then
+            if currentTarget and assistTarget and assistTarget.distance < 2 then
                     approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
-                end
-            elseif currentTarget ~= nil then
+            elseif currentTarget then
                 approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
             end
             faceTarget()

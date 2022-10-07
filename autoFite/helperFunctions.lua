@@ -24,7 +24,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- determine if target is a valid 'autoFite' target
 function isAutofiteTarget(monster)
-    if monster ~= nil and monster.name:contains(jobVars.target.pull) and monster.distance < jobVars.pullDistance and monster.valid_target then
+    if monster and monster.name:contains(jobVars.target.pull) and monster.distance < jobVars.pullDistance and monster.valid_target and monster.hpp == 100 then
         return true
     end
     return false
@@ -166,16 +166,18 @@ end
 
 -- Find valid targets and try to pull them
 function findTargetV2()
+    -- if we've pulled something, engage
     if pulledMonster then
         engageMonster(pulledMonster)
         return
     end
 
+    -- iterate monster table, attempt pulls on valid targets
     local monsters = windower.ffxi.get_mob_array()
     for _,monster in pairs(monsters) do
         if isAutofiteTarget(monster) and not pulledMonster then
             tryPull(monster)
-            coroutine.sleep(0.5)
+            return
         end
     end
 end
@@ -222,8 +224,10 @@ end
 -------------------------------------------------------------------------------------------------------------------
 windower.register_event('action',function (act)
     local actor = windower.ffxi.get_mob_by_id(act.actor_id) or nil
-    local player = windower.ffxi.get_player()
-    if actor == nil or player == nil then return end
+    local player = windower.ffxi.get_player() or nil
+    if actor == nil or player == nil then
+        return
+    end
 
 	local category = act.category
     local param = act.param
@@ -232,13 +236,12 @@ windower.register_event('action',function (act)
             if isPullAction(param) == true then
                 -- casting success
                 if category == 4 then
-                    lastPullTime = os.time()
                     pulledMonster = act.targets[1].id or nil
                 end
             end
         end
 
-        -- pulled with ranged attack
+        -- pulled with ranged attack (don't do this.  really i should take it out)
         if category == 2 then
             pulledMonster = act.targets[1].id or nil
         end

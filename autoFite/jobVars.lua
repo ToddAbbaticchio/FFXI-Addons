@@ -19,15 +19,15 @@ vars.RUN = {
         -- ["Phalanx"] = "Phalanx",
         -- ["Temper"] = "Multi Strikes",
         ["Swordplay"] = "Swordplay",
-        --["Last Resort"] = "Last Resort",
+        ["Last Resort"] = "Last Resort",
         ["Battuta"] = "Battuta"
         -- ["Valiance"] = "Valiance,One for All",
         -- ["One for All"] = "Valiance,One for All"
     },
     maintainAftermath = false,
-    ws = "Dimidiation",
-    --ws = "Resolution",
-    targetTp = 1500,
+    --ws = "Dimidiation",
+    ws = "Resolution",
+    targetTp = 1000,
     pullCommand = '/ma "Flash" ',
     meleeDistance = 16
 }
