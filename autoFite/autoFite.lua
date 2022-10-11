@@ -10,7 +10,6 @@ require('vectors')
 require('buffTable')
 require('spellAbilityTable')
 require('helperFunctions')
-require('jobVars')
 
 idle = 0
 engaged = 1
@@ -20,6 +19,7 @@ logMode = 1
 --  USER SETUP HERE  --------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 function initializeSessionVars(job, ...)
+    require('jobVars')
     -- If a vars table doesn't exist for this job, stop here.
     if vars[job] == nil then
         writeLog('A vars.' .. job .. ' table does not exist! Gotta add one to use autoFite!', 1)

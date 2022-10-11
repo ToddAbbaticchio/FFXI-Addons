@@ -166,7 +166,7 @@ function init_gear_sets()
 		legs="Agwu's Slops",
 		feet="Agwu's Pigaches",
 		neck="Sanctity Necklace",
-		waist="Eschan Stone",
+		waist="Orpheus's Sash",
 		ear1="Friomisi Earring",
 		ear2="Crematio Earring",
 		ring1="Locus Ring",
@@ -549,6 +549,7 @@ function autoActions()
 		EvalState_equipGear()
 	end
 
+	-- If auto.fite mode don't do buffs when you should be pulling
 	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
 	end
@@ -582,26 +583,23 @@ function autoActions()
 			maintainBuff('Regen', '/ma "Regen IV" <me>')
 		end
 
-		-- spells when in tank mode
-		--if gearMode[gearMode.index].name:contains('Tank') then
-			maintainBuff('Aquaveil', '/ma "Aquaveil" <me>')
-			maintainBuff('Enmity Boost', '/ma "Crusade" <me>')
-			maintainBuff('Phalanx', '/ma "Phalanx" <me>')
-			if player.sub_job == 'BLU' then
-				maintainBuff('Defense Boost', '/ma "Cocoon" <me>')
-			end
-		--end
-
+		maintainBuff('Aquaveil', '/ma "Aquaveil" <me>')
+		maintainBuff('Enmity Boost', '/ma "Crusade" <me>')
+		maintainBuff('Phalanx', '/ma "Phalanx" <me>')
 		if player.status == engaged or gearMode[gearMode.index].name ~= 'SuperTank' then
 			maintainBuff('Multi Strikes', '/ma "Temper" <me>')
 		end
-		
+
+		-- spells when in /blu tank mode
+		if gearMode[gearMode.index].name:contains('Tank') and player.sub_job == 'BLU' then
+			maintainBuff('Defense Boost', '/ma "Cocoon" <me>')
+		end
+
 		if player.mpp < 50 and player.sub_job ~= 'SCH' then
 			maintainBuff('Refresh', '/ma "Refresh" <me>')
 		end
 		
-
-		-- Autofite only buffs
+		-- auto.fite only buffs
 		if auto.fite[auto.fite.index] == 'On' then
 			maintainBuff('Protect', '/ma "Protect IV" <me>')
 			maintainBuff('Shell', '/ma "Shell V" <me>')
@@ -609,6 +607,7 @@ function autoActions()
 				maintainBuff('Regen', '/ma "Regen IV" <me>')
 			end ]]
 
+			-- Use vivacious pulse when below 80% mp(if using tenebrae) or hp(if using others)
 			if recasts[242] == 0 then
 				if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) then
 					send_command('input /ja "Vivacious Pulse" <me>')

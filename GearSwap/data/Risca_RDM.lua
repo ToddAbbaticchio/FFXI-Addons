@@ -102,7 +102,7 @@ function init_gear_sets()
 		legs="Malignance Tights",
 		feet="Malignance Boots",
 		neck="Combatant's Torque",
-		waist="Sailfi Belt +1",
+		waist="Orpheus's Sash",
 		ear1="Suppanomimi",
 		ear2="Eabani Earring",
 		ring1="Petrov Ring",

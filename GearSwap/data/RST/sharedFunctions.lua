@@ -69,6 +69,8 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
+		local asdf = partyLowHP(99, 'asdf')
+		add_to_chat(1, asdf)
 		-- debug/testing stuff goes hererereereere
 	end
 end
@@ -231,6 +233,7 @@ function strategemCount() -- get number of strategems
     return currentCharges
 end
 
+-- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel
 	local mostRipName = ""

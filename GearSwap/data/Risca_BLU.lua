@@ -162,7 +162,7 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].PhysicalHP = set_combine(sets.midcast['Blue Magic'].Physical, {})
 
     -- Magical Spells --
-    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {})
+    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {waist="Orpheus's Sash"})
     sets.midcast['Blue Magic'].Magical.Resistant = set_combine(sets.midcast['Blue Magic'].Magical, {})
     sets.midcast['Blue Magic'].MagicalMnd = set_combine(sets.midcast['Blue Magic'].Magical, {})
 	sets.midcast['Blue Magic'].MagicalChr = set_combine(sets.midcast['Blue Magic'].Magical, {})
