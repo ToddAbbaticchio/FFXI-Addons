@@ -267,7 +267,7 @@ function maintainBuff(buffNameOrId, commandString)
 			send_command('input '..commandString)
 		end
 	elseif type(buffNameOrId) == 'number' then
-		if not buffIdActive(buffNameOrId) and notactionInProgress and not moving then
+		if not buffIdActive(buffNameOrId) and not actionInProgress and not moving then
 			send_command('input '..commandString)
 		end
 	end
@@ -412,22 +412,24 @@ end
 -- initial vars for autoCast looping
 actionInProgress = false
 time_start = os.time()
+
 -- initial vars for movement detection / movespeed swap
-mov = {counter=0}
+local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index)
+mov = {
+	counter = 0,
+	x = playerInfo.x or 0,
+	y = playerInfo.y or 0,
+	z = playerInfo.z or 0
+}
 moving = false
-if player and player.index and windower.ffxi.get_mob_by_index(player.index) then
-    mov.x = windower.ffxi.get_mob_by_index(player.index).x
-    mov.y = windower.ffxi.get_mob_by_index(player.index).y
-    mov.z = windower.ffxi.get_mob_by_index(player.index).z
-end
 
 windower.raw_register_event('prerender',function()
     -- determine if we're moving or not, handle movespeed gear swaps
 	mov.counter = mov.counter + 1;
     if mov.counter > 2 then
-        local player = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index)
-		if player and player.x and mov.x then
-            local movement = math.sqrt( (player.x-mov.x)^2 + (player.y-mov.y)^2 + (player.z-mov.z)^2 ) > 0.1
+        local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index) or nil
+		if playerInfo and playerInfo.x and mov.x then
+            local movement = math.sqrt((playerInfo.x - mov.x) ^ 2 + (playerInfo.y - mov.y) ^ 2 + (playerInfo.z - mov.z) ^ 2) > 0.1
             if movement and not moving then
 				moving = true
                 if sets.NightMovement ~= nil and sets.DayMovement ~= nil then
@@ -448,10 +450,10 @@ windower.raw_register_event('prerender',function()
                 end
             end
         end
-        if player and player.x then
-            mov.x = player.x
-            mov.y = player.y
-            mov.z = player.z
+        if playerInfo and playerInfo.x then
+            mov.x = playerInfo.x
+            mov.y = playerInfo.y
+            mov.z = playerInfo.z
         end
         mov.counter = 0
 	end
@@ -484,13 +486,16 @@ windower.register_event('zone change', function()
 	modeHud('update')
 end)
 
-windower.register_event('action',function(act)
-	if not act then return end
+windower.register_event('action',function(action)
+	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
+	local self = windower.ffxi.get_player() or nil
 
-	local actor = windower.ffxi.get_mob_by_id(act.actor_id)
-	local self = windower.ffxi.get_player()
-	local category = act.category
-    local param = act.param
+	if not actor or self or action then
+		return
+	end
+
+	local category = action.category
+    local param = action.param
     
     if actor and self and actor.id == self.id then
         -- is a spell, but not a 'spell was interrupted' action
@@ -499,7 +504,7 @@ windower.register_event('action',function(act)
 		end
 
 		-- a spell completes or is interrupted
-		if category == 4 or category == 8 and param == 28787 then
+		if category == 4 or (category == 8 and param == 28787) then
 			actionInProgress = true
 			actionDelay = 1
 		end

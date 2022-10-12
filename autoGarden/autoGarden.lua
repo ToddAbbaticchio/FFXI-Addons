@@ -32,7 +32,6 @@ end
 
 function findTarget(targetName)
 	pressKey('TAB', 0.5)
-	player = windower.ffxi.get_player()
 	if windower.ffxi.get_mob_by_target( 't' ) == nil then
 		windower.add_to_chat(200, 'No target, cycling.' )
 		findTarget(targetName)
