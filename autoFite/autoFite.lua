@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.2.1'
+_addon.version = '1.2.2'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -10,6 +10,7 @@ require('vectors')
 require('buffTable')
 require('spellAbilityTable')
 require('autoFiteFunctions')
+res = require 'resources'
 
 idle = 0
 engaged = 1
@@ -212,18 +213,10 @@ windower.register_event('addon command', function(...)
     end
 
     if afAction:lower() == 'test' then
-        local toFace = windower.ffxi.get_mob_by_target('t') or nil
-        if toFace == nil then
-            return
-        end
-        local player = windower.ffxi.get_mob_by_target('me')
-        local delta = {
-            Y = (player.y - toFace.y),
-            X = (player.x - toFace.x)
-        }
-        local angleInDegrees = (math.atan2(delta.Y, delta.X) * 180 / math.pi) * - 1
-        local mult = 10 ^ 0
-        windower.ffxi.turn(((math.floor(angleInDegrees * mult + 0.5) / mult) + 180):radian())
+        res = require 'resources'
+        local spellId = 422
+
+        writeLog('Mapped to english: '..res.spells[spellId].en, 1)
     end
 
     if afAction:lower() == 'fix' then

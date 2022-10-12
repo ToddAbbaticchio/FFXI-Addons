@@ -1,4 +1,4 @@
--- Ver 1.2.1
+-- Ver 1.2.2
 
 -------------------------------------------------------------------------------------------------------------------
 -- Utility Functions
@@ -95,12 +95,19 @@ function onCooldown(actionName)
 end
 
 -- determine if current action is our pull action
-function isPullAction(actionId)
-    for name, value in pairs(spellAbilityTable) do
-        if value.id == actionId and jobVars.pullCommand:contains(name) then
+function isPullAction(category, param)
+    if category == 4 then
+        if jobVars.PullCommand:contains(res.spells[param].en) then
             return true
         end
     end
+
+    if category == 6 then
+        if jobVars.PullCommand:contains(res.job_abilities[param].en) then
+            return true
+        end
+    end
+    
     return false
 end
 
@@ -237,7 +244,7 @@ windower.register_event('action',function (act)
     local param = act.param
     if actor.id == player.id then
         -- cat4: spellCastComplete cat6: jaComplete
-        if (category == 4 or category == 6) and isPullAction(param) == true then
+        if (category == 4 or category == 6) and isPullAction(category, param) then
             pulledMonster = act.targets[1].id or nil
         end
         
