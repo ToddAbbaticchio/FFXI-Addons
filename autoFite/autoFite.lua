@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.2.0'
+_addon.version = '1.2.1'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -9,7 +9,7 @@ require('coroutine')
 require('vectors')
 require('buffTable')
 require('spellAbilityTable')
-require('helperFunctions')
+require('autoFiteFunctions')
 
 idle = 0
 engaged = 1

@@ -1,3 +1,5 @@
+-- Ver 1.2.1
+
 -------------------------------------------------------------------------------------------------------------------
 -- Utility Functions
 -------------------------------------------------------------------------------------------------------------------
@@ -16,6 +18,16 @@ function writeLog(message, logLevel)
     end
     if logMode >= logLevel then
         windower.add_to_chat(200, '-- ' .. message .. ' --')
+    end
+end
+
+-- feed a targetID to get the targetIndex
+function getMobIndex(lookupId)
+    local monsters = windower.ffxi.get_mob_array()
+    for index,monster in pairs(monsters) do
+        if monster.id == lookupId then
+            return index
+        end
     end
 end
 
@@ -134,15 +146,6 @@ function engageMonster(targetId, targetIndex)
     packets.inject(engagePacket)
 end
 
-function getMobIndex(lookupId)
-    local monsters = windower.ffxi.get_mob_array()
-    for index,monster in pairs(monsters) do
-        if monster.id == lookupId then
-            return index
-        end
-    end
-end
-
 -- Run forward (in the currently facing direction for duration seconds)
 function approachTarget(target, maxDistance, moveDuration)
     if target.distance > maxDistance then
@@ -220,6 +223,10 @@ end
 -- Event Listeners
 -------------------------------------------------------------------------------------------------------------------
 windower.register_event('action',function (act)
+    if not active then
+        return
+    end
+
     local actor = windower.ffxi.get_mob_by_id(act.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
     if actor == nil or player == nil then
@@ -228,26 +235,15 @@ windower.register_event('action',function (act)
 
 	local category = act.category
     local param = act.param
-    if actor.id == player.id and active then
-        if category == 8 or category == 4 then
-            if isPullAction(param) == true then
-                -- casting success
-                if category == 4 then
-                    pulledMonster = act.targets[1].id or nil
-                end
-            end
+    if actor.id == player.id then
+        -- cat4: spellCastComplete cat6: jaComplete
+        if (category == 4 or category == 6) and isPullAction(param) == true then
+            pulledMonster = act.targets[1].id or nil
         end
-
+        
         -- pulled with ranged attack (don't do this.  really i should take it out)
         if category == 2 then
             pulledMonster = act.targets[1].id or nil
-        end
-
-        -- action is a ja and matches pull command
-        if category == 6 then
-            if isPullAction(param) == true then
-                pulledMonster = act.targets[1].id or nil
-            end
         end
     end
 end)

@@ -28,12 +28,10 @@ function init_gear_sets()
 		legs="Samnuha Tights",
 		feet="Herculean Boots",
 		neck="Anu Torque",
-		--neck="Combatant's Torque",
 		waist="Sailfi Belt +1",
 		ear1="Telos Earring",
 		ear2="Sherida Earring",
 		ring1="Epona's Ring",
-		--ring1="Ilabrat Ring",
 		ring2="Niqmaddu Ring",
 		back=gear.STRCape,
 	}
@@ -42,7 +40,7 @@ function init_gear_sets()
 		head="Nyame Helm",                --DT07
 		body="Runeist's Coat +3",
 		hands="Turms Mittens +1",
-		legs="Erilaz Leg Guards +2",      --DT12
+		legs="Erilaz Leg Guards +3",      --DT13
 		feet="Turms Leggings +1",
 		neck="Futhark Torque +2",         --DT07
 		waist="Engraved Belt",
@@ -112,12 +110,12 @@ function init_gear_sets()
 		ring2="Niqmaddu Ring",
 		back=gear.STRCape,
 	}
-	sets.baseEnmity = {                             --Toal: 95+23   DT:37+25  (+ from epeo)
+	sets.baseEnmity = {                             --Toal: 95+23   DT:43+25  (+ from epeo)
 		ammo="Aqreqaq Bomblet",           --2
 		head="Halitus Helm",              --8
 		body="Emet Harness +1",           --10                      P06
 		hands="Kurys Gloves",             --9                       02
-		legs="Erilaz Leg Guards +2",      --11                      P07
+		legs="Erilaz Leg Guards +3",      --13                      13
 		feet="Erilaz Greaves +2",         --6                       P05
 		neck="Futhark Torque +2",         --10                      07
 		waist="Kasiri Belt",              --3
@@ -144,18 +142,18 @@ function init_gear_sets()
 		back=gear.CASTCape,                         --10
 	})
 	sets.emSkill = {
-		ammo="Aqreqaq Bomblet",
-		--head="Carmine Mask",            --10
-		--body="Manasa Chasuble", ???
+		--ammo="",
+		--head="",            			  --10
+		--body="",
 		hands="Runeist's Mitons +3",      --15
 		legs="Carmine Cuisses +1",        --18
-		--feet="Carmine Greaves +1",
+		--feet="",
 		neck="Incanter's Torque",         --10
 		waist="Olympus Sash",             --05
-		ear1="Andoaa Earring",        --05
-		ear2="Mimir Earring",        --10
-		ring1="Stikini Ring +1",      --08
-		ring2="Stikini Ring +1",     --08
+		ear1="Andoaa Earring",        	  --05
+		ear2="Mimir Earring",        	  --10
+		ring1="Stikini Ring +1",      	  --08
+		ring2="Stikini Ring +1",     	  --08
 		back="Merciful Cape",             --05
 	}
 	sets.MagicBurst = {
@@ -173,7 +171,7 @@ function init_gear_sets()
 		ring2="Mujin Band",
 		back=gear.LungeCape,
 	}
-	sets.precast.FC = set_combine(sets.baseTank, {
+	sets.precast.FC = {
 		ammo="Impatiens",
 		head="Rune. Bandeau +3",   --14
 		body="Agwu's Robe",        --08
@@ -186,7 +184,7 @@ function init_gear_sets()
 		ring1="Kishar Ring",       --04
 		ring2="Defending Ring",
 		back=gear.CASTCape,        --10
-	})
+	}
 
 	-- Random one-off sets or small sets
     sets.baseIdle = set_combine(sets.baseTank, {ring2="Defending Ring",ring1="Karieyh Ring +1",ammo="Homiliary"}) 
