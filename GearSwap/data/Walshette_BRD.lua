@@ -14,12 +14,8 @@ function init_gear_sets()
 	gear.magicAccCape = {name="Intarabus's Cape", augments={'CHR+20',}}
     gear.savageCape = {name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
 
-    gear.ghorn = {name="Gjallarhorn"}
-    gear.harp = {name="Blurred Harp +1"}
-    gear.linos = {name="Linos"}
-
-    sets.ghorn = {range="Gjallarhorn"}
-    sets.harp = {range="Blurred Harp +1"}
+    sets.ghorn = {range="Gjallarhorn",}
+    sets.harp = {range="Blurred Harp +1",}
 
 	------------------------------------------------------------------------------------------------
     ---------------------------------------- Precast Sets ------------------------------------------
@@ -583,17 +579,22 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
             equip({ranged="Gjallarhorn"})
         end
     end]]--
+
+    if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
+        if (countSongs() < tablelength(autoSongs)-1) then            
+            equip({ranged="Blurred Harp +1"})
+            add_to_chat(122, '_ Equipping Harp _')
+        elseif buffactive['Clarion Call'] and (countSongs() < tablelength(autoSongs)) then            
+            equip({ranged="Blurred Harp +1"})
+            add_to_chat(122, '_ Equipping Harp _')
+        else                     
+            equip({ranged="Gjallarhorn"})
+            add_to_chat(122, '_ Equipping Horn _')   
+        end
+    end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)	
-    --[[if spell.type == 'BardSong' then
-        if buffactive['Clarion Call'] then -- Buff ID: 499
-            equip({ranged="Blurred Harp +1"})
-        else
-            equip({ranged="Gjallarhorn"})
-        end
-    end]]--
-
     if spell.name:contains('Minuet') then
         equip({body="Fili Hongreline +2"})
     end
@@ -678,15 +679,17 @@ function autoActions()
         -- If not all songs are active, try to get more up (only use clarion if Auto Fite is on)
         if (countSongs() < tablelength(autoSongs) and countSongs() >= 2 and (clarionRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Clarion Call'])) then
             add_to_chat(122, '! Clarion Call Needed !')
-            equip(sets.harp)
+            --equip({range="Blurred Harp +1"})
             send_command('/clarioncall')
             return
         elseif (countSongs() < tablelength(autoSongs)-1  and countSongs() >= 2 and (clarionRecast > 0 or auto.fite[auto.fite.index] == 'Off')) then
             add_to_chat(122, '! Bonus Song Needed !')
-            equip(sets.harp)
-        elseif (not player.equipment.range == "Gjallarhorn") then
-            equip(sets.ghorn)
-        end          
+            --equip({range="Blurred Harp +1"})
+        end
+        --[[elseif (not player.equipment.range == "Gjallarhorn" and not buffactive['Clarion Call']) then
+            add_to_chat(122, '_ Equipping Horn _')
+            equip({range="Gjallarhorn"})
+        end         ]]-- 
         
         -- Soul Voice (only if AutoFite is on)
         if (soulVoiceRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Soul Voice']) then
