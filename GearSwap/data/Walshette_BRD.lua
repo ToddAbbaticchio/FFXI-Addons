@@ -290,10 +290,10 @@ function init_gear_sets()
         feet="Nyame Sollerets", --feet="Bihu Slippers +3",
         neck="Bard's Charm", --neck="Fotia Gorget",
         ear1="Steelflash Earring", --ear1="Ishvara Earring",
-        ear2="Tripudio Earring", --ear2="Moonshade Earring",
+        ear2="Moonshade Earring",
         ring1="Ifrit Ring +1",
-        ring1="Apate Ring", --ring2="Ilabrat Ring",
-        back=gear.meleeTPCape, --back=gear.BRD_WS1_Cape,
+        ring2="Apate Ring", --ring2="Ilabrat Ring",
+        back=gear.savageCape,
         waist="Sailfi Belt +1",
     }
 
@@ -398,7 +398,7 @@ function init_gear_sets()
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
-        --legs="Ayanmo Cosciales +2", --legs="Zoar Subligar +1",
+        legs="Zoar Subligar +1",
         --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
         neck="Bard's Charm",     
 		ear1="Cessance Earring",
@@ -407,7 +407,6 @@ function init_gear_sets()
 		ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
-        legs="Nyame Flanchard",
         feet="Nyame Sollerets",
     }
 
@@ -416,7 +415,7 @@ function init_gear_sets()
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
-        --legs="Ayanmo Cosciales +2", --legs="Zoar Subligar +1",
+        legs="Zoar Subligar +1",
         --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
         neck="Bard's Charm",     
         ear1="Cessance Earring",
@@ -425,7 +424,6 @@ function init_gear_sets()
         ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
-        legs="Nyame Flanchard",
         feet="Nyame Sollerets",
     } -- 26%
 
@@ -572,24 +570,16 @@ end
 -- Action/Cast Phase Extensions
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)	
-    --[[if spell.type == 'BardSong' then
-        if buffactive['Clarion Call'] then -- Buff ID: 499
-            equip({ranged="Blurred Harp +1"}) -- Daurdabla goes here
-        else
-            equip({ranged="Gjallarhorn"})
-        end
-    end]]--
-
     if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
         if (countSongs() < tablelength(autoSongs)-1) then            
             equip({ranged="Blurred Harp +1"})
-            add_to_chat(122, '_ Equipping Harp _')
+            add_to_chat(015, '- Equipping Harp -')
         elseif buffactive['Clarion Call'] and (countSongs() < tablelength(autoSongs)) then            
             equip({ranged="Blurred Harp +1"})
-            add_to_chat(122, '_ Equipping Harp _')
+            add_to_chat(015, '- Equipping Harp -')
         else                     
             equip({ranged="Gjallarhorn"})
-            add_to_chat(122, '_ Equipping Horn _')   
+            add_to_chat(015, '- Equipping Horn -')   
         end
     end
 end
@@ -597,6 +587,10 @@ end
 function extendedJobMidcast(spell, action, spellMap, eventArgs)	
     if spell.name:contains('Minuet') then
         equip({body="Fili Hongreline +2"})
+    end
+
+    if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
+        disable('body','legs','feet')
     end
 end
 
@@ -625,7 +619,7 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
         if auto.sing.index > #auto.sing then
             auto.sing.index = 0
         end
-        windower.add_to_chat(122,'[Sing: '..auto.sing[auto.sing.index]..']')
+        windower.add_to_chat(013,'[Sing: '..auto.sing[auto.sing.index]..']')
     end
 
     modeHud('update')
@@ -651,7 +645,7 @@ songTimer = os.time()
 songInProgress = false
 -- How long your songs last with just gear
 -- TODO: Calculate this via equipped gear during song listener
-baseSongDuration = 270 
+baseSongDuration = 240 
 -- How long the song should have left on it before we re-sing
 songBuffer = 60 
 
@@ -667,40 +661,37 @@ function autoActions()
 
     --[[ Auto Sing includes: Nightingale/Troubadour/Marcato, Songs ]]--
     --[[ Auto Fite includes: SV/Clarion ]]--
-    -- If we need to be pulling, do it
+    -- If we need to be pulling, do it and avoid all this code
     if auto.fite[auto.fite.index] == 'On' and not me.status == 1 then
         return
     end
 
     if auto.sing[auto.sing.index] == 'On' and not songInProgress then
         -- General theory is anything can be interrupted by other actions (mob hits you, AutoFite pulls or WSes, etc.)
-        -- Constantly re-evaluate current status and what to do next
+        -- Constantly re-evaluate current status and determine what to do next
 
         -- If not all songs are active, try to get more up (only use clarion if Auto Fite is on)
         if (countSongs() < tablelength(autoSongs) and countSongs() >= 2 and (clarionRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Clarion Call'])) then
-            add_to_chat(122, '! Clarion Call Needed !')
-            --equip({range="Blurred Harp +1"})
+            add_to_chat(038, '! Clarion Call Needed !')
             send_command('/clarioncall')
+            resetSongTimers()
             return
         elseif (countSongs() < tablelength(autoSongs)-1  and countSongs() >= 2 and (clarionRecast > 0 or auto.fite[auto.fite.index] == 'Off')) then
-            add_to_chat(122, '! Bonus Song Needed !')
-            --equip({range="Blurred Harp +1"})
+            -- This is (hopefully) handled by job precast
+            add_to_chat(038, '! Bonus Song Needed !')
         end
-        --[[elseif (not player.equipment.range == "Gjallarhorn" and not buffactive['Clarion Call']) then
-            add_to_chat(122, '_ Equipping Horn _')
-            equip({range="Gjallarhorn"})
-        end         ]]-- 
         
         -- Soul Voice (only if AutoFite is on)
         if (soulVoiceRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Soul Voice']) then
             send_command('/soulvoice')
+            resetSongTimers()
             return
         end
 
         -- JAs: Nightingale/Troubadour/Marcato  
         -- Marcato (if Soul Voice is not on, combine with Nitro)
         if (not buffactive['Soul Voice'] and marcatoRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0) then
-            add_to_chat(122, '~ Marcato ~')
+            add_to_chat(013, '~ Marcato ~')
             send_command('/marcato')
             return
         end
@@ -708,19 +699,20 @@ function autoActions()
         if (nightingaleRecast == 0 and troubadourRecast == 0 and (soulVoiceRecast > 300 and auto.fite[auto.fite.index] == 'On') and not buffactive['Nightingale']) then
             -- TODO: Set first song's expiry to 0 so it plays next
             -- TODO: Set other songs right after so they get re-sung with nitro duration
-            add_to_chat(122, '~ Nitro ~')
+            add_to_chat(013, '~ Nitro ~')
             send_command('/nightingale')
             return
         end
         if (buffactive['Nightingale'] and troubadourRecast == 0 and not buffactive['Troubadour']) then
             send_command('/troubadour')
+            resetSongTimers()
             return
         end
 
         -- Sing songs that expire soon
         for name,info in pairs(autoSongs) do
             if not info.active or info.expireTime - os.time() < songBuffer then                
-                add_to_chat(122, '~ Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
+                add_to_chat(013, '~ Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
                 send_command('input /ma "'..name..'" <me>')
                 return
             end
@@ -731,7 +723,7 @@ function autoActions()
     if auto.sing[auto.sing.index] == 'On' and songInProgress then       
         for name,info in pairs(autoSongs) do
             if info.expireTime - os.time() < songBuffer*0.5 then                
-                add_to_chat(122, '~ Emergency Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
+                add_to_chat(038, '~ Emergency Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
                 send_command('input /ma "'..name..'" <me>')
                 return
             end
@@ -765,10 +757,14 @@ windower.register_event('action',function(act)
         if actor and self and actor.id == self.id then
             -- 08: Start spell casting    (param 24931 = initiation, 28787 = failure)
             -- Objects in 08 return a targets array and an actions array of everyone who is hit by the spell
-            if category == 8 then
+            if category == 8 and param == 24931 then
                 songInProgress = true
                 local spellName = res.spells[act.targets[1].actions[1].param].en
-                add_to_chat(122, '~ Singing Song ('..spellName..') ~')
+                add_to_chat(013, '~ Singing Song ('..spellName..') ~')
+            elseif param == 28787 then
+                songInProgress = false
+                local spellName = res.spells[act.targets[1].actions[1].param].en
+                add_to_chat(011, '~ Song Interrupted! ('..spellName..') ~')
             end
 
             -- 04: Finish spell casting 
@@ -779,28 +775,32 @@ windower.register_event('action',function(act)
                     -- Don't update expiry very far out it was Harp (want to re-sing it with Gjallarhorn in 60 sec)
                     if (player.equipment.range == "Blurred Harp +1") then                    
                         autoSongs[res.spells[param].en].expireTime = os.time() + songBuffer*2
-                        add_to_chat(122, '~ Song Complete ['..res.spells[param].en..' : expireTime Set Short ('..(songBuffer*2)..')] ~')
+                        add_to_chat(013, '~ Song Complete ['..res.spells[param].en..' : expireTime Set Short ('..(songBuffer*2)..')] ~')
                         autoSongs[spellName].active = true
                     else
                         if buffactive['Troubadour'] then 
                             autoSongs[res.spells[param].en].expireTime = os.time() + baseSongDuration*2
-                            add_to_chat(122, '~ Song Complete ['..res.spells[param].en..' : expireTime Updated x2 ('..(baseSongDuration*2)..')] ~')
+                            add_to_chat(013, '~ Song Complete ['..res.spells[param].en..' : expireTime Updated x2 ('..(baseSongDuration*2)..')] ~')
                         else
                             autoSongs[res.spells[param].en].expireTime = os.time() + baseSongDuration
-                            add_to_chat(122, '~ Song Complete ['..res.spells[param].en..' : expireTime Updated ('..baseSongDuration..')] ~')
+                            add_to_chat(013, '~ Song Complete ['..res.spells[param].en..' : expireTime Updated ('..baseSongDuration..')] ~')
                         end                
                         
                         autoSongs[spellName].active = true
                     end            
                 else
-                    add_to_chat(122, '~ Song Complete ['..res.spells[param].en..' : No Changes] ~')
+                    add_to_chat(013, '~ Song Complete ['..res.spells[param].en..' : No Changes] ~')
+                end
+
+                if auto.sing[auto.sing.index] == 'On' then
+                    enable('body','legs','feet')
                 end
             end
             
             -- 06: Job Ability Complete
             if category == 6 then
                 songInProgress = false
-                add_to_chat(122, '- Used a JA ('..res.job_abilities[param].en..') -')
+                add_to_chat(013, '- Used a JA ('..res.job_abilities[param].en..') -')
             end
         end
     end
@@ -826,8 +826,15 @@ function countSongs()
     return count
 end
 
+function resetSongTimers()
+    -- Set all songs to buffer limit so they look like they need to be re-sung
+    for k,v in pairs(autoSongs) do
+        v.expireTime = os.time() + songBuffer     
+    end
+end
+
 function tablelength(T)
     local count = 0
     for _ in pairs(T) do count = count + 1 end
     return count
-  end
+end
