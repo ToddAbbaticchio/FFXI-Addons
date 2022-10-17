@@ -35,7 +35,7 @@ function init_gear_sets()
 		hands="Adhemar Wristbands +1",
 		legs="Samnuha Tights",
 		feet="Herculean Boots",
-		neck="Iskur Gorget",
+		neck="Clotharius Torque", --neck="Iskur Gorget",
 		ear1="Telos Earring",-- Upgrade to ear1="Cessance Earring",
 		ear2="Suppanomimi",
 		ring1="Petrov Ring",
@@ -44,13 +44,14 @@ function init_gear_sets()
 		waist="Windbuffet Belt +1", 
 	}
 	sets.meleeAcc = set_combine(sets.baseMelee, {
+		neck="Clotharius Torque",
 		ring2="Ilabrat Ring",
 		ear2="Odr Earring",
 	})
 	sets.meleeHybrid = set_combine(sets.baseMelee, {
 		head="Malignance Chapeau",
 		body="Nyame Mail", -- Upgrade to body="Malignance Tabard",
-		hands="Nyame Gauntlets", -- Upgrade to hands="Malignance Gloves",
+		hands="Malignance Gloves",
 		legs="Nyame Flanchard",
 		feet="Nyame Sollerets", -- Upgrade to feet="Malignance Boots",
 		ring1="Defending Ring",
@@ -85,10 +86,10 @@ function init_gear_sets()
 	}
 	sets.midcast.RA = {
 		ammo=gear.RAbullet,
-		head="Ikenga's Hat", -- Upgrade to head="Malignance Chapeau",
+		head="Malignance Chapeau",
 		body="Meg. Cuirie +2", -- Upgrade to body="Malignance Tabard",
-		hands="Meg. Gloves +2", -- Upgrade to hands="Malignance Gloves",
-		legs="Ikenga's Trousers", -- Upgrade to legs="Malignance Tights",
+		hands="Malignance Gloves",
+		legs="Malignance Tights",
 		feet="Meg. Jam. +2", -- Upgrade to feet="Malignance Boots",
 		neck="Iskur Gorget",
 		ear1="Enervating Earring",
@@ -129,7 +130,7 @@ function init_gear_sets()
 		ammo=gear.WSbullet,
 		head="Lanun Tricorne +3",
 		body="Laksa. Frac +3", 
-		hands="Chasseur's Gants +2",
+		hands="Chasseur's Gants +3",
 		legs="Meg. Chausses +2", 
 		feet="Lanun Bottes +3",
 		neck="Fotia Gorget",
@@ -145,14 +146,14 @@ function init_gear_sets()
 		ammo=gear.MAbullet,
 		head="Herculean Helm",
 		body="Lanun Frac +3",
-		hands="Chasseur's Gants +2",
+		hands="Chasseur's Gants +3",
 		legs="Herculean Trousers",
 		feet="Lanun Bottes +3", 
 		neck="Comm. Charm +2",
 		ear1="Novio Earring", -- Upgrade to "Crematio Earring",
 		ear2="Friomisi Earring", 
 		ring1="Dingir Ring",
-		ring2="Mummu Ring", -- Upgrade to "Epaminondas's Ring",
+		ring2="Epaminondas's Ring",
 		back=gear.aWSDCape,
 		waist="Eschan Stone", -- Upgrade to "Skrymir Cord +1",
 	}
@@ -185,15 +186,15 @@ function init_gear_sets()
 	-- Savage Blade [Physical;STR]
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {		
 		head="Lanun Tricorne +3", --Upgrade to head="Herculean Helm",
-		hands="Chasseur's Gants +2",
+		hands="Chasseur's Gants +3",
 		neck="Rep. Plat. Medal",
 		body="Laksamana's Frac +3",
 		ear1="Moonshade Earring",
 		ear2="Ishvara Earring",
-		ring1="Rajas Ring",-- Upgrade to ring1="Regal Ring",
-		ring2="Apate Ring",-- Upgrade to ring2="Epaminondas's Ring",
+		ring1="Apate Ring",-- Upgrade to ring1="Regal Ring",
+		ring2="Epaminondas's Ring",
 		back=gear.sWSDCape,
-		waist="Fotia Belt", --waist="Sailfi Belt +1", seems to underperform
+		waist="Sailfi Belt +1", -- Fotia?
 		legs="Herculean Trousers", -- Upgrade to Herculean STR/Att/Acc/WSD
 		feet="Lanun Bottes +3",
 	})
@@ -228,7 +229,7 @@ function init_gear_sets()
 	sets.precast.CorsairRoll = {
 		head="Lanun Tricorne +3",
 		neck="Regal Necklace",
-		hands="Chasseur's Gants +2",
+		hands="Chasseur's Gants +3",
 		ring1="Barataria Ring",
 		ring2="Luzaf's Ring",
 		back=gear.snapCape,
@@ -263,7 +264,7 @@ function init_gear_sets()
 		head="Laksa. Tricorne +3",
 		body="Meg. Cuirie +2", -- Upgrade to body="Malignance Tabard",
 		hands="Laksa. Gants +2", -- Upgrade to hands="Laksa. Gants +3",
-		legs="Meg. Chausses +2", -- Upgrade to legs="Malignance Tights",
+		legs="Malignance Tights",
 		feet="Chasseur's Bottes +2", -- Upgrade to feet="Laksa. Bottes +3",
 		neck="Comm. Charm +2",
 		ear1="Novio Earring",  -- Upgrade to ear1="Enchntr. Earring +1",
@@ -279,7 +280,7 @@ function init_gear_sets()
 		ammo=gear.QDbullet,
 		head="Malignance Chapeau",
 		body="Ikenga's Vest",-- Upgrade to body="Malignance Tabard",
-		hands="Ikenga's Gloves", -- Upgrade to hands="Malignance Gloves",
+		hands="Malignance Gloves",
 		legs="Chasseur's Culottes +2",
 		feet="Ikenga's Clogs", -- Upgrade to feet="Malignance Boots",
 		neck="Iskur Gorget",
@@ -301,7 +302,7 @@ function init_gear_sets()
 	sets.precast.CorsairRoll["Courser's Roll"] = set_combine(sets.precast.CorsairRoll, {feet="Chasseur's Bottes +2"})
 	sets.precast.CorsairRoll["Blitzer's Roll"] = set_combine(sets.precast.CorsairRoll, {head="Chasseur's Tricorne +2"})
 	sets.precast.CorsairRoll["Tactician's Roll"] = set_combine(sets.precast.CorsairRoll, {body="Chasseur's Frac +2"})
-	sets.precast.CorsairRoll["Allies' Roll"] = set_combine(sets.precast.CorsairRoll, {hands="Chasseur's Gants +2"})
+	sets.precast.CorsairRoll["Allies' Roll"] = set_combine(sets.precast.CorsairRoll, {hands="Chasseur's Gants +3"})
 	sets.precast.FoldDoubleBust = {hands="Lanun Gants +3"} 
 
 --[[ Utility Sets ]]--
@@ -340,7 +341,7 @@ function init_gear_sets()
 		ammo=gear.RAbullet,
 		head="Malignance Chapeau",
 		body="Nyame Mail", -- Upgrade to body="Malignance Tabard",
-		hands="Nyame Gauntlets", -- Upgrade to hands="Malignance Gloves",
+		hands="Malignance Gloves",
 		legs="Carmine Cuisses +1",
 		feet="Nyame Sollerets", -- Upgrade to feet="Malignance Boots",
 		neck="Twilight Torque",-- Upgrade to neck="Bathy Choker +1", 
@@ -812,8 +813,8 @@ function autoActions()
 		-- Auto QD (?)
 		-- Auto Triple shot (?)
 
-		-- Auto Random Deal (use if WD is not up soon and was not just used)
-		if randomDealRecast == 0 and wildCardRecast > 300 and wildCardRecast < 2500 then
+		-- Auto Random Deal (use if Wild Card is not up soon and was not just used)
+		if randomDealRecast == 0 and wildCardRecast > 180 and wildCardRecast < 2600 then
 			add_to_chat(122, '[~ Random Deal ~]')
             send_command('/randomdeal')
             return
@@ -825,13 +826,12 @@ function autoActions()
             send_command('/wildcard')
             return
         end
-		--[[
         if cuttingCardsRecast == 0 and wildCardRecast > 2200 and wildCardRecast < 2600 then
             add_to_chat(122, '[! Cutting Cards !]')
-            send_command('/cuttingcards <p5>')
+            send_command('/cuttingcards <p3>')
             return
         end
-]]--
+
         --[[ Auto Food ?
         if not buffactive['Food'] then
             send_command('input /item "Grape Daifuku" <me>')
