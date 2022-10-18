@@ -69,8 +69,13 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		local asdf = partyLowHP(99, 'asdf')
-		add_to_chat(1, asdf)
+		--[[ local asdf = partyLowHP(99, 'asdf')
+		add_to_chat(1, asdf) ]]
+		local currentBuffs = windower.ffxi.get_player().buffs
+		for k,v in pairs(currentBuffs) do
+			add_to_chat(1, 'k: '..tostring(k)..' v: '..tostring(v))
+		end
+
 		-- debug/testing stuff goes hererereereere
 	end
 end
@@ -174,10 +179,8 @@ end
 
 function buffIdActive(buffId) -- is buff active? using buffId not name
 	local currentBuffs = windower.ffxi.get_player().buffs
-	for _, v in pairs(currentBuffs) do
-		if v == buffId then
-			return true
-		end
+	if currentBuffs[buffId] ~= nil then
+		return true
 	end
 	return false
 end
@@ -193,21 +196,21 @@ function readyCharges() -- for bst ability 'Ready'
 end
 
 function strategemCount() -- get number of strategems
-    local player = windower.ffxi.get_player()
+    local playerInfo = windower.ffxi.get_player()
 	local singleStratCooldown
 	local maxStrategems
 	local schLevel
 
-	if player.main_job == 'SCH' then
-		schLevel = player.main_job_level
-	elseif player.sub_job == 'SCH' then
-		schLevel = player.sub_job_level
+	if playerInfo.main_job == 'SCH' then
+		schLevel = playerInfo.main_job_level
+	elseif playerInfo.sub_job == 'SCH' then
+		schLevel = playerInfo.sub_job_level
 	else
 		add_to_chat(122, 'Not main or sub sch! No strategems for you!')
 		return
 	end
 
-	if schLevel == 99 and player.job_points.sch.jp_spent >= 550 then
+	if schLevel == 99 and playerInfo.job_points.sch.jp_spent >= 550 then
 		singleStratCooldown = 33
 		maxStrategems = 5
 	elseif schLevel >= 90 then

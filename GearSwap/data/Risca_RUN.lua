@@ -128,7 +128,7 @@ function init_gear_sets()
 	sets.interrupt = set_combine(sets.baseTank, {   --Total: 103
 		-- level 5 merits                           --10
 		ammo="Impatiens",                           --10
-		head="Erilaz Galea +2",                     --15
+		head="Erilaz Galea +3",                     --20
 		body="Herculean Vest",                      --10
 		hands="Rawhide Gloves",                     --15 
 		legs="Carmine Cuisses +1",                  --20
@@ -192,7 +192,7 @@ function init_gear_sets()
 	sets.wakeUp = {head="Frenzy Sallet"}
 	sets.Obi = {waist="Hachirin-no-Obi"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
-	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +2",}
+	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +3",}
 	sets.MagicFreeCast = set_combine(sets.MagicBurst, {ring1='Shiva Ring +1', ring2="Shiva Ring +1"})
 	sets.naked = {head=empty, body=empty, hands=empty, legs=empty, feet=empty, neck=empty, waist=empty, ear1=empty, ear2=empty, ring1=empty, ring2=empty, back=empty}
 
@@ -206,10 +206,10 @@ function init_gear_sets()
     sets.precast.JA['Lunge'] = sets.MagicBurst
     sets.precast.JA['Swipe'] = sets.MagicBurst
     sets.precast.JA['Gambit'] = {hands="Runeist's Mitons +3"}
-    sets.precast.JA['Rayke'] = {feet="Futhark Boots +1"}
+    sets.precast.JA['Rayke'] = {feet="Futhark Boots +2"}
     sets.precast.JA['Elemental Sforzo'] = set_combine(sets.baseEnmity, {body="Futhark Coat +3"})
     sets.precast.JA['Swordplay'] = set_combine(sets.baseEnmity, {hands="Futhark Mitons +3"})
-    sets.precast.JA['Vivacious Pulse'] = set_combine(sets.baseEnmity, {head="Erilaz Galea +2"})
+    sets.precast.JA['Vivacious Pulse'] = set_combine(sets.baseEnmity, {head="Erilaz Galea +3"})
 	sets.precast.JA['Weapon Bash'] = set_combine(sets.tank, sets.TH)
 
 	-- WS Sets
@@ -232,7 +232,7 @@ function init_gear_sets()
     sets.midcast['Aquaveil'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration, sets.interrupt, {})
     sets.midcast['Regen'] = set_combine(sets.baseTank, sets.emDuration, {head="Rune. Bandeau +3",neck="Sacro Gorget",waist="Sroda Belt",ear2="Erilaz Earring"})
 	sets.midcast['Cure'] = set_combine(sets.baseTank, {waist="Sroda Belt"})
-    sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +2",})
+    sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +3",})
 	sets.midcast['Cocoon'] = sets.baseTank
 	sets.midcast['Stoneskin'] = set_combine(sets.baseTank, sets.emSkill, {waist="Siegel Sash",})
 end
@@ -601,9 +601,9 @@ function autoActions()
 		if auto.fite[auto.fite.index] == 'On' then
 			maintainBuff('Protect', '/ma "Protect IV" <me>')
 			maintainBuff('Shell', '/ma "Shell V" <me>')
-			--[[ if player.hpp < 70 then
+			if player.hpp < 90 then
 				maintainBuff('Regen', '/ma "Regen IV" <me>')
-			end ]]
+			end
 
 			-- Use vivacious pulse when below 80% mp(if using tenebrae) or hp(if using others)
 			if recasts[242] == 0 then

@@ -13,7 +13,7 @@ function init_gear_sets()
     --------------------------------------
 	--Define augmented gear
 	gear.INTCape = {name="Rosmerta's Cape", augments={'INT + 20'}}
-	gear.STRCape = {name="Rosmerta's Cape", augments={'STR + 20'}}
+	gear.STRCape = {name="Rosmerta's Cape", augments={'DEX + 20'}}
 	
 	--Define Base Sets for use in other sets
 	sets.baseMelee = {
@@ -477,9 +477,10 @@ function autoActions()
 		local unbridledRecast = abilRecasts[81]
 
 		if not actionInProgress then
-			maintainBuff(33, '/ma "Battery Charge" <me>')
+			--maintainBuff(43, '/ma "Battery Charge" <me>')
+			--maintainBuff(91, '/ma "Nat. Meditation" <me>')
 			maintainBuff('Refresh', '/ma "Battery Charge" <me>')
-			--maintainBuff(700, '/ma "Nat. Meditation" <me>')
+			maintainBuff('Attack Boost', '/ma "Nat. Meditation" <me>')
 			--maintainBuff('Cocoon', '/ma "Cocoon" <me>')
 
 			if auto.fite[auto.fite.index] == 'On' then
@@ -495,7 +496,7 @@ function autoActions()
 					return
 				end ]]
 
-				partyLowHP(50, '/ma "Magic Fruit"')
+				--partyLowHP(50, '/ma "Magic Fruit"')
 			end
 		end
 	end

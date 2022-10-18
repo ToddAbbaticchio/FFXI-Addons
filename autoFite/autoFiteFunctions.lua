@@ -96,14 +96,18 @@ end
 
 -- determine if current action is our pull action
 function isPullAction(category, param)
+    if not active or mode ~= 'pull' then
+        return
+    end
+
     if category == 4 then
-        if jobVars.PullCommand:contains(res.spells[param].en) then
+        if jobVars.pullCommand:contains(res.spells[param].en) then
             return true
         end
     end
 
     if category == 6 then
-        if jobVars.PullCommand:contains(res.job_abilities[param].en) then
+        if jobVars.pullCommand:contains(res.job_abilities[param].en) then
             return true
         end
     end

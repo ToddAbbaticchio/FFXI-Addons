@@ -105,3 +105,11 @@ vars.RDM = {
     targetTp = 1000,
     pullCommand = '/ma "Dia III" '
 }
+
+vars.BRD = {
+    autoBuffs = {},
+    maintainAftermath = true,
+    ws = "Mordant Rime",
+    targetTp = 1500,
+    pullCommand = '/ma "Carnage Elegy" ',
+}
