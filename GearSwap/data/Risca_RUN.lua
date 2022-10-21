@@ -195,7 +195,7 @@ function init_gear_sets()
 	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +3",}
 	sets.MagicFreeCast = set_combine(sets.MagicBurst, {ring1='Shiva Ring +1', ring2="Shiva Ring +1"})
 	sets.naked = {head=empty, body=empty, hands=empty, legs=empty, feet=empty, neck=empty, waist=empty, ear1=empty, ear2=empty, ring1=empty, ring2=empty, back=empty}
-
+	
 	-- JA Sets
 	sets.precast.JA['Odyllic Subgerfuge'] = sets.baseEnmity
     sets.precast.JA['Vallation'] = set_combine(sets.baseEnmity, {body="Runeist's Coat +3",})-- legs="Futhark Trousers +3",})
@@ -214,7 +214,7 @@ function init_gear_sets()
 
 	-- WS Sets
     sets.precast.WS = set_combine(sets.baseWS, {})
-    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Meg. Chausses +2",ring1="Epona's Ring",ammo="Seeth. Bomblet +1"})
+    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Samnuha Tights", ring1="Epona's Ring", ammo="Seeth. Bomblet +1"})
     sets.precast.WS['Dimidiation'] = set_combine(sets.baseWS, {back=gear.DEXCape, body="Adhemar Jacket +1", ammo="Knobkierrie"})
 	sets.precast.WS['Shockwave'] = {sets.MagicBurst}
 	sets.precast.WS['Fell Cleave'] = set_combine(sets.baseWS, {back=gear.DEXCape,ammo="Knobkierrie"})
@@ -544,7 +544,7 @@ function autoActions()
 	if buffactive['Sleep'] and player.status == engaged then 
 		send_command('input //gs equip sets.wakeUp')
 	elseif player.equipment.head == "Frenzy Sallet" and not buffactive['Sleep'] then
-		EvalState_equipGear()
+		evalState_equipGear()
 	end
 
 	-- If auto.fite mode don't do buffs when you should be pulling

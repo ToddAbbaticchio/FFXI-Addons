@@ -112,4 +112,5 @@ vars.BRD = {
     ws = "Mordant Rime",
     targetTp = 1500,
     pullCommand = '/ma "Carnage Elegy" ',
+    meleeDistance = 999
 }

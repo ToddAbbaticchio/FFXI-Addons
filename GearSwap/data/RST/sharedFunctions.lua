@@ -121,7 +121,7 @@ function evalState_equipGear()
 		extendedEvalState_equipGear()
 	end
 	
-	if player.status == 'Engaged' then
+	if player.status == 'engaged' then
 		equip(sets.engaged, sets.weapons)
 	else
 		equip(sets.idle, sets.weapons)
@@ -487,6 +487,9 @@ windower.register_event('zone change', function()
 	if auto.buff.index == 1 then auto.buff.index = 0 end
 	if auto.fite.index == 1 then auto.fite.index = 0 end
 	modeHud('update')
+	if extendedZoneChange ~= nil then
+		extendedZoneChange()
+	end
 end)
 
 windower.register_event('action',function(action)

@@ -74,7 +74,7 @@ function init_gear_sets()
 		legs="Malignance Tights",         --07
 		feet="Malignance Boots",           --07
 		neck="Combatant's Torque",
-		waist="Grunfeld Rope",
+		waist="Sailfi Belt +1",
 		left_ear="Telos Earring",
 		right_ear="Cessance Earring",
 		left_ring="Epona's Ring",
