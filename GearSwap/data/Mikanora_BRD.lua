@@ -70,10 +70,9 @@ function init_gear_sets()
     sets.Obi = {waist="Hachirin-no-Obi"}
     sets.moveSpeed = {feet="Fili Cothurnes +2"}
     sets.TH = {waist="Chaac Belt", head="Wh. Rarab Cap +1", "Per. Lucky Egg"}
-    sets.songDuration = {legs="Inyanga Shalwar +2", body="Fili Hongreline +2", feet="Brioso Slippers +1", neck="Mnbw. Whistle +1"}
     sets.windSkill = {head="Bihu Roundlet +3", body="Fili Hongreline +2", hands="Fili Manchettes +2", legs="Brioso Cann. +1", ear2="Fili Earring"}
     sets.stringSkill = { head="Brioso Roundlet +1", body="Brioso Justaucorps +1", hands="Fili Manchettes +2", legs="Fili Rhingrave +2", ear2="Fili Earring"}
-    sets.emSkill = {hands="Chironic Gloves", ring1="Stikini Ring", ring2="Stikini Ring"}
+    sets.emSkill = {hands="Chironic Gloves", ring1="Stikini Ring +1", ring2="Stikini Ring +1"}
     sets.emDuration = {}
     sets.interrupt = {waist="Rumination Sash", hands="Chironic Gloves",}
     sets.magicAcc = {ring1 = "Stikini Ring +1", ring2 = "Stikini Ring +1", back=gear.magicAccCape}
@@ -109,17 +108,17 @@ function init_gear_sets()
     sets.midcast['Refresh'] = set_combine(sets.midcast['Enhancing Magic'], {})
     sets.midcast['Stoneskin'] = set_combine(sets.midcast['Enhancing Magic'], {waist="Siegel Sash"})
     
-    sets.midcast['BardSong'] = set_combine(sets.songDuration, {back=gear.magicAccCape})
-    sets.midcast['Ballad'] = set_combine(sets.midcast['BardSong'], {legs="Fili Rhingrave +2"})
-    sets.midcast['Minuet'] = set_combine(sets.midcast['BardSong'], {body="Fili Hongreline +2"})
-    sets.midcast['March'] = set_combine(sets.midcast['BardSong'], {hands="Fili Manchettes +2"})
-    sets.midcast['Madrigal'] = set_combine(sets.midcast['BardSong'], {head="Fili Calot +2"})
-    sets.midcast['Paeon'] = set_combine(sets.midcast['BardSong'], {head="Brioso Roundlet +3"})
-    sets.midcast["Adventurer's Dirge"] = set_combine(sets.midcast['BardSong'], {hands="Bihu Cuffs +3"})
-    sets.midcast['Foe Sirvente'] = set_combine(sets.midcast['BardSong'], {head="Bihu Roundlet +3"})
-    sets.midcast['Magic Finale'] = set_combine(sets.midcast['BardSong'], {legs="Fili Rhingrave +2"})
-    sets.midcast["Sentinel's Scherzo"] = set_combine(sets.midcast['BardSong'], {feet="Fili Cothurnes +2"})
-    sets.midcast['Lullaby'] = set_combine(sets.midcast['BardSong'], sets.magicAcc, sets.bardSkill, {hands="Brioso Cuffs +1"})
+    sets.songDuration  = {legs="Inyanga Shalwar +2", body="Fili Hongreline +2", feet="Brioso Slippers +1", neck="Moonbow Whistle +1", back=gear.magicAccCape}
+    sets.midcast['Ballad'] = set_combine(sets.songDuration, {legs="Fili Rhingrave +2"})
+    sets.midcast['Minuet'] = set_combine(sets.songDuration, {body="Fili Hongreline +2"})
+    sets.midcast['March'] = set_combine(sets.songDuration, {hands="Fili Manchettes +2"})
+    sets.midcast['Madrigal'] = set_combine(sets.songDuration, {head="Fili Calot +2"})
+    sets.midcast['Paeon'] = set_combine(sets.songDuration, {head="Brioso Roundlet +3"})
+    sets.midcast["Adventurer's Dirge"] = set_combine(sets.songDuration, {hands="Bihu Cuffs +3"})
+    sets.midcast['Foe Sirvente'] = set_combine(sets.songDuration, {head="Bihu Roundlet +3"})
+    sets.midcast['Magic Finale'] = set_combine(sets.songDuration, {legs="Fili Rhingrave +2"})
+    sets.midcast["Sentinel's Scherzo"] = set_combine(sets.songDuration, {feet="Fili Cothurnes +2"})
+    sets.midcast['Lullaby'] = set_combine(sets.songDuration, sets.magicAcc, sets.bardSkill, {hands="Brioso Cuffs +1"})
     
     -- Don't have this gear (yet?) --
     --sets.midcast['Etude'] = {head="Mousai Turban +1"}
@@ -136,7 +135,7 @@ end
 function init_modetables()
 	gearMode = {
 		["index"] = 0,
-		[0] = {name="DPS", idle=set_combine(sets.baseTp, sets.baseIdle), engaged=sets.baseTp},
+		[0] = {name="DPS", idle=set_combine(sets.baseTp, sets.baseIdle, sets.songDuration), set_combine(sets.baseTp, sets.songDuration)},
         [1] = {name="Tank", idle=set_combine(sets.baseDt, sets.baseIdle), engaged=sets.baseDt},
 	}
 
@@ -227,26 +226,30 @@ end
 -- Action/Cast Phase Extensions
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)	
-    if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
-        if countSongs() < tablelength(autoSongs) - 1 then
-            equip({ranged="Daurdabla"})
-        elseif buffactive['Clarion Call'] and (countSongs() < tablelength(autoSongs)) then
-            equip({ranged="Daurdabla"})
-            add_to_chat(015, '- Equipping Harp -')
-        else                     
-            equip({ranged="Gjallarhorn"})
-            add_to_chat(015, '- Equipping Horn -')
+    if spell.type == 'BardSong' then
+        local maxSongs = tablelength(autoSongs) - 1
+        local currCount = countSongs()
+        if buffactive['Clarion Call'] then
+            maxSongs = maxSongs + 1
         end
+
+        if currCount >= maxSongs then
+            add_to_chat(015, '- Equipping Gjallarhorn -')
+            equip({ranged="Gjallarhorn"})
+            return
+        end
+
+        add_to_chat(015, '- Equipping Daurdabla -')
+        equip({ranged="Daurdabla"})
     end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)	
-    if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
-        disable('head','body','hands','legs','feet','neck')
-    end
+
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)	
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -301,7 +304,7 @@ end
 function resetSongTimers()
     -- Set all songs to buffer limit so they look like they need to be re-sung
     for k,v in pairs(autoSongs) do
-        v.expireTime = os.time() + songBuffer     
+        v.expireTime = os.time() + songBuffer
     end
 end
 
@@ -456,9 +459,15 @@ windower.register_event('action',function(act)
                 end
 
                 if auto.sing[auto.sing.index] == 'On' then
-                    enable('head','body','hands','legs','feet','neck')
+                    --enable('head','body','hands','legs','feet','neck')
                 end
             end
         end
     end
 end)
+
+function extendedZoneChange()
+    if auto.sing.index == 1 then
+        auto.sing.index = 0
+    end
+end
