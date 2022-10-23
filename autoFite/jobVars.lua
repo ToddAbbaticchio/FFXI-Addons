@@ -2,10 +2,6 @@ vars = {}
 vars.BLU = {
     autoBuffs = {
         ["Warcry"] = "Warcry",
-        ["Berserk"] = "Berserk",
-        ["Nat. Meditation"] = "Attack Boost",
-        ["Erratic Flutter"] = "Haste"
-        -- ["Cocoon"] = "Defense Boost",
     },
     ws = "Savage Blade",
     targetTp = 1000,
@@ -20,14 +16,16 @@ vars.RUN = {
         -- ["Temper"] = "Multi Strikes",
         ["Swordplay"] = "Swordplay",
         ["Last Resort"] = "Last Resort",
-        ["Battuta"] = "Battuta"
-        -- ["Valiance"] = "Valiance,One for All",
-        -- ["One for All"] = "Valiance,One for All"
+        ["Battuta"] = "Battuta",
+        ["Valiance"] = "Valiance,One for All",
+        ["One for All"] = "Valiance,One for All"
     },
-    maintainAftermath = false,
-    --ws = "Dimidiation",
-    ws = "Resolution",
-    targetTp = 1000,
+    --maintainAftermath = false,
+    --ws = "Resolution",
+    --targetTp = 1000,
+    maintainAftermath = true,
+    ws = "Dimidiation",
+    targetTp = 1500,
     pullCommand = '/ma "Flash" ',
     meleeDistance = 16
 }

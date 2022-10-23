@@ -156,12 +156,7 @@ function init_modetables()
 			[0] = "Off",
 			[1] = "Pull",
             [2] = "Assist"
-		},		
-        ["sing"] = {
-			["index"] = 0,
-			[0] = "Off",
-			[1] = "On",
-		},	
+		}
 	}	
 
 	sets.idle = gearMode[gearMode.index].idle
@@ -218,7 +213,6 @@ end
 -- User setup: Keybinds, set macro page, stylelock, etc
 -------------------------------------------------------------------------------------------------------------------
 function extendedUserSetup()
-    send_command('bind ^F11 gs c cycleSing')
 	set_macro_page(1, 2)
 end
 
@@ -256,29 +250,11 @@ end
 -- Job specific functions and function extensions
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobSelfCommand(cmdParams, eventArgs)
-	--[[ Cycle Auto Sing ]]--
-    if cmdParams[1] == 'cycleSing' then
-        auto.sing.index = auto.sing.index + 1
-        if auto.sing.index > #auto.sing then
-            auto.sing.index = 0
-        end
-        windower.add_to_chat(013,'[Sing: '..auto.sing[auto.sing.index]..']')
-    end
 
-    modeHud('update')
 end
 
 function extendedModeHud(hudText)
-    skyblue = '\\cs(135,206,250)'
-    red = '\\cs(255,0,0)'
-	green = '\\cs(0,255,0)'
-    textColor = red
-    if auto.sing[auto.sing.index] == 'On' then
-        textColor = green
-    end
 
-    hudText:append(skyblue..'Sing: '..textColor..auto.sing[auto.sing.index]..white)
-	return hudText
 end
 
 function countAutoSongs()
@@ -323,88 +299,115 @@ baseSongDuration = 330
 songBuffer = 60
 
 function autoActions()
-    local abilRecast = windower.ffxi.get_ability_recasts()
-    local curingWaltzRecast = abilRecast[186]
-    local soulVoiceRecast = abilRecast[0]
-    local clarionRecast = abilRecast[254]
-    local nightingaleRecast = abilRecast[109]
-    local troubadourRecast = abilRecast[110]
-    local marcatoRecast = abilRecast[48]
-
     -- If we're pulling that takes priority over buffs
     if auto.fite[auto.fite.index] == 'Pull' and not player.status == engaged then
         return
     end
 
-    if auto.sing[auto.sing.index] == 'On' and not songInProgress then
-        if (countSongs() < tablelength(autoSongs) and countSongs() >= 2 and (clarionRecast == 0 and auto.fite[auto.fite.index] ~= 'Off' and not buffactive['Clarion Call'])) then
+    -- AutoBuff is on, we're not mid-action, we're not moving. (the main buff window)
+    if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+        local abilRecast = windower.ffxi.get_ability_recasts()
+        local curingWaltzRecast = abilRecast[186]
+        local soulVoiceRecast = abilRecast[0]
+        local clarionRecast = abilRecast[254]
+        local nightingaleRecast = abilRecast[109]
+        local troubadourRecast = abilRecast[110]
+        local marcatoRecast = abilRecast[48]
+
+        -- Do we need / Can we use Clarion Call to get n+1 songs up?
+        if clarionRecast == 0 and not buffactive['Clarion Call'] and countSongs() == (tablelength(autoSongs) - 1) then
             add_to_chat(038, '! Clarion Call Needed !')
             send_command('/clarioncall')
             resetSongTimers()
             return
-        elseif (countSongs() < tablelength(autoSongs)-1  and countSongs() >= 2 and (clarionRecast > 0 or auto.fite[auto.fite.index] == 'Off')) then
-            -- This is (hopefully) handled by job precast
-            add_to_chat(038, '! Bonus Song Needed !')
-        end
-        
-        -- Soul Voice (only if AutoFite is on)
-        if (soulVoiceRecast == 0 and auto.fite[auto.fite.index] ~= 'Off' and not buffactive['Soul Voice']) then
-            send_command('/soulvoice')
-            resetSongTimers()
-            return
         end
 
-        -- JAs: Nightingale/Troubadour/Marcato  
-        -- Marcato (if Soul Voice is not on, combine with Nitro)
-        if (not buffactive['Soul Voice'] and marcatoRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0) then
-            add_to_chat(013, '~ Marcato ~')
-            send_command('/marcato')
-            return
-        end
-        -- Nitro should be saved for SV if it's going to be used soon 
-        if (nightingaleRecast == 0 and troubadourRecast == 0 and (soulVoiceRecast > 300 and auto.fite[auto.fite.index] ~= 'Off') and not buffactive['Nightingale']) then
-            -- TODO: Set first song's expiry to 0 so it plays next
-            -- TODO: Set other songs right after so they get re-sung with nitro duration
-            add_to_chat(013, '~ Nitro ~')
-            send_command('/nightingale')
-            return
-        end
-        if (buffactive['Nightingale'] and troubadourRecast == 0 and not buffactive['Troubadour']) then
-            send_command('/troubadour')
-            resetSongTimers()
-            return
+        -- Actions if auto.fite is NOT Off
+        if auto.fite[auto.fite.index] ~= 'Off' then
+            -- SoulVoice on cooldown
+            if soulVoiceRecast == 0 and not buffactive['Soul Voice'] then
+                send_command('/soulvoice')
+                resetSongTimers()
+                return
+            end
+
+            -- Marcato handling (don't use during SV, combine with nitro)
+            if marcatoRecast == 0 and buffactive['Troubadour'] and buffactive['Nightingale'] and not buffactive['Soul Voice'] then
+                add_to_chat(013, '~ Marcato ~')
+                send_command('/marcato')
+                return    
+            end
+
+            -- Nitro handling (if soulvoice is ready soon just wait)
+            if nightingaleRecast == 0 and troubadourRecast == 0 and soulVoiceRecast > 300 and not buffactive['Nightingale'] then
+                add_to_chat(013, '~ Nitro ~')
+                send_command('/nightingale')
+                return
+            end
+            if troubadourRecast == 0 and not buffactive['Troubadour'] then
+                send_command('/troubadour')
+                resetSongTimers()
+                return
+            end
         end
 
-        -- Sing songs that expire soon
-        for name,info in pairs(autoSongs) do
-            if not info.active or info.expireTime - os.time() < songBuffer then                
-                add_to_chat(013, '~ Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
-                send_command('input /ma "'..name..'" <me>')
+        -- Actions that happen regardlesss of auto.fite setting
+        -- Resing songs
+        for song,info in ipairs(autoSongs) do
+            if not info.active or info.expireTime - os.time() < songBuffer then
+                add_to_chat(013, '~ Input: '..song..' (Expiry: '..(info.expireTime - os.time())..')')
+                send_command('input /ma "'..song..'" <me>')
+                return
+            end
+        end
+
+        if player.sub_job == 'DNC' and not buffactive['Haste Samba'] and player.tp >= 350 then
+            send_command('/hastesamba')
+        end
+    end
+end
+
+function extendedActionEvent(action, actor, me, category, param)
+    if not action then
+        return
+    end
+
+    if actor and me and actor.id == me.id then
+        local targets = action.targets or nil
+        local targetsParam = targets.param or nil
+
+        if category == 8 then
+            local spellName = res.spells[action.targets[1].actions[1].param].en or nil
+            if param == 24931 then
+                -- start of casting song
+                add_to_chat(013, '~ Singing Song ('..spellName..') ~')
+            end
+            if param == 28787 then
+                -- song cast interrupted
+                add_to_chat(011, '~ Song Interrupted! ('..spellName..') ~')
+            end
+        end
+
+        if category == 4 then
+            local spellName = res.spells[param].en
+            if autoSongs[spellName] ~= nil then
+                local expireTime = os.time() + baseSongDuration
+                
+                -- If using Daurdabla, we want to resing with Gjallar, so set short expire time
+                if (player.equipment.range == "Daurdabla") then
+                    expireTime = os.time() + songBuffer * 2
+                elseif buffactive['Troubadour'] then 
+                    expireTime = os.time() + baseSongDuration * 2
+                end
+
+                -- update autoSongs table with new expire time / active: true
+                autoSongs[spellName].expireTime = expireTime
+                autoSongs[spellName].active = true
+                add_to_chat(013, '~ Song Complete ['..spellName..' : expireTime:'..(songBuffer*2)..'] ~')
                 return
             end
         end
     end
-
-    -- Emergency mode -- maybe missed a song completion and stuck in songInProgress
-    if auto.sing[auto.sing.index] == 'On' and songInProgress then       
-        for name,info in pairs(autoSongs) do
-            if info.expireTime - os.time() < songBuffer*0.5 then                
-                add_to_chat(038, '~ Emergency Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
-                send_command('input /ma "'..name..'" <me>')
-                return
-            end
-        end
-    end
-
-    --[[ Auto Buff includes: /DNC Haste Samba ]]--
-    --[[ Haste Samba handing when auto.buff is on ]]--
-	if auto.buff[auto.buff.index] == 'On' and not songInProgress then
-        if player.sub_job == 'DNC' and player.tp >= 350 and not buffactive['Haste Samba'] then
-            add_to_chat(122, '[Haste Samba]')
-            send_command('/haste samba')
-            return
-        end
-	end
 end
 
 windower.register_event('action',function(act)
@@ -465,9 +468,3 @@ windower.register_event('action',function(act)
         end
     end
 end)
-
-function extendedZoneChange()
-    if auto.sing.index == 1 then
-        auto.sing.index = 0
-    end
-end

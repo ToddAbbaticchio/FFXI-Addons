@@ -188,7 +188,7 @@ function init_gear_sets()
 
 	sets.precast.FC = sets.magic.fastCast
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.magic.fastCast, {waist="Siegel Sash"})
-	sets.midcast['Enfeebling Magic'] = set_combine(sets.magic.acc, sets.magic.enfeebSkill)
+	sets.midcast['Enfeebling Magic'] = set_combine(sets.magic.acc, sets.magic.enfeebSkill, {main="Maxentius", sub="Bunzi's Rod"})
 	sets.midcast['Enhancing Magic'] = set_combine(sets.magic.emSkill, sets.magic.emDuration)
 	sets.midcast['Temper'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
     sets.midcast['Phalanx'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration, {body="Taeon Tabard", hands="Taeon Gloves", feet="Taeon Boots"})
@@ -335,6 +335,15 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		local intVar = 1234
 		
 		add_to_chat(122, "strVar type: "..type(strVar).." intVar type: "..type(intVar))
+	end
+
+	if cmdParams[1]:lower() == 'toggleweaponmode' then
+		sets.idle = set_combine(weaponMode[weaponMode.index].set, gearMode[gearMode.index].idle)
+		sets.engaged = set_combine(weaponMode[weaponMode.index].set, gearMode[gearMode.index].engaged)
+	end
+	if cmdParams[1]:lower() == 'togglegearmode' then
+		sets.idle = set_combine(weaponMode[weaponMode.index].set, gearMode[gearMode.index].idle)
+		sets.engaged = set_combine(weaponMode[weaponMode.index].set, gearMode[gearMode.index].engaged)
 	end
 end
 

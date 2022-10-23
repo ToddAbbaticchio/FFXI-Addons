@@ -65,35 +65,35 @@ function init_gear_sets()
 		ring2="Moonlight Ring",
 		back=gear.EvaCape,
 	}
-	sets.magicEvaTank = {
-		ammo="Yamarang",
-		head="Nyame Helm",                --DT07
-		body="Runeist's Coat +3",
-		hands="Nyame Gauntlets",
-		legs="Nyame Flanchard",           --DT08
-		feet="Erilaz Greaves +2",
-		neck="Futhark Torque +2",         --DT07
-		waist="Engraved Belt",
-		ear1="Erilaz Earring",
-		ear2="Eabani Earring",
-		ring1="Moonlight Ring",       --DT05
-		ring2="Defending Ring",      --DT10
-		back=gear.EnmityCape,
+	sets.magicEvaTank = {                 --DT--        --MEva/ResistAll--
+		ammo="Yamarang",                                --015/00
+		head="Nyame Helm",                --DT07        --123/00
+		body="Runeist's Coat +3",                       --094/39
+		hands="Nyame Gauntlets",          --DT07        --112/00
+		legs="Nyame Flanchard",           --DT08        --150/00
+		feet="Erilaz Greaves +3",         --DT11        --157/35
+		neck="Futhark Torque +2",         --DT07        --030/00
+		waist="Engraved Belt",							--000/20(+10)
+		ear1="Erilaz Earring +1",         --DT04		--011/00
+		ear2="Eabani Earring",							--008/00
+		ring1="Moonlight Ring",           --DT05		
+		ring2="Defending Ring",           --DT10
+		back=gear.EnmityCape,							--030/00
 	}
 	sets.superTank = {
 		ammo="Yamarang",
 		head="Nyame Helm",                --DT07
 		body="Runeist's Coat +3",
-		hands="Nyame Gauntlets",
+		hands="Nyame Gauntlets",          --DT07
 		legs="Nyame Flanchard",           --DT08
-		feet="Nyame Sollerets",
+		feet="Nyame Sollerets",           --DT07
 		neck="Futhark Torque +2",         --DT07
 		waist="Engraved Belt",
 		ear1="Tuisto Earring",
 		ear2="Odnowa Earring +1",
-		ring1="Moonlight Ring",       --DT05
-		ring2="Defending Ring",      --DT10
-		back=gear.EnmityCape,
+		ring1="Moonlight Ring",           --DT05
+		ring2="Defending Ring",           --DT10
+		back=gear.EnmityCape,             --PDT10
 	}
 	sets.baseWS = {                                 --Total: haha get wrecked
 		ammo="Seeth. Bomblet +1",
@@ -116,7 +116,7 @@ function init_gear_sets()
 		body="Emet Harness +1",           --10                      P06
 		hands="Kurys Gloves",             --9                       02
 		legs="Erilaz Leg Guards +3",      --13                      13
-		feet="Erilaz Greaves +2",         --6                       P05
+		feet="Erilaz Greaves +3",         --6                       P05
 		neck="Futhark Torque +2",         --10                      07
 		waist="Kasiri Belt",              --3
 		ear1="Cryptic Earring",           --4
@@ -230,7 +230,7 @@ function init_gear_sets()
 	sets.midcast['Temper'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration)
     sets.midcast['Phalanx'] = set_combine(sets.baseTank, sets.interrupt, sets.emSkill, sets.emDuration, {head="Fu. Bandeau +3", body="Taeon Tabard", hands="Taeon Gloves", feet="Taeon Boots"})
     sets.midcast['Aquaveil'] = set_combine(sets.baseTank, sets.emSkill, sets.emDuration, sets.interrupt, {})
-    sets.midcast['Regen'] = set_combine(sets.baseTank, sets.emDuration, {head="Rune. Bandeau +3",neck="Sacro Gorget",waist="Sroda Belt",ear2="Erilaz Earring"})
+    sets.midcast['Regen'] = set_combine(sets.baseTank, sets.emDuration, {head="Rune. Bandeau +3",neck="Sacro Gorget",waist="Sroda Belt",ear2="Erilaz Earring +1"})
 	sets.midcast['Cure'] = set_combine(sets.baseTank, {waist="Sroda Belt"})
     sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +3",})
 	sets.midcast['Cocoon'] = sets.baseTank
