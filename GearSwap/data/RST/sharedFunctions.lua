@@ -233,6 +233,22 @@ function strategemCount() -- get number of strategems
     return currentCharges
 end
 
+function checkMagicalHasteCap()
+	local hasteBuffs = "33,214,580"
+	local currentBuffs = windower.ffxi.get_player().buffs
+	local count = 0
+	for _,id in pairs(currentBuffs) do
+		if hasteBuffs:contains(id) then
+			count = count + 1
+		end
+	end
+
+	if count >= 2 then
+		return true
+	end
+	return false
+end
+
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel

@@ -479,7 +479,7 @@ function autoActions()
 			return
 		end
 
-		if not buffIdActive(33) then
+		if not buffIdActive(33) and checkMagicalHasteCap() == false then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
