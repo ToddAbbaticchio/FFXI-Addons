@@ -464,31 +464,44 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	-- If auto.fite mode don't do buffs when you should be pulling
 	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
 	end
 
-	if auto.buff[auto.buff.index] == 'On' and actionInProgress and not moving then
-		local abilRecasts = windower.ffxi.get_ability_recasts()
-		local diffusionRecast = abilRecasts[184]
-		local unbridledRecast = abilRecasts[81]
+	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+		if not buffIdActive(43) then
+			send_command('input /ma "Battery Charge" <me>')
+			return
+		end
 
-		if not actionInProgress then
-			maintainBuff(43, '/ma "Battery Charge" <me>')
-			maintainBuff(91, '/ma "Nat. Meditation" <me>')
-			maintainBuff(33, '/ma "Erratic Flutter" <me>')
-			maintainBuff(93, '/ma "Cocoon" <me>')
+		if not buffIdActive(91) then
+			send_command('input /ma "Nat. Meditation" <me>')
+			return
+		end
 
-			if auto.fite[auto.fite.index] == 'On' then
-				if not buffactive['Mighty Guard'] then
-					if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
-						send_command('input /ma "Mighty Guard" <me>')
-						return
-					end
+		if not buffIdActive(33) then
+			send_command('input /ma "Erratic Flutter" <me>')
+			return
+		end
+
+		if not buffIdActive(93) then
+			send_command('input /ma "Cocoon" <me>')
+			return
+		end
+
+		if auto.fite[auto.fite.index] == 'On' then
+			if not buffactive['Mighty Guard'] then
+				local abilRecasts = windower.ffxi.get_ability_recasts()
+				local diffusionRecast = abilRecasts[184]
+				local unbridledRecast = abilRecasts[81]
+				
+				if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
+					send_command('input /ma "Mighty Guard" <me>')
+					return
 				end
-				partyLowHP(50, '/ma "Magic Fruit"')
 			end
+			
+			partyLowHP(50, '/ma "Magic Fruit"')
 		end
 	end
 end
