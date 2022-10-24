@@ -69,12 +69,7 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		--[[ local asdf = partyLowHP(99, 'asdf')
-		add_to_chat(1, asdf) ]]
-		local currentBuffs = windower.ffxi.get_player().buffs
-		for k,v in pairs(currentBuffs) do
-			add_to_chat(1, 'k: '..tostring(k)..' v: '..tostring(v))
-		end
+		partyLowHP(100, '/ma "Magic Fruit"')
 
 		-- debug/testing stuff goes hererereereere
 	end
@@ -121,7 +116,7 @@ function evalState_equipGear()
 		extendedEvalState_equipGear()
 	end
 	
-	if player.status == 'Engaged' then
+	if player.status == 'engaged' then
 		equip(sets.engaged, sets.weapons)
 	else
 		equip(sets.idle, sets.weapons)
@@ -179,8 +174,10 @@ end
 
 function buffIdActive(buffId) -- is buff active? using buffId not name
 	local currentBuffs = windower.ffxi.get_player().buffs
-	if currentBuffs[buffId] ~= nil then
-		return true
+	for _,id in pairs(currentBuffs) do
+		if id == buffId then
+			return true
+		end
 	end
 	return false
 end
@@ -236,6 +233,22 @@ function strategemCount() -- get number of strategems
     return currentCharges
 end
 
+function checkMagicalHasteCap()
+	local hasteBuffs = "33,214,580"
+	local currentBuffs = windower.ffxi.get_player().buffs
+	local count = 0
+	for _,id in pairs(currentBuffs) do
+		if hasteBuffs:contains(id) then
+			count = count + 1
+		end
+	end
+
+	if count >= 2 then
+		return true
+	end
+	return false
+end
+
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel
@@ -248,16 +261,17 @@ function partyLowHP(hpLevel, action)
 			if partyMember.hpp < hpLevel then
 				if action == nil then
 					return true
-				else
-					if partyMember.hpp < mostRipHp then
-						mostRipHp = partyMember.hpp
-						mostRipName = partyMember.name
-					end
+				end
+				
+				if partyMember.hpp < mostRipHp then
+					mostRipHp = partyMember.hpp
+					mostRipName = partyMember.name
 				end
 			end
 		end
 	end
-	if action == nil then
+	
+	if mostRipName == "" then
 		return false
 	else
 		send_command('input '..action..' '..mostRipName)
@@ -269,7 +283,9 @@ function maintainBuff(buffNameOrId, commandString)
 		if not buffactive[buffNameOrId] and not actionInProgress and not moving then
 			send_command('input '..commandString)
 		end
-	elseif type(buffNameOrId) == 'number' then
+	end
+	
+	if type(buffNameOrId) == 'number' then
 		if not buffIdActive(buffNameOrId) and not actionInProgress and not moving then
 			send_command('input '..commandString)
 		end
@@ -471,7 +487,7 @@ windower.raw_register_event('prerender',function()
 		-- Compensate for cast animations lasting longer than 'actual' spellcast
 		if actionDelay then
 			actionDelay = actionDelay + 1
-			if actionDelay > 3 then
+			if actionDelay > 5 then
 				actionInProgress = false
 				actionDelay = nil
 			end
@@ -487,39 +503,47 @@ windower.register_event('zone change', function()
 	if auto.buff.index == 1 then auto.buff.index = 0 end
 	if auto.fite.index == 1 then auto.fite.index = 0 end
 	modeHud('update')
+	if extendedZoneChange ~= nil then
+		extendedZoneChange()
+	end
 end)
 
 windower.register_event('action',function(action)
 	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
-	local self = windower.ffxi.get_player() or nil
+	local me = windower.ffxi.get_player() or nil
 
-	if not actor or self or action then
+	if not actor or me or action then
 		return
 	end
 
 	local category = action.category
     local param = action.param
     
-    if actor and self and actor.id == self.id then
+    if actor and me and actor.id == me.id then
         -- is a spell, but not a 'spell was interrupted' action
 		if category == 8 and param ~= 28787 then
 			actionInProgress = true
+			actionDelay = 0
 		end
 
 		-- a spell completes or is interrupted
 		if category == 4 or (category == 8 and param == 28787) then
 			actionInProgress = true
-			actionDelay = 1
+			actionDelay = 3
 		end
 		
 		-- a job ability completes (delay set higher because there is less action downtime after a JA)
 		if category == 6 then
 			actionInProgress = true
-			actionDelay = 3
+			actionDelay = 5
 		end
     end
+
+	if extendedActionEvent ~= nil then
+		extendedActionEvent(action, actor, me, category, param)
+	end
 end)
 
---[[ windower.register_event('gain buff',function(buffId)
-	add_to_chat(122, 'buffid: '..buffId)
-end) ]]
+windower.register_event('gain buff',function(buffId)
+	--add_to_chat(122, 'buffid: '..buffId)
+end)

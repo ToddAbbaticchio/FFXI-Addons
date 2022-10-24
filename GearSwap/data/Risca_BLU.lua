@@ -65,16 +65,16 @@ function init_gear_sets()
 		left_ring = "Jhakri Ring",
 		back = "Swith Cape"
 	}
-
 	sets.baseTank = {
 		ammo="Ginsen",
 		head="Malignance Chapeau",        --06
-		body="Malignance Tabard",         --09
+		--body="Malignance Tabard",         --09
+		body="Hashishin Mintan +2",
 		hands="Malignance Gloves",        --05
 		legs="Malignance Tights",         --07
 		feet="Malignance Boots",           --07
 		neck="Combatant's Torque",
-		waist="Grunfeld Rope",
+		waist="Sailfi Belt +1",
 		left_ear="Telos Earring",
 		right_ear="Cessance Earring",
 		left_ring="Epona's Ring",
@@ -445,13 +445,6 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 			add_to_chat(122, "BuffActive: "..v)
 		end
 	end
-
-	if cmdParams[1]:lower() == 'test' then
-		local strVar = "asdf"
-		local intVar = 1234
-		
-		add_to_chat(122, "strVar type: "..type(strVar).." intVar type: "..type(intVar))
-	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -471,33 +464,44 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	if auto.buff[auto.buff.index] == 'On' and not moving then
-		local abilRecasts = windower.ffxi.get_ability_recasts()
-		local diffusionRecast = abilRecasts[184]
-		local unbridledRecast = abilRecasts[81]
+	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
+		return
+	end
 
-		if not actionInProgress then
-			--maintainBuff(43, '/ma "Battery Charge" <me>')
-			--maintainBuff(91, '/ma "Nat. Meditation" <me>')
-			maintainBuff('Refresh', '/ma "Battery Charge" <me>')
-			maintainBuff('Attack Boost', '/ma "Nat. Meditation" <me>')
-			--maintainBuff('Cocoon', '/ma "Cocoon" <me>')
+	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+		if not buffIdActive(43) then
+			send_command('input /ma "Battery Charge" <me>')
+			return
+		end
 
-			if auto.fite[auto.fite.index] == 'On' then
-				if not buffactive['Mighty Guard'] then
-					if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
-						send_command('input /ma "Mighty Guard" <me>')
-						return
-					end
-				end
-				--[[ if not buffactive['Carcharian Verve'] and unbridledRecast == 0 and diffusionRecast == 0 then 
-					add_to_chat(122,'-- Carcharian Verve is down. Trying to recast... --')
-					send_command('input /ma "Carcharian Verve" <me>')
+		if not buffIdActive(91) then
+			send_command('input /ma "Nat. Meditation" <me>')
+			return
+		end
+
+		if not buffIdActive(33) and checkMagicalHasteCap() == false then
+			send_command('input /ma "Erratic Flutter" <me>')
+			return
+		end
+
+		if not buffIdActive(93) then
+			send_command('input /ma "Cocoon" <me>')
+			return
+		end
+
+		if auto.fite[auto.fite.index] == 'On' then
+			if not buffactive['Mighty Guard'] then
+				local abilRecasts = windower.ffxi.get_ability_recasts()
+				local diffusionRecast = abilRecasts[184]
+				local unbridledRecast = abilRecasts[81]
+				
+				if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
+					send_command('input /ma "Mighty Guard" <me>')
 					return
-				end ]]
-
-				--partyLowHP(50, '/ma "Magic Fruit"')
+				end
 			end
+			
+			partyLowHP(50, '/ma "Magic Fruit"')
 		end
 	end
 end
