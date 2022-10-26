@@ -40,6 +40,14 @@ function init_modetables()
 		[4] = {name="DW-Swords", set={main="Naegling", sub="Reikiko"}},
 	}
 
+	--Setup magicMode
+	magicMode = {
+		["index"] = 0,
+		[0] = {name="Burst", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[1] = {name="FreeNuke", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[2] = {name="MaxAcc", nukeSet=(set_combine(sets.interrupt, sets.emSkill))},
+	}
+
 	--Setup autoBuff
 	auto = {
 		["buff"] = {
@@ -123,24 +131,34 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	local abilRecast = windower.ffxi.get_ability_recasts()
-
+	-- These commands happen no matter what -----------------------------------------------------------------------
 	-- auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
 	end
 
+	-- These commands only happen when auto.buff mode is 'On'  ----------------------------------------------------
+	-- Use case: things like spell buffs or short lived JA cooldowns with decent uptime. Things you don't
+	-- want to manually click every minute or two while you're actually playing
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
-		-- When AutoBuff is on:
+		--[[
 		-- EXAMPLE -- 
-		--if not buffactive['BuffName'] then
-		--	send_command('input /ma "Buff" <me>')
-		--	return
-		--end
-
-		-- When AutoBuff and Autofite are on:
-		if auto.fite[auto.fite.index] == 'On' then
-			
+		if not buffactive['Phalanx'] then
+			send_command('input /ma "Phalanx" <me>')
+			return
 		end
+
+		if if not buffIdActive(33) and checkMagicalHasteCap() == false then
+			send_command('input /ma "Haste II" <me>')
+		end
+
+		]]
+	end
+
+	-- These commands only happen when auto.fite mode is 'On'  ----------------------------------------------------
+	-- Use case: things like auto 2 hour on cooldown, or other important JAs. Not stuff you'd want to let
+	-- the script control if you were actually at the keyboard and playing.
+	if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
+		
 	end
 end

@@ -202,7 +202,7 @@ function job_setup()
 		['Fire'] = {'Fire','Fire II','Fire III','Fire IV','Fire V'},
 		['Blizzard'] = {'Blizzard','Blizzard II','Blizzard III','Blizzard IV','Blizzard V'},
 		['Thunder'] = {'Thunder','Thunder II','Thunder III','Thunder IV','Thunder V'},
-		['Aspir'] = {'Aspir','Aspir II'},
+		['Aspir'] = {'Aspir','Aspir II','Aspir III'},
 		['Sleep'] = {'Sleep','Sleep II'},
 		['Cure'] = {'Cure','Cure II','Cure III','Cure IV'}
 	}
@@ -281,8 +281,8 @@ function job_precast(spell, action, spellMap, eventArgs)
  	end
 
 	-- If the spell name matches one of the groups defined in spellStep, call refineSpells
-	for key,value in pairs(spellStep) do
-		if spell.name:startswith(key) then
+	for spellGroup,list in pairs(spellStep) do
+		if spell.name:startswith(spellGroup) then
 			refineSpells(spell, action, spellMap, eventArgs)
 		end
 	end
@@ -532,16 +532,16 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Refine Spells
 -------------------------------------------------------------------------------------------------------------------
-function refineSpells(spell, action, spellMap, eventArgs)
-	local spell_recasts = windower.ffxi.get_spell_recasts()
-	if spell_recasts[spell.recast_id] > 0 then
-		for daKey,subTable in pairs(spellStep) do
-			if spell.name:startswith(daKey) then
-				for subKey,subValue in pairs(subTable) do
-					spell_index = table.find(spellStep[daKey],spell.name)
-					if spell_index > 1 then
-						newSpell = subTable[spell_index - 1]
-						send_command('@input /ma "' .. newSpell .. '" ' .. tostring(spell.target.raw))
+function refineSpells(spell)
+	local recast = windower.ffxi.get_spell_recasts()
+	if recast[spell.recast_id] > 0 then
+		for key,spellList in pairs(spellStep) do
+			if spell.name:startswith(key) then
+				for _ in pairs(spellList) do
+					local index = table.find(spellStep[key],spell.name)
+					if index > 1 then
+						local altSpell = spellList[index - 1]
+						send_command('@input /ma "'..altSpell..'" '..tostring(spell.target.raw))
 						return
 					end
 				end
@@ -745,8 +745,8 @@ windower.raw_register_event('postrender',function()
 				--[[ local player = windower.ffxi.get_player()
 				if player.status == 1 and not castInProgress and strategemCount() >= 1 then
 					if not helixCast then
-						local spell_recasts = windower.ffxi.get_spell_recasts()
-						if spell_recasts[890] == 0 then
+						local recast = windower.ffxi.get_spell_recasts()
+						if recast[890] == 0 then
 							send_command('input /ebullience; wait 2; input //gs c usehelix')
 							castInProgress = true
 							castingTic = castingTic + 1
