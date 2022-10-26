@@ -4,6 +4,7 @@ vars.BLU = {
         ["Warcry"] = "Warcry",
     },
     ws = "Savage Blade",
+    --targetTp = 1750,
     targetTp = 1000,
     pullCommand = '/ma "Glutinous Dart" '
 }
@@ -16,18 +17,18 @@ vars.RUN = {
         -- ["Temper"] = "Multi Strikes",
         ["Swordplay"] = "Swordplay",
         ["Last Resort"] = "Last Resort",
+        --["Barwater"] = "Barwater",
         ["Battuta"] = "Battuta",
-        ["Valiance"] = "Valiance,One for All",
-        ["One for All"] = "Valiance,One for All"
+        --["Valiance"] = "Valiance,One for All",
+        --["One for All"] = "Valiance,One for All"
     },
-    --maintainAftermath = false,
-    --ws = "Resolution",
-    --targetTp = 1000,
-    maintainAftermath = true,
+    maintainAftermath = false,
+    ws = "Resolution",
+    targetTp = 1000,
+    --[[ maintainAftermath = true,
     ws = "Dimidiation",
-    targetTp = 1500,
-    pullCommand = '/ma "Flash" ',
-    meleeDistance = 16
+    targetTp = 1500, ]]
+    pullCommand = '/ma "Flash" '
 }
 
 vars.SCH = {
@@ -63,14 +64,11 @@ vars.PUP = {
 
 vars.COR = {
     autoBuffs = {
-        ["Chaos Roll"] = "Chaos Roll",
-        ["Corsair's Roll"] = "Corsair's Roll",
         ["Haste Samba"] = "Haste Samba"
     },
     ws = "Savage Blade",
-    targetTp = 2000,
-    pullCommand = '/ra ',
-    meleeDistance = 999
+    targetTp = 1000,
+    pullCommand = '/ra '
 }
 
 vars.WAR = {

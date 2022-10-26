@@ -25,8 +25,8 @@ function init_gear_sets()
 		feet="Herculean Boots",
 		neck="Combatant's Torque",
 		waist="Sailfi Belt +1",
-		left_ear="Telos Earring",
-		right_ear="Suppanomimi",
+		left_ear="Suppanomimi",
+		right_ear="Hashishin Earring",
 		left_ring="Epona's Ring",
 		right_ring="Ilabrat Ring",
 		back=gear.STRCape,
@@ -68,15 +68,15 @@ function init_gear_sets()
 	sets.baseTank = {
 		ammo="Ginsen",
 		head="Malignance Chapeau",        --06
-		--body="Malignance Tabard",         --09
-		body="Hashishin Mintan +2",
+		body="Malignance Tabard",         --09
+		--body="Hashishin Mintan +2",
 		hands="Malignance Gloves",        --05
 		legs="Malignance Tights",         --07
 		feet="Malignance Boots",           --07
 		neck="Combatant's Torque",
 		waist="Sailfi Belt +1",
-		left_ear="Telos Earring",
-		right_ear="Cessance Earring",
+		left_ear="Suppanomimi",
+		right_ear="Hashishin Earring",
 		left_ring="Epona's Ring",
 		right_ring="Ilabrat Ring",
 		back=gear.STRCape,                --05
@@ -203,9 +203,10 @@ function init_modetables()
 	--Setup weaponMode
 	weaponMode = {
 		["index"] = 0,
-		[0] = {name="MeleeDW", set={main="Naegling", sub="Thibron"}},
-		[1] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
-		[2] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
+		[0] = {name="TPBonus", set={main="Naegling", sub="Thibron"}},
+		[1] = {name="FullAcc", set={main="Naegling", sub="Zantetsuken"}},
+		[2] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
+		[3] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
 	}
 
 	--Setup autoBuff
@@ -474,20 +475,20 @@ function autoActions()
 			return
 		end
 
-		if not buffIdActive(91) then
-			send_command('input /ma "Nat. Meditation" <me>')
-			return
-		end
-
 		if not buffIdActive(33) and checkMagicalHasteCap() == false then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
 
-		if not buffIdActive(93) then
-			send_command('input /ma "Cocoon" <me>')
+		if not buffIdActive(91) then
+			send_command('input /ma "Nat. Meditation" <me>')
 			return
 		end
+
+		--[[ if not buffIdActive(93) then
+			send_command('input /ma "Cocoon" <me>')
+			return
+		end ]]
 
 		if auto.fite[auto.fite.index] == 'On' then
 			if not buffactive['Mighty Guard'] then

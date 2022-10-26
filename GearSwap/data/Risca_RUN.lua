@@ -261,6 +261,13 @@ function init_modetables()
 		[4] = {name="DW-Swords", set={main="Naegling", sub="Reikiko"}},
 	}
 
+	--[[ magicMode = {
+		["index"] = 0,
+		[0] = {name="Burst", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[1] = {name="Burst", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[2] = {name="MaxAcc", nukeSet=(set_combine(sets.interrupt, sets.emSkill))},
+	} ]]
+
 	--Setup autoBuff
 	auto = {
 		["buff"] = {
@@ -315,6 +322,9 @@ function extendedUserSetup()
 	
 	--Load runehelper addon
 	windower.send_command('lua load runehelper')
+	if not currRune then
+		currRune = 'Tenebrae'
+	end
 
 	--Handle weapons and stylelock based on subjob
 	if player.sub_job == 'DNC' or player.sub_job == 'NIN' then
@@ -534,7 +544,6 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	local recasts = windower.ffxi.get_ability_recasts()
 	-- auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -554,61 +563,86 @@ function autoActions()
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto rune
-		if not currRune then currRune = 'Tenebrae' end
-		if buffactive[currRune] ~= 3 and auto.rune[auto.rune.index] == 'On' then
-			if recasts[92] == 0 then
-				windower.send_command('rh userune')
-				return
-			end
+		if auto.rune[auto.rune.index] == 'On' and buffCheck(currRune, 3) then
+			windower.send_command('rh userune')
+			return
+		end
+
+		-- normal buffs to maintain
+		if buffCheck('Aquaveil') then
+			send_command('input /ma "Aquaveil" <me>')
+			return
+		end
+		if buffCheck('Enmity Boost', 'Crusade') then
+			send_command('input /ma "Crusade" <me>')
+			return
+		end
+		if buffCheck('Phalanx') then
+			send_command('input /ma "Phalanx" <me>')
+			return
+		end
+
+		-- Temper when engaged or not in 'supertank' gearmode
+		if player.status == engaged or gearMode[gearMode.index].name ~= 'SuperTank' and buffCheck('Multi Strikes', 'Temper') then
+			send_command('input /ma "Temper" <me>')
+			return
+		end
+
+		-- Cocoon when in /blu tank mode
+		if gearMode[gearMode.index].name:contains('Tank') and player.sub_job == 'BLU' and buffCheck('Defense Boost', 'Cocoon') then
+			send_command('input /ma "Cocoon" <me>')
+			return
 		end
 
 		-- LOL /SCH
 		if player.sub_job == 'SCH' then
-			if not buffactive['Light Arts'] then
+			if buffCheck('Light Arts') then
 				send_command('input /ja "Light Arts" <me>')
+				return				
 			end
 
-			if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and recasts[234] == 0 then
+			if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and not onCooldown("Sublimation") then
 				send_command('input /ja "Sublimation" <me>')
 				return
 			end
-			if buffactive['sublimation: complete'] and player.mpp < 40 and recasts[234] == 0 then
+			if buffactive['sublimation: complete'] and player.mpp < 40 and not onCooldown("Sublimation") then
 				add_to_chat(122,'-- MP below 40% - Popping Sublimation! --')
 				send_command('input /ja "Sublimation" <me>')
 				return
 			end
 
-			maintainBuff('Regen', '/ma "Regen IV" <me>')
+			if buffCheck('Regen', 'Regen IV') then
+				send_command('input /ma "Regen IV" <me>')
+				return
+			end
+
+			if buffCheck('Refresh') then
+				send_command('input /ma "Refresh" <me>')
+				return
+			end
 		end
 
-		maintainBuff('Aquaveil', '/ma "Aquaveil" <me>')
-		maintainBuff('Enmity Boost', '/ma "Crusade" <me>')
-		maintainBuff('Phalanx', '/ma "Phalanx" <me>')
-		if player.status == engaged or gearMode[gearMode.index].name ~= 'SuperTank' then
-			maintainBuff('Multi Strikes', '/ma "Temper" <me>')
-		end
-
-		-- spells when in /blu tank mode
-		if gearMode[gearMode.index].name:contains('Tank') and player.sub_job == 'BLU' then
-			maintainBuff('Defense Boost', '/ma "Cocoon" <me>')
-		end
-
-		if player.mpp < 50 and player.sub_job ~= 'SCH' then
-			maintainBuff('Refresh', '/ma "Refresh" <me>')
-		end
-		
 		-- auto.fite only buffs
 		if auto.fite[auto.fite.index] == 'On' then
-			maintainBuff('Protect', '/ma "Protect IV" <me>')
-			maintainBuff('Shell', '/ma "Shell V" <me>')
-			if player.hpp < 90 then
-				maintainBuff('Regen', '/ma "Regen IV" <me>')
+			if buffCheck('Protect', 'Protect IV') then
+				send_command('input /ma "Protect IV" <me>')
+				return
+			end
+			if buffCheck('Shell', 'Shell V') then
+				send_command('input /ma "Shell V" <me>')
+				return
+			end
+
+			if player.hpp < 80 and buffCheck('Regen', 'Regen IV') then
+				send_command('input /ma "Regen IV" <me>')
+				return
 			end
 
 			-- Use vivacious pulse when below 80% mp(if using tenebrae) or hp(if using others)
-			if recasts[242] == 0 then
+			if not onCooldown('Vivacious Pulse') then
 				if (buffactive['Tenebrae'] and player.mpp < 80) or (not buffactive['Tenebrae'] and player.hpp < 80) then
 					send_command('input /ja "Vivacious Pulse" <me>')
+					return
 				end
 			end
 		end

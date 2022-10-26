@@ -3,6 +3,11 @@
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
+res = require 'resources'
+
+red = "\\cs(255,0,0)"
+green = "\\cs(0,255,0)"
+white = "\\cs(255,255,255)"
 
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
@@ -39,6 +44,23 @@ function job_self_command(cmdParams, eventArgs)
 		sets.idle = gearMode[gearMode.index].idle
 		sets.engaged = gearMode[gearMode.index].engaged
 		--add_to_chat(122,'-- GearMode:'..gearMode[gearMode.index].name..' --')
+		modeHud('update')
+		evalState_equipGear()
+	end
+
+	-- Change current magic mode
+	if cmdParams[1]:lower() == 'togglemagicmode' then
+		magicMode.index = magicMode.index + 1
+		if magicMode.index > #magicMode then
+			magicMode.index = 0
+		end
+
+		if extendedTMM then
+			extendedTMM(cmdParams, eventArgs)
+		end
+
+		sets.nukeSet = magicMode[magicMode.index].nukeSet
+
 		modeHud('update')
 		evalState_equipGear()
 	end
@@ -79,6 +101,7 @@ function user_setup()
 	--Setup common binds for ALL jobs
 	send_command('bind F9 gs c toggleGearMode')
 	send_command('bind ^F9 gs c toggleWeaponMode')
+	send_command('bind !F9 gs c toggleMagicMode')
 	send_command('bind F11 gs c toggleAutoBuff')
 	send_command('bind !F11 gs c toggleautofite')
 	send_command('bind F12 gs reload')
@@ -91,17 +114,18 @@ end
 
 function user_unload()
     -- Unbind alllllll the keys.  Anything you add anywhere should get unbound here
-	windower.send_command('unbind ^=')
-	windower.send_command('unbind !=')
-    windower.send_command('unbind ^insert')
-    windower.send_command('unbind ^delete')
-    windower.send_command('unbind F9')
-	windower.send_command('unbind ^F9')
-	windower.send_command('unbind F10')
-	windower.send_command('unbind F11')
-	windower.send_command('unbind ^F11')
-	windower.send_command('unbind !F11')
-	windower.send_command('unbind F12')
+	send_command('unbind ^=')
+	send_command('unbind !=')
+    send_command('unbind ^insert')
+    send_command('unbind ^delete')
+    send_command('unbind F9')
+	send_command('unbind ^F9')
+	send_command('unbind !F9')
+	send_command('unbind F10')
+	send_command('unbind F11')
+	send_command('unbind ^F11')
+	send_command('unbind !F11')
+	send_command('unbind F12')
 
 	if extendedUserUnload ~= nil then
 		extendedUserUnload()
@@ -172,14 +196,60 @@ function bestObiElement()
 	return maxIntensityEle
 end
 
-function buffIdActive(buffId) -- is buff active? using buffId not name
-	local currentBuffs = windower.ffxi.get_player().buffs
-	for _,id in pairs(currentBuffs) do
-		if id == buffId then
-			return true
+function betterBuffActive(buffName, buffCount)
+	local buffId = nil
+	for k,v in pairs(res.buffs) do
+		if v.en == buffName then
+			buffId = v.id
+			break
 		end
 	end
+
+	if buffId == nil then
+		add_to_chat(1, 'Could not find a match for buff: '..buffName..' in resource files! Check spelling!')
+		return true -- return true to prevent cast spamming
+	end
+
+	if not buffCount then
+		buffCount = 1
+	end
+	local currentBuffs = windower.ffxi.get_player().buffs
+	local foundCount = 0
+	for _,id in pairs(currentBuffs) do
+		if id == buffId then
+			foundCount = foundCount + 1
+		end
+	end
+	
+	if foundCount >= buffCount then
+		return true
+	end
 	return false
+end
+
+function onCooldown(actionName)
+	for k,v in ipairs(res.job_abilities) do
+		if v.en == actionName and v.recast_id ~= 0 then
+			if windower.ffxi.get_ability_recasts()[v.recast_id] > 0 then
+				return true
+			else
+				return false
+			end
+		end
+	end
+
+	for k,v in pairs(res.spells) do
+		if v.en == actionName then
+			local recast = windower.ffxi.get_spell_recasts()[v.recast_id] or nil
+			if recast and recast > 0 then
+				return true
+			elseif
+				recast == nil then
+			else
+				return false
+			end
+		end
+	end
 end
 
 function readyCharges() -- for bst ability 'Ready'
@@ -249,6 +319,7 @@ function checkMagicalHasteCap()
 	return false
 end
 
+
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel
@@ -278,18 +349,43 @@ function partyLowHP(hpLevel, action)
 	end
 end
 
-function maintainBuff(buffNameOrId, commandString)
-	if type(buffNameOrId) == 'string' then
-		if not buffactive[buffNameOrId] and not actionInProgress and not moving then
-			send_command('input '..commandString)
+function buffCheck(...)
+	local buffName = nil
+	local abilName = nil
+	local count = nil
+	local args = {...}
+
+	if args[1] and not args[2] then
+		if not betterBuffActive(args[1], 1) and not onCooldown(args[1]) then
+			return true
+		end
+		return false
+	end
+
+	if args[2] and not args[3] then
+		if type(args[2]) == 'string' then
+			if not betterBuffActive(args[1], 1) and not onCooldown(args[2]) then
+				return true
+			end
+			return false
+		end
+		if type(args[2]) == 'number' then
+			if not betterBuffActive(args[1], args[2]) and not onCooldown(args[1]) then
+				return true
+			end
+			return false
 		end
 	end
-	
-	if type(buffNameOrId) == 'number' then
-		if not buffIdActive(buffNameOrId) and not actionInProgress and not moving then
-			send_command('input '..commandString)
+
+	if args[3] and type(args[3] == 'number') then
+		if not betterBuffActive(args[1], args[3]) and not onCooldown(args[2]) then
+			return true
 		end
+		return false
 	end
+
+	write_to_chat(1, 'Syntax error calling buffCheck! '..tostring(args))
+	return false
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -369,31 +465,30 @@ end
 -- Mode Display HUD
 -------------------------------------------------------------------------------------------------------------------
 function modeHud(action)
-    red = '\\cs(255,0,0)'
-	green = '\\cs(0,255,0)'
-	white = '\\cs(255,255,255)'
-
 	if action == 'update' then
 		-- hud doesn't exist yet.  create it!
 		if modeHudWindow == nil then
 			hud = require('texts')
-			modeHud_xPos = 1250
+			modeHud_xPos = 1200
 			modeHud_yPos = 0
 			modeHudWindow = texts.new("")	
 		end
 
 		local hudText = L{}
 		-- add current weapon and gear modes
-		if weaponMode[weaponMode.index].color ~= nil then
-			hudText:append('WeaponMode: '..weaponMode[weaponMode.index].color..weaponMode[weaponMode.index].name..white)
-		else
-			hudText:append('WeaponMode: '..white..weaponMode[weaponMode.index].name..white)
+		if weaponMode then
+			local wmColor = weaponMode[weaponMode.index].color or white
+			hudText:append('WeaponMode: '..wmColor..weaponMode[weaponMode.index].name..white)
 		end
 
-		if gearMode[gearMode.index].color ~= nil then
-			hudText:append('GearMode: '..gearMode[gearMode.index].color..gearMode[gearMode.index].name..white)
-		else
-			hudText:append('GearMode: '..white..gearMode[gearMode.index].name..white)
+		if gearMode then
+			local gmColor = gearMode[gearMode.index].color or white
+			hudText:append('GearMode: '..gmColor..gearMode[gearMode.index].name..white)
+		end
+
+		if magicMode then
+			local maColor = magicMode[magicMode.index].color or white
+			hudText:append('MagicMode: '..maColor..magicMode[magicMode.index].name..white)
 		end
 		
 		-- if extendedModeHud function exists in main job .lua, call that
@@ -430,7 +525,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- initial vars for autoCast looping
 actionInProgress = false
-time_start = os.time()
+lastCycleTime = os.time()
 
 -- initial vars for movement detection / movespeed swap
 local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index)
@@ -478,8 +573,8 @@ windower.raw_register_event('prerender',function()
 	end
 
 	-- everytime os.time updates (once a second) call autoActions() if it exists and handle actionDelay counter
-	if os.time() > time_start then
-		time_start = os.time()		
+	if os.time() > lastCycleTime then
+		lastCycleTime = os.time()
 		if autoActions ~= nil then
 			autoActions()
 		end
