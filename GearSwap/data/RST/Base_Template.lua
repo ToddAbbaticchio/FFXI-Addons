@@ -141,18 +141,7 @@ function autoActions()
 	-- Use case: things like spell buffs or short lived JA cooldowns with decent uptime. Things you don't
 	-- want to manually click every minute or two while you're actually playing
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
-		--[[
-		-- EXAMPLE -- 
-		if not buffactive['Phalanx'] then
-			send_command('input /ma "Phalanx" <me>')
-			return
-		end
 
-		if if not buffIdActive(33) and checkMagicalHasteCap() == false then
-			send_command('input /ma "Haste II" <me>')
-		end
-
-		]]
 	end
 
 	-- These commands only happen when auto.fite mode is 'On'  ----------------------------------------------------
@@ -161,4 +150,33 @@ function autoActions()
 	if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
 		
 	end
+
+
+
+
+
+	-- EXAMPLES --------------------------------------------------------------------------------------------------- 
+	--[[ 
+	
+	-- when the spell name is the same as the name of the buff it gives you
+	if buffCheck('Aquaveil') then
+		send_command('input /ma "Aquaveil" <me>')
+		return
+	end
+
+	-- when the spellname/buffname doesn't match
+	if buffCheck('Enmity Boost', 'Crusade') then
+		send_command('input /ma "Crusade" <me>')
+		return
+	end
+
+	-- when spellname/buff name match, but you want to maintain multiple copies (run runes or pup maneuovers)
+	if buffCheck('Tenebrae', 3) then
+		send_command('input /ja "Tenebrae" <me>')
+		return
+	end
+
+	]]
+
+
 end
