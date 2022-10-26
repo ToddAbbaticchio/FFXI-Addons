@@ -65,10 +65,10 @@ function initializeSessionVars(job, ...)
         jobVars.target = {}
         if jobVars.target.pull == nil then
             jobVars.target.pull = pullTarget
-        end
-        if jobVars.target.assist == nil then
-            jobVars.target.assist = assistTarget
-        end
+        end        
+    end
+    if jobVars.target.assist == nil or jobVars.target.assist ~= assistTarget then
+        jobVars.target.assist = assistTarget
     end
     wsCommand = '/ws "' .. jobVars.ws .. '" '
 
