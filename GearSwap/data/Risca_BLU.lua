@@ -12,8 +12,9 @@ function init_gear_sets()
     -- Start defining the sets
     --------------------------------------
 	--Define augmented gear
-	gear.INTCape = {name="Rosmerta's Cape", augments={'INT + 20'}}
-	gear.STRCape = {name="Rosmerta's Cape", augments={'DEX + 20'}}
+	gear.IntCape = {name="Rosmerta's Cape", augments={'INT + 20'}}
+	gear.TpCape = {name="Rosmerta's Cape", augments={'DEX + 20'}}
+	gear.WsCape = {name="Rosmerta's Cape", augments={'STR + 20'}}
 	
 	--Define Base Sets for use in other sets
 	sets.baseMelee = {
@@ -23,13 +24,13 @@ function init_gear_sets()
 		hands="Adhemar Wrist. +1",
 		legs="Malignance Tights",
 		feet="Herculean Boots",
-		neck="Combatant's Torque",
+		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
 		left_ear="Suppanomimi",
 		right_ear="Hashishin Earring",
 		left_ring="Epona's Ring",
 		right_ring="Ilabrat Ring",
-		back=gear.STRCape,
+		back=gear.TpCape,
 	}
 	sets.baseMagic = {
 		ammo="Pemphredo Tathlum",
@@ -44,7 +45,7 @@ function init_gear_sets()
 		right_ear="Hecate's Earring",
 		left_ring="Shiva Ring +1",
 		right_ring="Shiva Ring +1",
-		back=gear.INTCape,
+		back=gear.IntCape,
 	}
 
 	sets.magic = {}
@@ -73,13 +74,13 @@ function init_gear_sets()
 		hands="Malignance Gloves",        --05
 		legs="Malignance Tights",         --07
 		feet="Malignance Boots",           --07
-		neck="Combatant's Torque",
+		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
 		left_ear="Suppanomimi",
 		right_ear="Hashishin Earring",
 		left_ring="Epona's Ring",
 		right_ring="Ilabrat Ring",
-		back=gear.STRCape,                --05
+		back=gear.TpCape,                --05
 	}
 	sets.evaTank = {
 		ammo="Amar Cluster",
@@ -94,7 +95,7 @@ function init_gear_sets()
 		ear2="Infused Earring",
 		left_ring="Ilabrat Ring",
 		right_ring="Vengeful Ring",
-		back=gear.STRCape,
+		back=gear.WsCape,
 	}
     sets.precast.WS = {
 		ammo="Oshasha's Treatise",
@@ -109,7 +110,7 @@ function init_gear_sets()
 		right_ear="Moonshade Earring",
 		left_ring="Karieyh Ring +1",
 		right_ring="Illabrat Ring",
-		back=gear.STRCape,
+		back=gear.WsCape,
 	}
 	
 	sets.baseIdle = {body="Hashishin Mintan +2",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"}
@@ -123,7 +124,7 @@ function init_gear_sets()
     sets.buff['Convergence'] = {} 													--Luhlaza Keffiyeh
     sets.buff['Diffusion'] = {feet="Luhlaza Charuqs +1"}
     sets.buff['Enchainment'] = {} 													--Luhlaza Jubbah
-    sets.buff['Efflux'] = {legs="Hashishin Tayt", gear.STRCape,}
+    sets.buff['Efflux'] = {legs="Hashishin Tayt", gear.WsCape,}
     sets.precast.JA['Azure Lore'] = {} 												--Mirage Bazubands +2
 	sets.precast.JA['Provoke'] = sets.TH	-- that way i can proc TH by voking random monsters when i want to.
 
@@ -195,7 +196,7 @@ function init_modetables()
 		[0] = {name="Tank", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
 		[1] = {name="DPS", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
 		[2] = {name="EvaTank", idle=sets.evaTank, engaged=sets.evaTank},
-		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.INTCape}},
+		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}},
 		[4] = {name="Learning", idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
 		[5] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)}
 	}
@@ -470,28 +471,28 @@ function autoActions()
 	end
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
-		if not buffIdActive(43) then
+		if buffCheck('Refresh', 'Battery Charge') then
 			send_command('input /ma "Battery Charge" <me>')
 			return
 		end
 
-		if not buffIdActive(33) and checkMagicalHasteCap() == false then
+		if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
 
-		if not buffIdActive(91) then
+		if buffCheck('Attack Boost', 'Nat. Meditation') then
 			send_command('input /ma "Nat. Meditation" <me>')
 			return
 		end
 
-		--[[ if not buffIdActive(93) then
+		--[[ if buffCheck('Defense Boost', 'Cocoon') then
 			send_command('input /ma "Cocoon" <me>')
 			return
 		end ]]
 
 		if auto.fite[auto.fite.index] == 'On' then
-			if not buffactive['Mighty Guard'] then
+			if buffCheck('Mighty Guard') then
 				local abilRecasts = windower.ffxi.get_ability_recasts()
 				local diffusionRecast = abilRecasts[184]
 				local unbridledRecast = abilRecasts[81]

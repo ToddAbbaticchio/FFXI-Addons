@@ -605,17 +605,14 @@ end)
 
 windower.register_event('action',function(action)
 	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
-	local me = windower.ffxi.get_player() or nil
-
-	if not actor or me or action then
+	if not actor or not player or not action then
 		return
 	end
 
 	local category = action.category
     local param = action.param
-    
-    if actor and me and actor.id == me.id then
-        -- is a spell, but not a 'spell was interrupted' action
+	if actor.id == player.id then
+    	-- is a spell, but not a 'spell was interrupted' action
 		if category == 8 and param ~= 28787 then
 			actionInProgress = true
 			actionDelay = 0
