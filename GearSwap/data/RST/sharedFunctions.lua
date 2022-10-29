@@ -91,8 +91,6 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		partyLowHP(100, '/ma "Magic Fruit"')
-
 		-- debug/testing stuff goes hererereereere
 	end
 end
@@ -228,28 +226,28 @@ function betterBuffActive(buffName, buffCount)
 end
 
 function onCooldown(actionName)
-	for k,v in ipairs(res.job_abilities) do
+	for k,v in pairs(res.job_abilities) do
 		if v.en == actionName and v.recast_id ~= 0 then
-			if windower.ffxi.get_ability_recasts()[v.recast_id] > 0 then
+			local recast = windower.ffxi.get_ability_recasts()[v.recast_id]
+			if recast > 0 then
 				return true
-			else
-				return false
 			end
+			return false
 		end
 	end
 
 	for k,v in pairs(res.spells) do
-		if v.en == actionName then
-			local recast = windower.ffxi.get_spell_recasts()[v.recast_id] or nil
-			if recast and recast > 0 then
+		if v.en == actionName and v.recast_id ~= 0 then
+			local recast = windower.ffxi.get_spell_recasts()[v.recast_id]
+			if recast > 0 then
 				return true
-			elseif
-				recast == nil then
-			else
-				return false
 			end
+			return false
 		end
 	end
+
+	add_to_chat(1, 'Didnt find a match for actionName: '..actionName..' in res.job_abilities or res.spells!')
+	return true --return true to stop attempts to spam ability
 end
 
 function readyCharges() -- for bst ability 'Ready'
@@ -315,6 +313,18 @@ function checkMagicalHasteCap()
 
 	if count >= 2 then
 		return true
+	end
+	return false
+end
+
+function mpCheck(spell)
+	for k,v in pairs(res.spells) do
+		if v.en == spell then
+			if player.mp >= v.mp_cost then
+				return true
+			end
+			break
+		end
 	end
 	return false
 end
@@ -395,13 +405,17 @@ function job_precast(spell, action, spellMap, eventArgs)
 	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type)
 	
 	-- don't try to do stuff if we can't do stuff (stop gearswap from switching gear if we can't act)
-	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] then
-        add_to_chat(167, 'Action stopped due to status.')
+	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] or (spell.type:contains('Magic') and buffactive['Silence']) then
+        add_to_chat(167, 'Action stopped: A current status ailment prevents using '..spell.name..'!')
         eventArgs.cancel = true
-		--evalState_equipGear()
         return
     end
-
+	if spell.type:contains('Magic') and not mpCheck(spell.name) then
+		add_to_chat(167, 'Action stopped: Not enough MP to cast '..spell.name..'!')
+        eventArgs.cancel = true
+        return
+	end
+	
 	-- if weaponskill make sure we're facing the target
 	if spell.type == 'WeaponSkill' then
 		faceTarget()
@@ -580,7 +594,7 @@ windower.raw_register_event('prerender',function()
 		end
 
 		-- Compensate for cast animations lasting longer than 'actual' spellcast
-		if actionDelay then
+		if actionDelay and not actionLock then
 			actionDelay = actionDelay + 1
 			if actionDelay > 5 then
 				actionInProgress = false

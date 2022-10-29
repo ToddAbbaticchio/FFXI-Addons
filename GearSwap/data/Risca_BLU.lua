@@ -106,10 +106,10 @@ function init_gear_sets()
 		feet="Jhakri Pigaches +2",
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
-		left_ear="Odr Earring",
-		right_ear="Moonshade Earring",
-		left_ring="Karieyh Ring +1",
-		right_ring="Illabrat Ring",
+		ear1="Odr Earring",
+		ear2="Moonshade Earring",
+		ring1="Karieyh Ring +1",
+		ring2="Illabrat Ring",
 		back=gear.WsCape,
 	}
 	
@@ -136,13 +136,11 @@ function init_gear_sets()
     sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +2"})
 
     -- Weaponskill sets
-    -- Default set for any weaponskill that isn't any more specifically defined
-	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {right_ring="Rufescent Ring", earring2="Ishvara Earring"})
-	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})																		-- dex
-	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})																				-- str/ind/dex
-    sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})																			-- mnd
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.baseMagic, {waist="Fotia Belt",neck="Fotia Gorget",left_ring="Jhakri Ring",})			-- mnd/str
-
+	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
+	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
+	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})
+    sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})
+    sets.precast.WS['Sanguine Blade'] = set_combine(sets.baseMagic, {waist="Fotia Belt",neck="Fotia Gorget",ring2="Jhakri Ring",})
 	sets.precast.WS['Flat Blade'] = equip(sets.baseMelee)
 
     -- Midcast Sets
@@ -357,7 +355,7 @@ function extendedUserSetup()
     set_macro_page(1, 2)
 
 	--Set style lock
-	send_command('wait 2; input /lockstyleset 3')
+	send_command:schedule(2, 'input /lockstyleset 3')
 end
 
 function extendedUserUnload()
@@ -368,41 +366,22 @@ end
 -- Spell/Action phase functions
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)
-    --[[ local abil_recasts = windower.ffxi.get_ability_recasts()
-	add_to_chat(122, '-- Spell: ' .. spell.english .. ' spellID: ' .. spell.id .. ' SpellRecastId: ' .. spell.recast_id .. ' target: '..tostring(spell.target.raw)..' --') ]]
-
-	-- don't try to do stuff if we can't do stuff (stops us from swapping gear if we cant start the spell)
-	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] then
-        add_to_chat(167, 'Action stopped due to status.')
-        eventArgs.cancel = true
-        return
-    end
-
-	local abilRecasts = windower.ffxi.get_ability_recasts()
-	local diffusionRecast = abilRecasts[184]
-	local unbridledRecast = abilRecasts[81]
-
---[[ 	if spell.english == 'Battery Charge' and diffusionRecast == 0 and auto.fite[auto.fite.index] == 'On' then
-		eventArgs.cancel = true
-		send_command('input /ja "Diffusion" <me>; wait 1.5; input /ma "'..spell.name..'" '..tostring(spell.target.raw))
-		return
-	end ]]
-
 	-- auto pop unbridled learning when we try to cast a spell that requires it (saves a button on macro bar)
-	if unbridled_spells:contains(spell.english) and unbridledRecast == 0 then
-		eventArgs.cancel = true
-		
-		-- mighty guard (and sometimes cacharian verve) deserve diffusion if its ready
-		if diffusionRecast == 0 and spell.name == 'Mighty Guard' or spell.name == 'Carcharian Verve' then
-			send_command('input /ja "Diffusion" <me>')
-			send_command:schedule(1.5, 'input /ja "Unbridled Learning" <me>')
-			send_command:schedule(3, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
+	if unbridled_spells:contains(spell.english) then
+		if not buffactive['Unbridled Learning'] then
+			eventArgs.cancel = true
+			if not onCooldown('Unbridled Learning') then
+				send_command('input /ja "Unbridled Learning" <me>')
+			end
 			return
 		end
-		
-		-- All other unbridled learning spells
-		send_command('input /ja "Unbridled Learning" <me>')
-		send_command:schedule(1.5, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
+		if spell.name == 'Mighty Guard' and not buffactive['Diffusion'] then
+			eventArgs.cancel = true
+			if not onCooldown('Diffusion') then
+				send_command('input /ja "Diffusion" <me>')
+			end
+			return
+		end
 	end
 end
 
@@ -425,7 +404,6 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 	end
 end
 
-
 -------------------------------------------------------------------------------------------------------------------
 -- Buff table updating
 -------------------------------------------------------------------------------------------------------------------
@@ -441,12 +419,7 @@ end
 --  Self command handler
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobSelfCommand(cmdParams, eventArgs)
-	if cmdParams[1]:lower() == 'buffs' then
-		local currentBuffs = windower.ffxi.get_player().buffs
-		for _, v in pairs(currentBuffs) do
-			add_to_chat(122, "BuffActive: "..v)
-		end
-	end
+	
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -471,6 +444,18 @@ function autoActions()
 	end
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+		-- auto.fite actions
+		if auto.fite[auto.fite.index] == 'On' then
+			-- auto mightyguard when diffusion is ready
+			if buffCheck('Mighty Guard') and (buffactive['Unbridled Learning'] or not onCooldown('Unbridled Learning')) and (buffactive['Diffusion'] or not onCooldown('Diffusion')) then
+				send_command('input /ma "Mighty Guard" <me>')
+				return
+			end
+
+			-- heal party members at 50% or lower health
+			partyLowHP(50, '/ma "Magic Fruit"')
+		end
+		
 		if buffCheck('Refresh', 'Battery Charge') then
 			send_command('input /ma "Battery Charge" <me>')
 			return
@@ -490,20 +475,5 @@ function autoActions()
 			send_command('input /ma "Cocoon" <me>')
 			return
 		end ]]
-
-		if auto.fite[auto.fite.index] == 'On' then
-			if buffCheck('Mighty Guard') then
-				local abilRecasts = windower.ffxi.get_ability_recasts()
-				local diffusionRecast = abilRecasts[184]
-				local unbridledRecast = abilRecasts[81]
-				
-				if (unbridledRecast == 0 or buffactive['Unbridled Learning']) and (diffusionRecast == 0 or buffactive['Diffusion']) then
-					send_command('input /ma "Mighty Guard" <me>')
-					return
-				end
-			end
-			
-			partyLowHP(50, '/ma "Magic Fruit"')
-		end
 	end
 end
