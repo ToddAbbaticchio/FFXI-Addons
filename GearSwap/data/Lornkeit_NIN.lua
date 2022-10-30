@@ -207,11 +207,11 @@ function init_gear_sets()
         hands = "Hattori Tekko +1",
         legs = "Nyame Flanchard",
         feet = "Hachi. Kyahan +1",
-        neck = "Incanter's Torque",
+        neck = "Sibyl Scarf",
         waist = "Salire Belt",
         left_ear = "Lugra Earring +1",
         right_ear = "Friomisi Earring",
-        left_ring = "Stikini Ring +1",
+        left_ring = "Dingir Ring",
         right_ring = "Shiva Ring +1"
     }
     -- DT gear and utsusemi +2
