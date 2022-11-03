@@ -102,6 +102,15 @@ windower.register_event('addon command',function(csCmd)
         end
 	end
 
+	if csCmd == 'selljunk' then
+		sendCommand('input //lua l sellnpc')
+
+		sendCommand('input //sellnpc bat wing')
+		sendCommand('input //sellnpc bat fang')
+		sendCommand('input //sellnpc fiend blood')
+		sendCommand('input //sellnpc beastman blood')
+	end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Trust Stuff
 -------------------------------------------------------------------------------------------------------------------

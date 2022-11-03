@@ -19,10 +19,11 @@ function init_gear_sets()
 	--Define Base Sets for use in other sets
 	sets.baseMelee = {
 		ammo="Ginsen",
-		head="Adhemar Bonnet +1",
+		--head="Adhemar Bonnet +1",
+		head="Hashishin Kavuk +3",
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wrist. +1",
-		legs="Malignance Tights",
+		legs="Samnhua Tights",
 		feet="Herculean Boots",
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
@@ -34,8 +35,8 @@ function init_gear_sets()
 	}
 	sets.baseMagic = {
 		ammo="Pemphredo Tathlum",
-		--head="Jhakri Coronal +2",
-		body="Cohort Cloak +1",
+		head="Hashishin Kavuk +3",
+		body="Hashishin Mintan +3",
 		hands="Amalric Gages +1",  
 		legs="Luhlaza Shalwar +3",
 		feet="Hashishin Basmak +2",
@@ -51,7 +52,21 @@ function init_gear_sets()
 	sets.magic = {}
 	sets.magic.nuke = {}
 	sets.magic.acc = {}
-	sets.magic.bluSkill = {}
+	sets.magic.bluSkill = {
+		head="Mirage Keffiyeh +1",
+		body="Assim. Jubbah +3",
+		--hands="",
+		legs="Hashishin Tayt +1",
+		--feet="",
+		neck="Mirage Stole +2",
+		--waist="",
+		--ear1="",
+		ear2="Hashishin Earring",
+		ring1="Stikini Ring +1",
+		ring2="Stikini Ring +1",
+		--back="Cornflower Cape",
+	}
+
 
 	sets.precast.FC = {
 		ammo = "Impatiens",
@@ -69,8 +84,7 @@ function init_gear_sets()
 	sets.baseTank = {
 		ammo="Ginsen",
 		head="Malignance Chapeau",        --06
-		body="Malignance Tabard",         --09
-		--body="Hashishin Mintan +2",
+		body="Hashishin Mintan +3",
 		hands="Malignance Gloves",        --05
 		legs="Malignance Tights",         --07
 		feet="Malignance Boots",           --07
@@ -99,7 +113,7 @@ function init_gear_sets()
 	}
     sets.precast.WS = {
 		ammo="Oshasha's Treatise",
-		head="Hashishin Kavuk +2",
+		head="Hashishin Kavuk +3",
 		body="Assim. Jubbah +3",
 		legs="Luhlaza Shalwar +3",
 		hands="Jhakri Cuffs +2",
@@ -113,18 +127,18 @@ function init_gear_sets()
 		back=gear.WsCape,
 	}
 	
-	sets.baseIdle = {body="Hashishin Mintan +2",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"}
+	sets.baseIdle = {body="Hashishin Mintan +3",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.obi = {waist="Hachirin-no-obi"}
     
 	--Define Job Ability sets														-- I'd use these if i cared enough to get them:
     sets.buff['Burst Affinity'] = {feet="Hashishin Basmak +2"}
-    sets.buff['Chain Affinity'] = {} 												--Mavi Kavuk +2, Assimilator's Charuqs
+    sets.buff['Chain Affinity'] = {head="Hashishin Kavuk +3"} 						--Assimilator's Charuqs
     sets.buff['Convergence'] = {} 													--Luhlaza Keffiyeh
     sets.buff['Diffusion'] = {feet="Luhlaza Charuqs +1"}
     sets.buff['Enchainment'] = {} 													--Luhlaza Jubbah
-    sets.buff['Efflux'] = {legs="Hashishin Tayt", gear.WsCape,}
+    sets.buff['Efflux'] = {legs="Hashishin Tayt +1", gear.WsCape,}
     sets.precast.JA['Azure Lore'] = {} 												--Mirage Bazubands +2
 	sets.precast.JA['Provoke'] = sets.TH	-- that way i can proc TH by voking random monsters when i want to.
 
@@ -132,8 +146,7 @@ function init_gear_sets()
     sets.precast.Waltz = {}
     sets.precast.Waltz['Healing Waltz'] = {}
 
-
-    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +2"})
+    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +3"})
 
     -- Weaponskill sets
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
@@ -176,12 +189,12 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
     sets.midcast['Blue Magic']['White Wind'] = {}
     sets.midcast['Blue Magic'].Healing = set_combine(sets.baseMagic, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
-    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt",head="Mirage Keffiyeh",neck="Mirage Stole",})
+    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +1",head="Mirage Keffiyeh +1",neck="Mirage Stole",})
     sets.midcast['Blue Magic'].Buff = {}
 	sets.midcast['Blue Magic'].Enmity = {}
     
     -- Gear for learning spells: +skill and AF hands.
-    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt",head="Mirage Keffiyeh",neck="Mirage Stole",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
+    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +1",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -439,9 +452,9 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
-	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
+	--[[ if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
-	end
+	end ]]
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto.fite actions
@@ -454,6 +467,10 @@ function autoActions()
 
 			-- heal party members at 50% or lower health
 			partyLowHP(50, '/ma "Magic Fruit"')
+
+			if buffCheck('Berserk') then
+				send_command('input /ma "Berserk" <me>')
+			end
 		end
 		
 		if buffCheck('Refresh', 'Battery Charge') then

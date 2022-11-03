@@ -2,6 +2,7 @@ vars = {}
 vars.BLU = {
     autoBuffs = {
         ["Warcry"] = "Warcry",
+        ["Berserk"] = "Berserk",
     },
     ws = "Savage Blade",
     --targetTp = 1750,

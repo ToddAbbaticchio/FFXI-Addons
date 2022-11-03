@@ -91,6 +91,12 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
+		local monsters = windower.ffxi.get_mob_array()
+		for _,monster in pairs(monsters) do
+			if monster.name == 'Ethereal Junction' then
+				add_to_chat('junctionFound! id:'..monster.id..' distance:'..monster.distance)	
+			end
+		end
 		-- debug/testing stuff goes hererereereere
 	end
 end
@@ -329,6 +335,15 @@ function mpCheck(spell)
 	return false
 end
 
+function notifyWhenMonsterNear(monsterName)
+	local monsters = windower.ffxi.get_mob_array()
+    for _,monster in pairs(monsters) do
+        if monster.name == monsterName then
+           send_command('input /p ~~ZOMG its '..monsterName..' <call>~~')
+            return
+        end
+    end
+end
 
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
@@ -405,8 +420,8 @@ function job_precast(spell, action, spellMap, eventArgs)
 	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type)
 	
 	-- don't try to do stuff if we can't do stuff (stop gearswap from switching gear if we can't act)
-	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] or (spell.type:contains('Magic') and buffactive['Silence']) then
-        add_to_chat(167, 'Action stopped: A current status ailment prevents using '..spell.name..'!')
+	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] or (spell.type:contains('Magic') and buffactive['Silence']) or (spell.type == 'JobAbility' and buffactive['Amnesia']) then
+        add_to_chat(167, 'Action stopped: A status ailment prevents using '..spell.name..'!')
         eventArgs.cancel = true
         return
     end
