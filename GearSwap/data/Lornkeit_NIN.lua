@@ -34,6 +34,10 @@ function init_gear_sets()
         name = "Herculean Vest",
         augments = {'Mag. Acc.+3', 'Weapon skill damage +5%', '"Mag.Atk.Bns."+11'}
     }
+    gear.hercHybridGloves = {
+        name = "Herculean Gloves",
+        augments = {'Mag. Acc.+21', 'Weapon skill damage +5%', 'MND+4', '"Mag.Atk.Bns."+11'}
+    }
 
     sets.baseMelee = {
         ammo = "Date Shuriken",
@@ -41,30 +45,22 @@ function init_gear_sets()
         body = "Adhemar Jacket +1",
         hands = "Adhemar Wrist. +1",
         legs = "Samnuha Tights",
-        feet = "Malignance Boots",
+        feet = "Tatenashi Sune-Ate +1",
         neck = "Ninja Nodowa +2",
         waist = "Sailfi Belt +1",
-        left_ear = "Brutal Earring",
-        right_ear = "Cessance Earring",
+        left_ear = "Cessance Earring",
+        right_ear = "Suppanomimi",
         left_ring = "Gere Ring",
         right_ring = "Epona's Ring",
         back = gear.MeleeDEXCape
     }
-    -- sets.baseMelee = {
-    -- 	ammo="Date Shuriken",
-    -- 	head="Hattori Zukin +2",
-    -- 	body="Adhemar Jacket +1",
-    -- 	hands="Adhemar Wristbands +1",
-    -- 	legs="Samnuha Tights",
-    -- 	feet="Malignance Boots",
-    -- 	neck="Ninja Nodowa +2",
-    -- 	waist="Patentia sash",
-    -- 	left_ear="Eabani Earring",
-    -- 	right_ear="Suppanomimi",
-    -- 	left_ring="Gere Ring",
-    -- 	right_ring="Epona's Ring",
-    -- 	back=gear.MeleeDEXCape
-    -- }
+    sets.cappedHasteMelee = set_combine(sets.baseMelee, {
+        head = "Malignance Chapeau",
+        body = "Malignance Tabard",
+        feet = "Malignance Boots",
+        left_ear = "Brutal Earring",
+        right_ear = "Cessance Earring"
+    })
     sets.baseWS = {
         ammo = "Coiste Bodhar",
         head = "Mpaca's Cap",
@@ -142,13 +138,13 @@ function init_gear_sets()
         neck = "Fotia Gorget",
         left_ear = "Moonshade Earring",
         right_ear = "Lugra Earring +1",
-        body = sets.hercHybridVest,
-        hands = "Nyame Gauntlets", -- Herc hands
+        body = gear.hercHybridVest,
+        hands = gear.hercHybridGloves,
         left_ring = "Gere Ring",
         right_ring = "Epona's Ring",
         back = gear.WSSTRCape,
         waist = "Fotia Belt",
-        legs = "Nyame Flanchard", -- Mochizuki Hakama +3
+        legs = "Hizamaru Hizayoroi +2", -- Mochizuki Hakama +3
         feet = "Hattori Kyahan +2"
     }
 
@@ -205,14 +201,18 @@ function init_gear_sets()
     }
     -- Midcast Sets
     sets.midcast['Ninjutsu'] = {
-        head = "Hachiya Hatsuburi +1",
+        ammo = "Seeth. Bomblet +1",
+        head = "Mochi. Hatsuburi +3",
         body = "Nyame Mail",
-        hands = "Mochizuki Tekko +1",
+        hands = "Hattori Tekko +1",
         legs = "Nyame Flanchard",
-        feet = "Mochizuki Kyahan",
-        neck = "Incanter's Torque",
-        left_ring = "Stikini Ring +1",
-        right_ear = "Stikini Ring +1"
+        feet = "Hachi. Kyahan +1",
+        neck = "Sibyl Scarf",
+        waist = "Salire Belt",
+        left_ear = "Lugra Earring +1",
+        right_ear = "Friomisi Earring",
+        left_ring = "Dingir Ring",
+        right_ring = "Shiva Ring +1"
     }
     -- DT gear and utsusemi +2
     sets.midcast['Utsusemi'] = {
@@ -248,8 +248,8 @@ function init_gear_sets()
     })
     sets.precast.WS['Blade: Chi'] = sets.hybridWS
     sets.precast.WS['Blade: To'] = sets.hybridWS
-    sets.precast['Blade: Teki'] = sets.hybridWS
-    sets.precast['Tachi: Jinpu'] = sets.hybridWS
+    sets.precast.WS['Blade: Teki'] = sets.hybridWS
+    sets.precast.WS['Tachi: Jinpu'] = sets.hybridWS
     sets.precast.WS['Evisceration'] = set_combine(sets.baseWS, {})
     sets.precast.WS['Exenterator'] = set_combine(sets.baseWS, {})
     sets.precast.WS['Savage Blade'] = set_combine(sets.baseWS, {
@@ -272,9 +272,9 @@ function init_modetables()
             engaged = (sets.baseMelee)
         },
         [1] = {
-            name = "Accuracy",
+            name = "CappedHaste",
             idle = sets.baseIdle,
-            engaged = (sets.meleeAccuracy)
+            engaged = (sets.cappedHasteMelee)
         }
         -- [1] = {name="Treasure Hunter", idle=sets.baseIdle, engaged=(sets.treasureHunter)},
         -- [2] = {name="IWannaLive", idle=sets.baseIdle, engaged=(sets.baseTank)},
@@ -291,28 +291,28 @@ function init_modetables()
                 sub = "Kunimitsu"
             }
         },
+        -- [1] = {
+        --     name = "Ku",
+        --     set = {
+        --         main = "Gokotai",
+        --         sub = "Kunimitsu"
+        --     }
+        -- },
         [1] = {
-            name = "Ku",
-            set = {
-                main = "Gokotai",
-                sub = "Kunimitsu"
-            }
-        },
-        [2] = {
             name = "Savage",
             set = {
                 main = "Naegling",
                 sub = "Hitaki"
             }
         },
-        [3] = {
+        [2] = {
             name = "Daggers",
             set = {
                 main = "Tauret",
                 sub = "Gleti's Knife"
             }
         },
-        [4] = {
+        [3] = {
             name = "Free",
             set = {}
         }
@@ -379,4 +379,5 @@ function autoActions()
             return
         end
     end
+
 end

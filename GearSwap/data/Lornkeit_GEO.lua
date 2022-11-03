@@ -156,17 +156,17 @@ function init_gear_sets()
     }
     -- Casting sets
     sets.basePrecast = {
-        main = "Cath Palug Hammer",
+        main = "C. Palug Hammer",
         sub = "Ammurapi Shield",
         range = "Dunna",
         head = "Amalric Coif +1",
-        body = "Merlinic Jubbah",
-        hands = "Azimuth Gloves +2",
-        legs = "Geomancy Pants +1",
-        feet = "Jhakri Pigaches +2",
+        body = "Agwu's Robe",
+        hands = "Agwu's Gages",
+        legs = "Geo. Pants +1",
+        feet = "Agwu's Pigaches",
         neck = "Incanter's Torque",
         waist = "Witful Belt",
-        left_ear = "Loquacious Earring",
+        left_ear = "Loquac. Earring",
         right_ear = "Malignance Earring",
         left_ring = "Lebeche Ring",
         right_ring = "Kishar Ring",
@@ -244,9 +244,25 @@ function init_gear_sets()
         back = "Aurist's Cape"
     }
 
-    sets.enhancingSkill = {
+    sets.enhancingMagic = {
+        main = "Daybreak",
+        sub = "Ammurapi Shield",
+        range = "Dunna",
+        head = "Befouled Crown",
+        body = {
+            name = "Telchine Chas.",
+            augments = {'Pet: "Regen"+3', 'MND+2'}
+        },
+        hands = "Azimuth Gloves +2",
+        legs = "Azimuth Tights +2",
+        feet = "Geo. Sandals +3",
+        neck = "Incanter's Torque",
+        waist = "Embla Sash",
+        left_ear = "Regal Earring",
+        right_ear = "Andoaa Earring",
         left_ring = "Stikini Ring +1",
-        right_ring = "Stikini Ring +1"
+        right_ring = "Stikini Ring +1",
+        back = "Fi Follet Cape"
     }
     sets.drainAspir = set_combine(sets.fullMACC, {
         main = "Rubicundity",
@@ -298,11 +314,11 @@ function init_gear_sets()
         right_ring = "Kishar Ring",
         back = "Aurist's Cape"
     })
-    sets.midcast['Enhancing Magic'] = set_combine(sets.fullMACC, {})
-    sets.midcast['Stoneskin'] = set_combine(sets.baseMagic, {
+    sets.midcast['Enhancing Magic'] = set_combine(sets.enhancingMagic, {})
+    sets.midcast['Stoneskin'] = set_combine(sets.enhancingMagic, {
         waist = "Siegel Sash"
     })
-    sets.midcast['Aquaveil'] = set_combine(sets.baseMagic, {
+    sets.midcast['Aquaveil'] = set_combine(sets.enhancingMagic, {
         hands = "Regal Cuffs"
     })
     sets.midcast['Dispelga'] = set_combine(sets.fullMACC, {
@@ -530,10 +546,10 @@ function autoActions()
             return
         end
 
-        if entrustRecast == 1 then
+        if entrustRecast == 0 then
             send_command('input //hb off')
             send_command:schedule(0.5, 'input /ja "Entrust" <me>')
-            send_command:schedule(2.0, 'input /ma "Indi-Refresh" Walshie')
+            send_command:schedule(2.0, 'input /ma "Indi-Precision" Walshie')
             send_command:schedule(5.0, 'input //hb on')
             return
         end
@@ -551,19 +567,34 @@ function autoActions()
             return
         end
 
-        -- Still need to test this; feel free to refine if you want
-        if pet.isvalid and not buffactive['Bolster'] and blazeRecast == 0 and eclipticAttritionRecast == 0 then
-            send_command('input //hb off')
-            if mendingHalationRecast == 0 then
-                send_command:schedule(0.5, 'input /ja "Mending Halation" <me>')
-            else
-                send_command:schedule(0.5, 'input /ja "Full Circle" <me>')
+        if pet.isvalid and not buffactive['Bolster'] then
+            if blazeRecast == 0 and eclipticAttritionRecast == 0 then
+                send_command('input //hb off')
+                if mendingHalationRecast == 0 then
+                    send_command:schedule(0.5, 'input /ja "Mending Halation" <me>')
+                else
+                    send_command:schedule(0.5, 'input /ja "Full Circle" <me>')
+                end
+                send_command:schedule(2.5, 'input /ja "Blaze of Glory" <me>')
+                send_command:schedule(3.5, 'input /ma "Geo-Frailty" <bt>')
+                send_command:schedule(5, 'input /ja "Ecliptic Attrition" <me>')
+                send_command:schedule(7.0, 'input //hb on')
+                return
             end
-            send_command:schedule(2.5, 'input /ja "Blaze of Glory" <me>')
-            send_command:schedule(3.5, 'input /ma "Geo-Frailty" <bt>')
-            send_command:schedule(5, 'input /ja "Ecliptic Attrition" <me>')
-            send_command:schedule(7.0, 'input //hb on')
-            return
+        end
+
+        if not pet.isvalid and bolsterRecast ~= 0 then
+            if not buffactive['Bolster'] and blazeRecast == 0 and eclipticAttritionRecast == 0 then
+                send_command('input //hb off')
+                send_command:schedule(2.5, 'input /ja "Blaze of Glory" <me>')
+                send_command:schedule(3.5, 'input /ma "Geo-Frailty" <bt>')
+                send_command:schedule(5, 'input /ja "Ecliptic Attrition" <me>')
+                send_command:schedule(7.0, 'input //hb on')
+            else
+                send_command('input //hb off')
+                send_command:schedule(1.5, 'input /ma "Geo-Frailty" <bt>')
+                send_command:schedule(2.5, 'input //hb on')
+            end
         end
 
         if pet.isvalid and (lifeCycleRecast < 1 or buffactive['Bolster']) and pet.hpp < 40 then
