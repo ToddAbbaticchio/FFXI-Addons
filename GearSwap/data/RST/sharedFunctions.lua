@@ -91,14 +91,13 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		local monsters = windower.ffxi.get_mob_array()
-		for _,monster in pairs(monsters) do
-			if monster.name == 'Ethereal Junction' then
-				add_to_chat('junctionFound! id:'..monster.id..' distance:'..monster.distance)	
-			end
-		end
 		-- debug/testing stuff goes hererereereere
 	end
+
+	if cmdParams[1]:lower() == 'ignorelastmatch' then
+		ignoreList = ignoreList..','..lastMatch
+	end
+
 end
 
 function user_setup()
@@ -198,6 +197,16 @@ function bestObiElement()
 	end
 
 	return maxIntensityEle
+end
+
+function buffIdActive(buffId)
+	local currentBuffs = windower.ffxi.get_player().buffs
+	for _,id in pairs(currentBuffs) do
+		if id == buffId then
+			return true
+		end
+	end
+	return false
 end
 
 function betterBuffActive(buffName, buffCount)
@@ -344,6 +353,50 @@ function notifyWhenMonsterNear(monsterName)
         end
     end
 end
+
+function tellXYZ(monsterName)
+	if ignoreList == nil then ignoreList = "" end
+
+	local monsters = windower.ffxi.get_mob_array()
+	local pos = windower.ffxi.get_mob_by_target('me')
+    local playerX = math.floor(pos.x)
+	local playerY = math.floor(pos.y)
+	local xDirection
+	local yDirection
+
+	lastMatch = ""
+	local closestDist = 999
+	local matchX = 0
+	local matchY = 0
+
+	for _,monster in pairs(monsters) do
+        if monster.name == monsterName and not ignoreList:contains(monster.id) then
+            if monster.distance < closestDist then
+				lastMatch = monster.id
+				matchX = math.floor(monster.x)
+				matchY = math.floor(monster.y)
+			end
+        end
+    end
+
+	if lastMatch ~= "" then
+		--add_to_chat(1, matchX..'/'..math.floor(pos.x)..' || '..matchY..'/'..math.floor(pos.y)..'  -  Closest '..monsterName..' id: '..lastMatch)
+
+		if matchX > playerX then
+			xDirection = "North"
+		else
+			xDirection = "South"
+		end
+		if matchY > playerY then
+			yDirection = "East"
+		else
+			yDirection = "West"
+		end
+
+		add_to_chat(1, xDirection..yDirection..' || '..matchX..'/'..playerX..' || '..matchY..'/'..playerY..'  -  Closest '..monsterName..' id: '..lastMatch)
+	end
+end
+
 
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)

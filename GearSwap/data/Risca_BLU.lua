@@ -456,6 +456,8 @@ function autoActions()
 		return
 	end ]]
 
+	---tellXYZ("???")
+
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto.fite actions
 		if auto.fite[auto.fite.index] == 'On' then
