@@ -1,13 +1,16 @@
+include('RST\\sharedFunctions.lua')
+
 -------------------------------------------------------------------------------------------------------------------
--- Setup functions for this job.  Generally should not be modified.
+-- dumb name.  is required.
 -------------------------------------------------------------------------------------------------------------------
 function get_sets()
     mote_include_version = 2
     include('Mote-Include.lua')
+	init_modetables()
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Define sets and vars used by this job file.
+-- Define sets and gear vars used by this job file.
 -------------------------------------------------------------------------------------------------------------------
 function init_gear_sets()
 	gear.smnGloves = {name="Merlinic Dastanas", augments={'Blood Pact Dmg.+8'}}
@@ -140,9 +143,6 @@ function init_gear_sets()
         waist="Shinjutsu-no-Obi",
     }
 
-	sets.idle = sets.AvatarPerp
-	--sets.engaged = set_combine(sets.AvatarPerp, sets.MeleeAvatar, {})
-	sets.engaged = sets.AvatarPerp
 	-- JA sets
 	sets.precast.JA['Elemental Siphon'] = set_combine(sets.SmnSkill, {})
 	sets.precast.JA['Sublimation'] = {waist="Embla Sash"}
@@ -158,7 +158,6 @@ function init_gear_sets()
 	--Special PhysicalBP Handling
 	sets.midcast.Pet.BloodPactRage['Flaming Crush'] = set_combine(sets.SmnSkill, sets.MeleeAvatar, sets.MagicAvatar, sets.BPDamage)
 	sets.midcast.Pet.BloodPactRage['Volt Strike'] = set_combine(sets.SmnSkill, sets.MeleeAvatar, sets.BPDamage)
-
 	
 	--Special MagicBP Handling
 	sets.midcast.Pet.BloodPactRage['Thunderstorm'] = set_combine(sets.SmnSkill, sets.MagicAvatar, sets.BPDamage)
@@ -188,87 +187,96 @@ function init_gear_sets()
 	sets.midcast['Sneak'] = set_combine(sets.midcast['Enhancing Magic'], {feet="Dream Boots +1"})
 	sets.midcast['Invisible'] = set_combine(sets.midcast['Enhancing Magic'], {hands="Dream Mittens +1"})
 	sets.midcast['Deodorize'] = sets.midcast['Enhancing Magic']
-	
-	-- Toggle Modes
+end
+
+-------------------------------------------------------------------------------------------------------------------
+-- Setup tables that control our various 'modes'
+-------------------------------------------------------------------------------------------------------------------
+function init_modetables()
 	--Setup gearMode
-	sets.gearMode = {}
-    sets.gearMode.index = {'DPS','DT'}
-    gearMode_ind = 1
+	gearMode = {
+		["index"] = 0,
+		[0] = {name="Default", idle=sets.AvatarPerp, engaged=sets_combine(sets.AvatarPerp, sets.MeleeAvatar)},
+		[1] = {name="MaxPerp", idle=sets.AvatarPerp, engaged=sets.AvatarPerp},
+	}
 	
 	--Setup weaponMode
-	sets.weaponMode = {}
-	sets.weaponMode.index = {'PhysBP','MagicBP'}
-	weaponMode_ind = 1
+	weaponMode = {
+		["index"] = 0,
+		[0] = {name="Magic BP", set={main="Espiritus", sub="Elan Strap +1"}},
+		[1] = {name="Physical BP", set={main="Gridarvor", sub="Elan Strap +1"}},
+	}
 
-	--Setup modeMod
-	sets.modeMod = {}
-	sets.modeMod.index = {'Normal','CP'}
-	modeMod_ind = 1
+	--Setup magicMode
+	magicMode = {
+		["index"] = 0,
+		[0] = {name="Burst", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[1] = {name="FreeNuke", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
+		[2] = {name="MaxAcc", nukeSet=(set_combine(sets.interrupt, sets.emSkill))},
+	}
 
 	--Setup autoBuff
-	sets.autoBuff = {}
-	sets.autoBuff.index = {'Off','On'}
-	autoBuff_ind = 1
+	auto = {
+		["buff"] = {
+			["index"] = 0,
+			[0] = "Off",
+			[1] = "On",
+		},
+		["fite"] = {
+			["index"] = 0,
+			[0] = "Off",
+			[1] = "On",
+		},
+		["smnMode"] = {
+			["index"] = 0,
+			[0] = {
+				["name"] = "DPS",
+				["defaultAvatar"] = { name="Ifrit", defaultAction={ type="attack", name="flamingcrush", minMp=30} },
+				["autoBPs"] = {
+					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
+					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
+					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
+				}
+			},
+			[1] = {
+				["name"] = "Heal",
+				["defaultAvatar"] = {name="Carbuncle", defaultAction={ type="heal", name="healingruby2", partyHp=60} },
+				["autoBPs"] = {
+					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
+					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
+					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
+				}
+			}
+		}
+	}
+
+	sets.idle = gearMode[gearMode.index].idle
+	sets.engaged = gearMode[gearMode.index].engaged
+	sets.weapons = weaponMode[weaponMode.index].set
+	modeHud('update')
 end
 
+-------------------------------------------------------------------------------------------------------------------
+-- Job Setup: ref tables specific to this job
+-------------------------------------------------------------------------------------------------------------------
 function job_setup()
-	-- i'm not actually using these for anything yet - probably should?   just saved them from someone else's .lua so i'd know the breakdowns if 
-	-- i ever wanted to get that crazy with it
-	magicalRagePacts = S{
-		'Inferno','Earthen Fury','Tidal Wave','Aerial Blast','Diamond Dust','Judgment Bolt','Searing Light','Howling Moon','Ruinous Omen',
-		'Fire II','Stone II','Water II','Aero II','Blizzard II','Thunder II',
-		'Fire IV','Stone IV','Water IV','Aero IV','Blizzard IV','Thunder IV',
-		'Thunderspark','Meteorite','Nether Blast','Meteor Strike',
-		'Heavenly Strike','Wind Blade','Geocrush','Grand Fall','Thunderstorm',
-		'Holy Mist','Lunar Bay','Night Terror','Level ? Holy',
-		'Conflag Strike','Crag Throw'}
-	hybridRagePacts = S{'Burning Strike','Flaming Crush'}
-
-
-	-- and these might maybe turn into that thing i was talking about - where keybinds update on the fly based on what avatar you have out...
-	-- again, not used for anything yet.  just sorting into common categories so each avatar would have the same "set" of buttons
-	pacts = {}
-	pacts.cure = {['Carbuncle']='Healing Ruby'}
-	pacts.curaga = {['Carbuncle']='Healing Ruby II', ['Garuda']='Whispering Wind', ['Leviathan']='Spring Water'}
-	pacts.buffoffense = {['Carbuncle']='Glittering Ruby', ['Ifrit']='Crimson Howl', ['Garuda']='Hastega II', ['Ramuh']='Rolling Thunder',
-		['Fenrir']='Ecliptic Growl'}
-	pacts.buffdefense = {['Carbuncle']='Shining Ruby', ['Shiva']='Frost Armor', ['Garuda']='Aerial Armor', ['Titan']='Earthen Ward',
-		['Ramuh']='Lightning Armor', ['Fenrir']='Ecliptic Howl', ['Diabolos']='Noctoshield', ['Cait Sith']='Reraise II'}
-	pacts.buffspecial = {['Ifrit']='Inferno Howl', ['Garuda']='Fleet Wind', ['Titan']='Earthen Armor',['Shiva']='Crystal Blessing', ['Leviathan']='Soothing Current',['Diabolos']='Dream Shroud',
-		['Carbuncle']='Soothing Ruby', ['Fenrir']='Heavenward Howl', ['Cait Sith']='Raise II'}
-	pacts.debuff1 = {['Shiva']='Diamond Storm', ['Ramuh']='Shock Squall', ['Leviathan']='Tidal Roar', ['Fenrir']='Lunar Cry',
-		['Diabolos']='Pavor Nocturnus', ['Cait Sith']='Eerie Eye'}
-	pacts.debuff2 = {['Shiva']='Sleepga', ['Leviathan']='Slowga', ['Fenrir']='Lunar Roar', ['Diabolos']='Somnolence'}
-	pacts.sleep = {['Shiva']='Sleepga', ['Diabolos']='Nightmare', ['Cait Sith']='Mewing Lullaby'}
-	pacts.nuke2 = {['Ifrit']='Fire II', ['Shiva']='Blizzard II', ['Garuda']='Aero II', ['Titan']='Stone II',
-		['Ramuh']='Thunder II', ['Leviathan']='Water II'}
-	pacts.nuke4 = {['Ifrit']='Fire IV', ['Shiva']='Blizzard IV', ['Garuda']='Aero IV', ['Titan']='Stone IV',
-		['Ramuh']='Thunder IV', ['Leviathan']='Water IV'}
-	pacts.bp70 = {['Ifrit']='Flaming Crush', ['Shiva']='Rush', ['Garuda']='Predator Claws', ['Titan']='Mountain Buster',
-		['Ramuh']='Chaotic Strike', ['Leviathan']='Spinning Dive', ['Carbuncle']='Meteorite', ['Fenrir']='Eclipse Bite',
-		['Diabolos']='Nether Blast',['Cait Sith']='Regal Scratch'}
-	pacts.bp75 = {['Ifrit']='Meteor Strike', ['Shiva']='Heavenly Strike', ['Garuda']='Wind Blade', ['Titan']='Geocrush',
-		['Ramuh']='Thunderstorm', ['Leviathan']='Grand Fall', ['Carbuncle']='Holy Mist', ['Fenrir']='Lunar Bay',
-		['Diabolos']='Night Terror', ['Cait Sith']='Level ? Holy'}
-	pacts.bp99 = {['Ifrit']='Conflag Strike', ['Shiva']='Rush', ['Garuda']='Wind Blade', ['Titan']='Crag Throw',
-		['Ramuh']='Volt Strike', ['Carbuncle']='Holy Mist', ['Fenrir']='Impact', ['Diabolos']='Blindside'}
-	pacts.astralflow = {['Ifrit']='Inferno', ['Shiva']='Diamond Dust', ['Garuda']='Aerial Blast', ['Titan']='Earthen Fury',
-		['Ramuh']='Judgment Bolt', ['Leviathan']='Tidal Wave', ['Carbuncle']='Searing Light', ['Fenrir']='Howling Moon',
-		['Diabolos']='Ruinous Omen', ['Cait Sith']="Altana's Favor"}
+    spirits = {
+		["Wind"] = "Air Spirit",
+		["Light"] = "Light Spirit",
+		["Fire"] = "Fire Spirit",
+		["Ice"] = "Ice Spirit",
+		["Earth"] = "Earth Spirit",
+		["Lightning"] = "Thunder Spirit",
+		["Water"] = "Water Spirit",
+		["Dark"] = "Dark Spirit"
+	}
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- User setup functions for this job.  Recommend that these be overridden in a sidecar file.
+-- User setup: Job specific keybinds, set macro page, stylelock, etc
 -------------------------------------------------------------------------------------------------------------------
-function user_setup()
-	--Setup my binds
-	send_command('bind F9 gs c toggleGearMode')
-	send_command('bind ^F9 gs c toggleWeaponMode')
-	send_command('bind F10 gs c toggleModeMod')
-	send_command('bind F11 gs c toggleAutoBuff')
-	send_command('bind F12 input //gs reload')
-	
-	send_command('bind != gs c elesiphon')
+function extendedUserSetup()
+	send_command('bind ^F11 gs c togglesmnmode')
 
 	--Set default macro book / page
     set_macro_page(1, 9)
@@ -278,55 +286,10 @@ function user_setup()
 end
 
 -------------------------------------------------------------------------------------------------------------------
-function user_unload()
-    send_command('unbind ^=')
-	send_command('unbind !=')
-    send_command('unbind ^insert')
-    send_command('unbind ^delete')
-    send_command('unbind F9')
-	send_command('unbind ^F9')
-	send_command('unbind F10')
-	send_command('unbind F11')
-	send_command('unbind F12')
-end
-
+-- Action/Cast phases
 -------------------------------------------------------------------------------------------------------------------
--- Precast
--------------------------------------------------------------------------------------------------------------------
-function job_precast(spell, action, spellMap, eventArgs)
-	--add_to_chat(167, '~Ability Name: '..spell.english..' RecastID: '..spell.recast_id..'~')
-	
-	-- don't try to do stuff if we can't do stuff
-	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] then
-        add_to_chat(167, 'Action stopped due to status.')
-        eventArgs.cancel = true
-        return
-    end
-
-   	-- DarkArts --> Addendum: Black
-	if spell.english == 'Dark Arts' and buffactive['Addendum: Black'] then
-		cancel_spell()
-		send_command('input /ja "Manifestation" <me>')
-		return
-	end
-	if spell.english == 'Dark Arts' and buffactive['Dark Arts'] then
-		cancel_spell()
-		send_command('input /ja "Addendum: Black" <me>')
-		return
-	end
-
-	-- LightArts --> Addendum: White
-	if spell.english == 'Light Arts' and buffactive['Addendum: White'] then
-		cancel_spell()
-		send_command('input /ja "Accession" <me>')
-		return
-	end
-	if spell.english == 'Light Arts' and buffactive['Light Arts'] then
-		cancel_spell()
-		send_command('input /ja "Addendum: White" <me>')
-		return
-	end
-
+function extendedJobPrecast(spell, action, spellMap, eventArgs)
+    
 	-- Switch to correct macro book/page based on avatar summoned
 	if spell.english == 'Release' then
         add_to_chat(167, '~Default SMN macro book loaded~')
@@ -370,322 +333,173 @@ function job_precast(spell, action, spellMap, eventArgs)
     end
 end
 
+function extendedJobMidcast(spell, action, spellMap, eventArgs)
+    -- placeholder
+end
+
+function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
+end
+
 -------------------------------------------------------------------------------------------------------------------
--- Post Midcast
+-- Special buff/debuff handling
 -------------------------------------------------------------------------------------------------------------------
-function job_post_midcast(spell, action, spellMap, eventArgs)
-	-- if spell element matches day or weather element, and it's not a weaponskill, use mega obi
-	if spell.type ~= 'WeaponSkill' then
-		if (spell.element == world.day_element or spell.element == world.weather_element) then
-			equip {waist="Hachirin-no-obi"}
+function job_buff_change(buff, active)
+    --[[ if buff == "Doom" then
+		if active then
+			send_command('input /p "Doomed, pls halp!')
+			equip({waist="Gishdubar Sash",ring1="Purity Ring"})
+			disable('ring1','waist')
+		else
+			send_command('input /p "Im saved!!! ...or Doom killed me?')
+			enable('ring1','waist')
+			evalState_equipGear()
 		end
-	end
+	end ]]
 end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Self Command Handling
 -------------------------------------------------------------------------------------------------------------------
-function job_self_command(cmdParams, eventArgs)
-	-- Elemental Siphon Handling
+function extendedJobSelfCommand(cmdParams, eventArgs)
+	if cmdParams[1]:lower() == 'togglesmnmode' then
+		auto.smnMode.index = auto.smnMode.index + 1
+		if auto.smnMode.index > #auto.smnMode then
+			auto.smnMode.index = 0
+		end
+		modeHud('update')
+	end
+
 	if cmdParams[1]:lower() == 'elesiphon' then
-		send_command('input //gs c toggleautobuff')
+		local toggle = false
+		if auto.buff.index == 1 then
+			send_command('input //gs c toggleautobuff')
+			toggle = true
+		end
+
 		send_command('/release')
-		send_command:schedule(2,'/airspirit')
+		send_command:schedule(2,'/'..spirits[bestObiElement()])
 		send_command:schedule(6,'/elementalsiphon')
-		send_command:schedule(8,'input //gs c toggleautobuff')
-	end
-	
-	-- Change current gear mode
-	if cmdParams[1]:lower() == 'togglegearmode' then
-        gearMode_ind = gearMode_ind + 1
-        if gearMode_ind > #sets.gearMode.index then 
-			gearMode_ind = 1 
-		end
-		update_IdleEngagedSets(sets.gearMode.index[gearMode_ind],sets.modeMod.index[modeMod_ind])
-		add_to_chat(122,'-- GearMode:' .. sets.gearMode.index[gearMode_ind] .. ' --')
-	end
-	
-	-- Change current weapon
-	if cmdParams[1]:lower() == 'toggleweaponmode' then
-        weaponMode_ind = weaponMode_ind + 1
-        if weaponMode_ind > #sets.weaponMode.index then 
-			weaponMode_ind = 1 
-		end
-		
-		add_to_chat(122,'-- WeaponMode:' .. sets.weaponMode.index[weaponMode_ind] .. ' --')
-		
-		if sets.weaponMode.index[weaponMode_ind] == "PhysBP" then
-			sets.weapons = {main="Gridarvor", sub="Elan Strap +1"}
-		end
-		if sets.weaponMode.index[weaponMode_ind] == "MagicBP" then
-			sets.weapons = {main="Espiritus", sub="Elan Strap +1"}
-		end
-		equip(sets.weapons)
-	end
-	
-	-- Toggle autoBuff on / off
-	if cmdParams[1]:lower() == 'toggleautobuff' then
-		autoBuff_ind = autoBuff_ind + 1
-		if autoBuff_ind > #sets.autoBuff.index then
-			autoBuff_ind = 1
-		end
-		add_to_chat(122,'-- autoBuff:' .. sets.autoBuff.index[autoBuff_ind] .. ' --')
-	end
-	
-	-- Change current modeMod
-	if cmdParams[1]:lower() == 'togglemodemod' then
-        modeMod_ind = modeMod_ind + 1
-        if modeMod_ind > #sets.modeMod.index then 
-			modeMod_ind = 1 
-		end
-		update_IdleEngagedSets(sets.gearMode.index[gearMode_ind],sets.modeMod.index[modeMod_ind])
-		add_to_chat(122,'-- ModeMod:' .. sets.modeMod.index[modeMod_ind] .. ' --')
-	end
 
-	-- autofite
-	if cmdParams[1]:lower() == 'autofite' then
-		if autoFite == nil or autoFite == 0 then
-			autoFite = 1
-		else
-			autoFite = 0
+		if toggle == true then
+			send_command:schedule(8,'input //gs c toggleautobuff')
 		end
-		add_to_chat(122,'-- AutoFite set to:'..autoFite..' --')
 	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Idle / Engaged set handling
+-- Other SharedFunction extensions
 -------------------------------------------------------------------------------------------------------------------
-function update_IdleEngagedSets(gearMode, modeModifier)
-	if modeModifier == 'CP' then
-		sets.idle = set_combine(sets.idle, {back="Mecisto. Mantle"})
-		sets.engaged = set_combine(sets.engaged, {back="Mecisto. Mantle"})
-	end
-	if modeModifier ~= 'CP' then
-		sets.idle = set_combine(sets.idle, {back="Campestres's Cape"})
-		sets.engaged = set_combine(sets.engaged, {back="Campestres's Cape"})
-	end
-	
-	evalState_equipGear()
+function extendedModeHud(hudText)
+	-- job specific location override?
+	--modeHud_xPos = 1200
+	--modeHud_yPos = 50
+
+	local autoSmnMode = auto.smnMode[auto.smnMode.index].name
+	hudText:append(white..'auto.Smn: '..autoSmnMode)
+	return hudText
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Equip gear based on state
+-- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
-function evalState_equipGear()
-	if player.status == 'Idle' then
-		equip(sets.idle)
-    else
-		equip(sets.engaged)
-	end
-end
-
--------------------------------------------------------------------------------------------------------------------
--- Custom spell mapping
--------------------------------------------------------------------------------------------------------------------
-function job_get_spell_map(spell)
-	if spell.type == 'BloodPactRage' then
-		if magicalRagePacts:contains(spell.english) then
-			return 'MagicalBloodPactRage'
-		elseif hybridRagePacts:contains(spell.english) then
-			return 'HybridBloodPactRage'
-		else
-			return 'PhysicalBloodPactRage'
-		end
-	end
-	if spell.type == 'BloodPactWard' and spell.target.type == 'MONSTER' then
-		return 'DebuffBloodPactWard'
-	end
-end
-
-
-function pet_change(pet,gain)
-    add_to_chat(1, 'pet_change called.  pet: '..pet.name..' gain: '..tostring(gain))
-	-- Gain = true (we gained a pet) and we have a 'pet' sub table defined:
-    if gain and gearMode[gearMode.index].pet then
-        sets.idle = gearMode[gearMode.index].pet.idle
-        sets.engaged = gearMode[gearMode.index].pet.engaged
-    else
-        -- Either Gain = false (lost the pet) OR we didn't define a pet table...so back to normal:
-        sets.idle = gearMode[gearMode.index].idle
-        sets.engaged = gearMode[gearMode.index].engaged
-    end
-end
-
-
--------------------------------------------------------------------------------------------------------------------
--- Auto tic ~once per second
--------------------------------------------------------------------------------------------------------------------
-
-function partyLowHP(hpLevel)
-	local partyInfo = windower.ffxi.get_party()
-	for _,info in pairs(partyInfo) do
-		if type(info) == 'table' and info.mob then
-			local partyMember = info.mob
-			if partyMember.hpp < hpLevel then
-				return true
-			end
-		end
-	end
-	return false
-end
-
 function autoActions()
-	local abil_recasts = windower.ffxi.get_ability_recasts()
-	local rageRecast = abil_recasts[173]
-	local wardRecast = abil_recasts[174]
-	local subRecast = abil_recasts[234]
-	local siphonRecast = abil_recasts[175]
-	local currAvatar = windower.ffxi.get_mob_by_target('pet')
-
-	if player.mpp < 35 and siphonRecast == 0 then
-		add_to_chat(122,'-- MP below 35% - Elemental Siphon! --')
-		send_command('input //gs c elesiphon')
-		return
+	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
+		send_command('input //gs equip sets.weapons')
 	end
 
-	-- Sublimation Handling if we're /sch
-	if player.sub_job == 'SCH' then
-		-- if sublimation not active and not on cooldown - use it.
-		if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and subRecast == 0 then
-			send_command('input /ja "Sublimation" <me>')
-			return
-		end
-		-- if sublimation done charging and MP below 40% pop it for freeeeeee mp
-		if buffactive['sublimation: complete'] and player.mpp < 40 and subRecast == 0 then
-			add_to_chat(122,'-- MP below 40% - Popping Sublimation! --')
-			send_command('input /ja "Sublimation" <me>')
-			return
-		end
-	end
-
-	-- Myrkr!
-	if player.mpp < 35 and player.tp > 2500 then
-		add_to_chat(122,'-- MP below 35% - Myrkr! --')
-		send_command('input /ws "Myrkr" <me>')
-		return
-	end
-
-	-- Avatar's Favor Handling
-	if pet.isvalid and not buffactive["Avatar's Favor"] then
-		send_command('input /ja "Avatar\'s Favor" <me>')
-	end
-
-	-- Autofite only
-	if autoFite == 1 then
-		local mainAvatar = "Ifrit"
-		
-		--[[ if not buffactive['Haste'] then
-			requiredAvatar = 'Garuda'
-		elseif not buffactive['TP Bonus'] then
-			requiredAvatar = 'Shiva'
-		else ]]
-		if not buffactive['Phalanx'] then
-			requiredAvatar = 'Diabolos'
-		else
-			requiredAvatar = mainAvatar
-		end
-		
-		if pet.isvalid then
-			currAvatar = windower.ffxi.get_mob_by_target('pet')
-			if currAvatar.name ~= requiredAvatar then
-				send_command('/release')
+	-- autobuff
+	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+		-- Sublimation Handling if we're /sch
+		if player.sub_job == 'SCH' then
+			-- if sublimation not active and not on cooldown - use it.
+			if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and not onCooldown('Sublimation') then
+				send_command('/sublimation')
+				return
+			end
+			-- if sublimation done charging and MP below 40% pop it for freeeeeee mp
+			if buffactive['sublimation: complete'] and player.mpp < 40 and not onCooldown('Sublimation') then
+				add_to_chat(122,'-- MP below 40% - Popping Sublimation! --')
+				send_command('/sublimation')
 				return
 			end
 		end
 
-		-- Autoresummon pet
+		-- auto elemental siphon with best spirit based on day/weather bonuses
+		if player.mpp < 35 and not onCooldown('Elemental Siphon') then
+			add_to_chat(122,'-- MP below 35% - Elemental Siphon! --')
+			send_command('input //gs c elesiphon')
+			return
+		end
+
+		-- Myrkr!
+		if player.mpp < 35 and player.tp > 2500 then
+			add_to_chat(122,'-- MP below 35% - Myrkr! --')
+			send_command('/myrkr')
+			return
+		end
+
+		-- auto Avatar's Favor
+		if pet.isvalid and not buffactive["Avatar's Favor"] then
+			send_command('input /ja "Avatar\'s Favor" <me>')
+		end
+	end
+
+	-- autofite
+	if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
+		local defaultAvatarInfo = auto.smnMode[auto.smnMode.index].defaultAvatar
+		local bpTable = auto.smnMode[auto.smnMode.index].autoBPs
+
+		local requiredAvatar = defaultAvatarInfo.name
+		for k,v in pairs(bpTable) do
+			if not buffactive[v.buff] then
+				requiredAvatar = v.avatar
+				break
+			end
+		end
+
+		-- if we've got the wrong avatar out dismiss it
+		if pet.isvalid and not pet.name == requiredAvatar then
+			send_command('/release')
+			return
+		end
+
+		-- summon requiredAvatar
 		if not pet.isvalid then
 			send_command('/'..requiredAvatar)
 			return
 		end
-		
-		-- Auto assault
-		if pet.isvalid then
-			if windower.ffxi.get_player().status == 1 and windower.ffxi.get_mob_by_target('pet').status == 0 then
-				send_command('/assault')
+
+		-- Auto assault if we're engaged and pet is not
+		if pet.isvalid and player.status == engaged and pet.status == idle then
+			send_command('/assault')
+		end
+
+		-- Auto BPWard for the required (and current at this point) avatar
+		for k,v in pairs(bpTable) do
+			if pet.name == v.avatar then
+				if not buffactive[v.buff] and not onCooldown('Blood Pact: Ward') then
+					add_to_chat(122,'-- BPWard: '..k..' --')
+					send_command('/'..k)
+					return
+				end
 			end
 		end
 
-		if currAvatar.name == 'Ifrit' then
-			if currAvatar.status == 1 and mainAvatar == "Ifrit" and rageRecast == 0 and player.mpp >= 35 then
-				send_command('/flamingcrush')
+		-- Handle default action from smnMode table if conditions are met
+		--   (attacks = mp > set mp%, heals = someone in party below set hp%)
+		local defaultAction = defaultAvatarInfo.defaultAction
+		if pet.name == defaultAvatarInfo.name then
+			if defaultAction.type == "attack" and player.mpp > defaultAction.minMp and not onCooldown('Blood Pact: Rage') then
+				add_to_chat(122,'-- BPRage: '..defaultAction.name..' --')
+				send_command('/'..defaultAction.name)
 				return
-			end
-			
-			if not buffactive['Warcry'] and wardRecast == 0 then
-				send_command('/crimsonhowl')
-				return
-			end
-		end
-
-		if currAvatar.name == 'Ramuh' then
-			if currAvatar.status == 1 and mainAvatar == "Ramuh" and rageRecast == 0 and player.mpp >= 35 then
-				send_command('/voltstrike')
-				return
-			end
-			
-			if not buffactive['Warcry'] and wardRecast == 0 then
-				send_command('/lightningarmor')
-				return
-			end
-		end
-
-		if currAvatar.name == 'Carbuncle' then
-			if partyLowHP(60) and wardRecast == 0 then
-				send_command('/healingruby2')
 			end
 
-			if not buffactive['Shining Ruby'] and wardRecast == 0 then
-				send_command('/shiningruby')
-				return
-			end
-		end
-
-		if currAvatar.name == 'Garuda' then
-			if not buffactive['Haste'] and wardRecast == 0 then
-				send_command('/Hastega II')
-				return
-			end
-		end
-
-		if currAvatar.name == 'Diabolos' then
-			if not buffactive['Phalanx'] and wardRecast == 0 then
-				send_command('/noctoshield')
-				return
-			end
-		end
-
-		if currAvatar.name == 'Shiva' then
-			if not buffactive['TP Bonus'] and wardRecast == 0 then
-				send_command('/Crystal Blessing')
+			if defaultAction.type == "heal" and partyLowHP(defaultAction.partyHp) and not onCooldown('Blood Pact: Ward') then
+				add_to_chat(122,'-- BPWard: '..defaultAction.name..' --')
+				send_command('/'..defaultAction.name)
 				return
 			end
 		end
 	end
 end
-
-
-slowTick = 0
-castingTic = 0
-castInProgress = false
-
-windower.raw_register_event('postrender',function()
-	slowTick = slowTick + 1;
-	if slowTick > 60 then
-		slowTick = 0
-		if sets.autoBuff.index[autoBuff_ind] == 'On' and not actionInProgress and not moving then
-			autoActions()
-		end
-	end
-end)
-
--------------------------------------------------------------------------------------------------------------------
--- Turn off autoBuff when we zone
--------------------------------------------------------------------------------------------------------------------
-windower.register_event('zone change', function()
-	if sets.autoBuff.index[autoBuff_ind] == 'On' then
-		autoBuff_ind = 1
-		add_to_chat(122,'-- autoBuff set to ' .. sets.autoBuff.index[autoBuff_ind] .. ' --')
-	end
-end)

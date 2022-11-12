@@ -19,8 +19,8 @@ function init_gear_sets()
 	--Define Base Sets for use in other sets
 	sets.baseMelee = {
 		ammo="Ginsen",
-		--head="Adhemar Bonnet +1",
-		head="Hashishin Kavuk +3",
+		head="Adhemar Bonnet +1",
+		--head="Hashishin Kavuk +3",
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wrist. +1",
 		legs="Samnhua Tights",
@@ -39,7 +39,7 @@ function init_gear_sets()
 		body="Hashishin Mintan +3",
 		hands="Amalric Gages +1",  
 		legs="Luhlaza Shalwar +3",
-		feet="Hashishin Basmak +2",
+		feet="Hashishin Basmak +3",
 		neck="Sibyl Scarf",
 		waist="Yamabuki-no-obi",
 		left_ear="Friomisi Earring",
@@ -66,7 +66,6 @@ function init_gear_sets()
 		ring2="Stikini Ring +1",
 		--back="Cornflower Cape",
 	}
-
 
 	sets.precast.FC = {
 		ammo = "Impatiens",
@@ -117,7 +116,7 @@ function init_gear_sets()
 		body="Assim. Jubbah +3",
 		legs="Luhlaza Shalwar +3",
 		hands="Jhakri Cuffs +2",
-		feet="Jhakri Pigaches +2",
+		feet="Hashishin Basmak +3",
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
 		ear1="Odr Earring",
@@ -127,26 +126,25 @@ function init_gear_sets()
 		back=gear.WsCape,
 	}
 	
-	sets.baseIdle = {body="Hashishin Mintan +3",right_ring="Defending Ring",left_ring="Karieyh Ring +1",neck="Sibyl Scarf"}
+	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.obi = {waist="Hachirin-no-obi"}
-    
+    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +3"})
+	
 	--Define Job Ability sets														-- I'd use these if i cared enough to get them:
-    sets.buff['Burst Affinity'] = {feet="Hashishin Basmak +2"}
+    sets.buff['Burst Affinity'] = {feet="Hashishin Basmak +3"}
     sets.buff['Chain Affinity'] = {head="Hashishin Kavuk +3"} 						--Assimilator's Charuqs
     sets.buff['Convergence'] = {} 													--Luhlaza Keffiyeh
     sets.buff['Diffusion'] = {feet="Luhlaza Charuqs +1"}
     sets.buff['Enchainment'] = {} 													--Luhlaza Jubbah
     sets.buff['Efflux'] = {legs="Hashishin Tayt +1", gear.WsCape,}
     sets.precast.JA['Azure Lore'] = {} 												--Mirage Bazubands +2
-	sets.precast.JA['Provoke'] = sets.TH	-- that way i can proc TH by voking random monsters when i want to.
+	sets.precast.JA['Provoke'] = sets.TH
 
     -- Waltz set (chr and vit)
     sets.precast.Waltz = {}
     sets.precast.Waltz['Healing Waltz'] = {}
-
-    sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +3"})
 
     -- Weaponskill sets
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
@@ -174,7 +172,7 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].PhysicalHP = set_combine(sets.midcast['Blue Magic'].Physical, {})
 
     -- Magical Spells --
-    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {waist="Orpheus's Sash"})
+    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {})
     sets.midcast['Blue Magic'].Magical.Resistant = set_combine(sets.midcast['Blue Magic'].Magical, {})
     sets.midcast['Blue Magic'].MagicalMnd = set_combine(sets.midcast['Blue Magic'].Magical, {})
 	sets.midcast['Blue Magic'].MagicalChr = set_combine(sets.midcast['Blue Magic'].Magical, {})
@@ -311,7 +309,8 @@ function job_setup()
     blue_magic_maps.MagicalDex = S{
 		'Charged Whisker','Gates of Hades'
     }
-    -- Magical spells (generally debuffs) that we want to focus on magic accuracy over damage.
+
+	-- Magical spells (generally debuffs) that we want to focus on magic accuracy over damage.
     -- Add Int for damage where available, though.
     blue_magic_maps.MagicAccuracy = S{
 		'1000 Needles','Absolute Terror','Auroral Drape','Awful Eye','Blastbomb','Blank Gaze','Blistering Roar','Blitzstrahl',
@@ -350,12 +349,23 @@ function job_setup()
 	blue_magic_maps.Enmity = S{
 		'Actinic Burst','Temporal Shift','Jettatura','Exuviation','Fantod','Geist Wall','Blank Gaze',
 	}
-    -- Spells that require Unbridled Learning to cast.
+    
+	-- Spells that require Unbridled Learning to cast.
     unbridled_spells = S{
         'Absolute Terror','Bilgestorm','Blistering Roar','Bloodrake','Carcharian Verve',
         'Crashing Thunder','Droning Whirlwind','Gates of Hades','Harden Shell','Polar Roar',
         'Pyric Bulwark','Thunderbolt','Tourbillion','Uproot','Mighty Guard'
     }
+
+	-- Spells that use obi or O. Sash
+	beltSpells = S{
+		'Acrid Stream','Anvil Lightning','Crashing Thunder','Charged Whisker','Droning Whirlwind','Firespit',
+		'Foul Waters','Gates of Hades','Leafstorm','Molting Plumage','Nectarous Deluge','Polar Roar','Regurgitation',
+		'Rending Deluge','Scouring Spate','Searing Tempest','Silent Storm','Spectral Floe','Subduction','Tem. Upheaval',
+		'Thermal Pulse','Thunderbolt','Uproot','Water Bomb','Dark Orb','Death Ray','Eyes On Me','Evryone. Grudge',
+		'Palling Salvo','Tenebral Crush','Blinding Fulgor','Diffusion Ray','Magic Hammer','Rail Cannon','Retinal Glare',
+		'Eyes On Me','Mysterious Light','Embalming Earth','Entomb','Sandspin','Charged Whisker','Gates of Hades'
+	}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -412,8 +422,16 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
+	if beltSpells:contains(spell.english) then
+		if dayWeatherIntensity(spell.element) >= 2 then
+			equip(sets.obi)
+		else
+			equip{waist="Orpheus's Sash"}
+		end	
+	end
+
 	if spell.element == 'Dark' then
-		equip{head="Pixie Hairpin +1", body="Jhakri Robe +2"}
+		equip{head="Pixie Hairpin +1", body="Hashishin Mintan +3"}
 	end
 end
 
@@ -485,10 +503,10 @@ function autoActions()
 			return
 		end
 
-		if buffCheck('Attack Boost', 'Nat. Meditation') then
+		--[[ if buffCheck('Attack Boost', 'Nat. Meditation') then
 			send_command('input /ma "Nat. Meditation" <me>')
 			return
-		end
+		end ]]
 
 		--[[ if buffCheck('Defense Boost', 'Cocoon') then
 			send_command('input /ma "Cocoon" <me>')

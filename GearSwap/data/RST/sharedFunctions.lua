@@ -97,7 +97,6 @@ function job_self_command(cmdParams, eventArgs)
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
 		ignoreList = ignoreList..','..lastMatch
 	end
-
 end
 
 function user_setup()
@@ -526,11 +525,24 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	end
 	
 	-- if spell element matches day or weather element, and it's not an excluded type, use mega obi
-	local obiSpellTypes = "BlueMagic,ElementalMagic,HealingMagic"
+	--[[ local obiSpellTypes = "BlueMagic,ElementalMagic,HealingMagic"
 	if dayWeatherIntensity(spell.element) > 0 and obiSpellTypes:contains(spell.type) then
 		add_to_chat(1, 'Hachirin-no-Obi goooooooo!')
 		equip({waist="Hachirin-no-Obi"})
-	end
+	end 
+	
+	if spell.type == 'WeaponSkill' and magical_ws:contains(spell.name) then
+		if getDayWeatherEleIntensity(spell.element) >= 2 then
+			-- use hachi if bonus is 20% or better
+			equip { waist="Hachirin-no-Obi" }
+		elseif spell.target.distance < (7 - spell.target.model_size) then
+			-- use orpheus if distance is more than 7 - target size (no idea if that is ideal.  its just what youh had so i left it)
+			equip { waist="Orpheus's Sash"}
+		else
+			-- use MAB belt if both of those other things are not true
+			equip { waist="YourBestMABBelt" }
+		end
+	end]]
 end
 
 function job_aftercast(spell, action, spellMap, eventArgs)
@@ -562,12 +574,10 @@ function modeHud(action)
 			local wmColor = weaponMode[weaponMode.index].color or white
 			hudText:append('WeaponMode: '..wmColor..weaponMode[weaponMode.index].name..white)
 		end
-
 		if gearMode then
 			local gmColor = gearMode[gearMode.index].color or white
 			hudText:append('GearMode: '..gmColor..gearMode[gearMode.index].name..white)
 		end
-
 		if magicMode then
 			local maColor = magicMode[magicMode.index].color or white
 			hudText:append('MagicMode: '..maColor..magicMode[magicMode.index].name..white)

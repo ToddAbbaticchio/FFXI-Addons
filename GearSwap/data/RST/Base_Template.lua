@@ -65,6 +65,7 @@ function init_modetables()
 	sets.idle = gearMode[gearMode.index].idle
 	sets.engaged = gearMode[gearMode.index].engaged
 	sets.weapons = weaponMode[weaponMode.index].set
+	modeHud('update')
 end
 
 -------------------------------------------------------------------------------------------------------------------
