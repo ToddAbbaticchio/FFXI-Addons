@@ -645,6 +645,21 @@ function autoActions()
 					return
 				end
 			end
+
+			--[[ -- TESTING TIMEDBUFFS
+			if timerBuffs ~= nil then
+				for k,v in timerBuffs do
+					if time.os() > v.lastCast + v.interval then
+						send_command('input /ma "'..v.buff..'" '..k)
+						timerBuffs[k].lastCast = time.os()
+					end
+				end
+			end
+
+			timerBuffs = {
+				['Ygnas'] = {buff="Refresh", interval=300, lastCast=0}
+			} ]]
+
 		end
 	end
 end
