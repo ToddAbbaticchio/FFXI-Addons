@@ -231,20 +231,21 @@ function init_modetables()
 			["index"] = 0,
 			[0] = {
 				["name"] = "DPS",
-				["defaultAvatar"] = { name="Ifrit", defaultAction={ type="attack", name="flamingcrush", minMp=30} },
+				["defaultAvatar"] = {name="Ifrit", defaultAction={ type="attack", name="flamingcrush", minMp=30}},
 				["autoBPs"] = {
-					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
-					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
-					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
+					["Hastega II"] = {buffName="Haste", avatar="Garuda"},
+					["Crystal Blessing"] = {buffName="TP Bonus", avatar="Shiva"},
+					["Crimson Howl"] = {buffName="Warcry", avatar="Ifrit"},
 				},
 			},
 			[1] = {
 				["name"] = "Heal",
-				["defaultAvatar"] = {name="Carbuncle", defaultAction={ type="heal", name="healingruby2", partyHp=60} },
+				["defaultAvatar"] = {name="Carbuncle", defaultAction={type="heal", name="healingruby2", partyHp=60}},
 				["autoBPs"] = {
-					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
-					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
-					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
+					["Hastega II"] = {buffName="Haste", avatar="Garuda"},
+					["Crystal Blessing"] = {buffName="TP Bonus", avatar="Shiva"},
+					["Crimson Howl"] = {buffName="Warcry", avatar="Ifrit"},
+					["Noctoshield"] = {buffName="Phalanx", avatar="Diabolos"}
 				},
 			},
 		},
