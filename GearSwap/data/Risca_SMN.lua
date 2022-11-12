@@ -196,7 +196,7 @@ function init_modetables()
 	--Setup gearMode
 	gearMode = {
 		["index"] = 0,
-		[0] = {name="Default", idle=sets.AvatarPerp, engaged=sets_combine(sets.AvatarPerp, sets.MeleeAvatar)},
+		[0] = {name="Default", idle=sets.AvatarPerp, engaged=set_combine(sets.AvatarPerp, sets.MeleeAvatar)},
 		[1] = {name="MaxPerp", idle=sets.AvatarPerp, engaged=sets.AvatarPerp},
 	}
 	
@@ -207,13 +207,13 @@ function init_modetables()
 		[1] = {name="Physical BP", set={main="Gridarvor", sub="Elan Strap +1"}},
 	}
 
-	--Setup magicMode
-	magicMode = {
+	--Setup magicMode not needed for smn
+	--[[ magicMode = {
 		["index"] = 0,
 		[0] = {name="Burst", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
 		[1] = {name="FreeNuke", nukeSet=(set_combine(sets.interrupt, sets.MagicBurst))},
 		[2] = {name="MaxAcc", nukeSet=(set_combine(sets.interrupt, sets.emSkill))},
-	}
+	} ]]
 
 	--Setup autoBuff
 	auto = {
@@ -236,7 +236,7 @@ function init_modetables()
 					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
 					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
 					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
-				}
+				},
 			},
 			[1] = {
 				["name"] = "Heal",
@@ -245,9 +245,9 @@ function init_modetables()
 					["Hastega II"] = { buffName="Haste", avatar="Garuda" },
 					["Crystal Blessing"] = { buffName="TP Bonus", avatar="Shiva" },
 					["Crimson Howl"] = { buffName="Warcry", avatar="Ifrit" },
-				}
-			}
-		}
+				},
+			},
+		},
 	}
 
 	sets.idle = gearMode[gearMode.index].idle
@@ -266,9 +266,9 @@ function job_setup()
 		["Fire"] = "Fire Spirit",
 		["Ice"] = "Ice Spirit",
 		["Earth"] = "Earth Spirit",
-		["Lightning"] = "Thunder Spirit",
+		["Lightning"] = "Fire Spirit",
 		["Water"] = "Water Spirit",
-		["Dark"] = "Dark Spirit"
+		["Dark"] = "Fire Spirit"
 	}
 end
 
@@ -424,6 +424,16 @@ function autoActions()
 			end
 		end
 
+		if player.sub_job == 'RDM' then
+			if not buffactive['Refresh'] and not onCooldown('Refresh') then
+				send_command('input /ma "Refresh" <me>')
+			end
+
+			if player.mpp > 30 and not onCooldown('Convert') then
+				send_command('/convert')
+			end
+		end
+
 		-- auto elemental siphon with best spirit based on day/weather bonuses
 		if player.mpp < 35 and not onCooldown('Elemental Siphon') then
 			add_to_chat(122,'-- MP below 35% - Elemental Siphon! --')
@@ -451,14 +461,14 @@ function autoActions()
 
 		local requiredAvatar = defaultAvatarInfo.name
 		for k,v in pairs(bpTable) do
-			if not buffactive[v.buff] then
+			if not buffactive[v.buffName] then
 				requiredAvatar = v.avatar
 				break
 			end
 		end
 
 		-- if we've got the wrong avatar out dismiss it
-		if pet.isvalid and not pet.name == requiredAvatar then
+		if pet.isvalid == true and not (pet.name == requiredAvatar) then
 			send_command('/release')
 			return
 		end
@@ -477,7 +487,7 @@ function autoActions()
 		-- Auto BPWard for the required (and current at this point) avatar
 		for k,v in pairs(bpTable) do
 			if pet.name == v.avatar then
-				if not buffactive[v.buff] and not onCooldown('Blood Pact: Ward') then
+				if not buffactive[v.buffName] and not onCooldown('Blood Pact: Ward') then
 					add_to_chat(122,'-- BPWard: '..k..' --')
 					send_command('/'..k)
 					return
@@ -489,7 +499,7 @@ function autoActions()
 		--   (attacks = mp > set mp%, heals = someone in party below set hp%)
 		local defaultAction = defaultAvatarInfo.defaultAction
 		if pet.name == defaultAvatarInfo.name then
-			if defaultAction.type == "attack" and player.mpp > defaultAction.minMp and not onCooldown('Blood Pact: Rage') then
+			if defaultAction.type == "attack" and player.mpp > defaultAction.minMp and not onCooldown('Blood Pact: Rage') and player.status == engaged then
 				add_to_chat(122,'-- BPRage: '..defaultAction.name..' --')
 				send_command('/'..defaultAction.name)
 				return

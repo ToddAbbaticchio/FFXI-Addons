@@ -644,7 +644,7 @@ windower.raw_register_event('prerender',function()
 					else
 						windower.send_command('input //gs equip sets.DayMovement')
 					end
-				else
+				elseif sets.moveSpeed ~= nil then
 					windower.send_command('input //gs equip sets.moveSpeed')
 				end
             elseif not movement and moving then

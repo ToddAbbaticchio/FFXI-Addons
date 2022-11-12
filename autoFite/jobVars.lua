@@ -82,17 +82,13 @@ vars.WAR = {
     ws = "Upheaval",
     targetTp = 1500,
     pullCommand = '/ja "Provoke" ',
-    pullDistance = 369,
-    target = {
-        ["pull"] = "Part of monster name"
-    }
+    pullDistance = 225
 }
 
 vars.SMN = {
     autoBuffs = {},
     ws = "Myrkr",
-    targetTp = 3000,
-    meleeDistance = 12,
+    targetTp = 9999,
     pullCommand = '/ma "Stone" '
 }
 

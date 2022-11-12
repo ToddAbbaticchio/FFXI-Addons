@@ -227,6 +227,11 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
             maxSongs = maxSongs + 1
         end
 
+        if(spell.english == "Honor March") then
+            equip({range="Marsyas"})
+            return
+        end
+
         if currCount >= maxSongs then
             add_to_chat(015, '- Equipping Gjallarhorn -')
             equip({ranged="Gjallarhorn"})
@@ -235,7 +240,6 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 
         add_to_chat(015, '- Equipping Daurdabla -')
         equip({ranged="Daurdabla"})
-    end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)	
@@ -294,7 +298,6 @@ end
 -- Autoaction function: called ~once per second
 -------------------------------------------------------------------------------------------------------------------
 songTimer = os.time()
-songInProgress = false
 baseSongDuration = 330
 songBuffer = 60
 
@@ -306,16 +309,8 @@ function autoActions()
 
     -- AutoBuff is on, we're not mid-action, we're not moving. (the main buff window)
     if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
-        local abilRecast = windower.ffxi.get_ability_recasts()
-        local curingWaltzRecast = abilRecast[186]
-        local soulVoiceRecast = abilRecast[0]
-        local clarionRecast = abilRecast[254]
-        local nightingaleRecast = abilRecast[109]
-        local troubadourRecast = abilRecast[110]
-        local marcatoRecast = abilRecast[48]
-
         -- Do we need / Can we use Clarion Call to get n+1 songs up?
-        if clarionRecast == 0 and not buffactive['Clarion Call'] and countSongs() == (tablelength(autoSongs) - 1) then
+        if not onCooldown('Clarion Call') and not buffactive['Clarion Call'] and countSongs() == (tablelength(autoSongs) - 1) then
             add_to_chat(038, '! Clarion Call Needed !')
             send_command('/clarioncall')
             resetSongTimers()
@@ -323,28 +318,29 @@ function autoActions()
         end
 
         -- Actions if auto.fite is NOT Off
-        if auto.fite[auto.fite.index] ~= 'Off' then
+        if not auto.fite[auto.fite.index] == 'Off' then
             -- SoulVoice on cooldown
-            if soulVoiceRecast == 0 and not buffactive['Soul Voice'] then
+            if not onCooldown('Soul Voice') and not buffactive['Soul Voice'] then
                 send_command('/soulvoice')
                 resetSongTimers()
                 return
             end
 
             -- Marcato handling (don't use during SV, combine with nitro)
-            if marcatoRecast == 0 and buffactive['Troubadour'] and buffactive['Nightingale'] and not buffactive['Soul Voice'] then
+            if not onCooldown('Marcato') and buffactive['Troubadour'] and buffactive['Nightingale'] and not buffactive['Soul Voice'] then
                 add_to_chat(013, '~ Marcato ~')
                 send_command('/marcato')
                 return    
             end
 
             -- Nitro handling (if soulvoice is ready soon just wait)
-            if nightingaleRecast == 0 and troubadourRecast == 0 and soulVoiceRecast > 300 and not buffactive['Nightingale'] then
+            local soulVoiceRecast = windower.ffxi.get_ability_recasts()[0]
+            if not onCooldown('Nightingale') and not onCooldown('Troubadour') and not buffactive['Nightingale'] and soulVoiceRecast > 300 then
                 add_to_chat(013, '~ Nitro ~')
                 send_command('/nightingale')
                 return
             end
-            if troubadourRecast == 0 and not buffactive['Troubadour'] then
+            if not onCooldown('Troubadour') and not buffactive['Troubadour'] and buffactive['Nightingale'] then
                 send_command('/troubadour')
                 resetSongTimers()
                 return
@@ -468,3 +464,4 @@ windower.register_event('action',function(act)
         end
     end
 end)
+end
