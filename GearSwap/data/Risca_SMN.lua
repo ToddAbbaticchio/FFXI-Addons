@@ -428,10 +428,12 @@ function autoActions()
 		if player.sub_job == 'RDM' then
 			if not buffactive['Refresh'] and not onCooldown('Refresh') then
 				send_command('input /ma "Refresh" <me>')
+				return
 			end
 
-			if player.mpp > 30 and not onCooldown('Convert') then
+			if player.mpp < 30 and not onCooldown('Convert') then
 				send_command('/convert')
+				return
 			end
 		end
 
@@ -481,8 +483,9 @@ function autoActions()
 		end
 
 		-- Auto assault if we're engaged and pet is not
-		if pet.isvalid and player.status == engaged and pet.status == idle then
+		if pet.isvalid and player.status == 'Engaged' and pet.status == 'Idle' then
 			send_command('/assault')
+			return
 		end
 
 		-- Auto BPWard for the required (and current at this point) avatar
@@ -500,7 +503,7 @@ function autoActions()
 		--   (attacks = mp > set mp%, heals = someone in party below set hp%)
 		local defaultAction = defaultAvatarInfo.defaultAction
 		if pet.name == defaultAvatarInfo.name then
-			if defaultAction.type == "attack" and player.mpp > defaultAction.minMp and not onCooldown('Blood Pact: Rage') and player.status == engaged then
+			if defaultAction.type == "attack" and player.mpp > defaultAction.minMp and not onCooldown('Blood Pact: Rage') and player.status == 'Engaged' then
 				add_to_chat(122,'-- BPRage: '..defaultAction.name..' --')
 				send_command('/'..defaultAction.name)
 				return
