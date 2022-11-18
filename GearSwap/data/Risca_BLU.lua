@@ -474,7 +474,7 @@ function autoActions()
 		return
 	end ]]
 
-	---tellXYZ("???")
+	--tellXYZ("???") -- id of ring last run:17002672
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto.fite actions
