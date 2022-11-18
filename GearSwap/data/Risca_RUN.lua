@@ -190,7 +190,8 @@ function init_gear_sets()
     sets.baseIdle = set_combine(sets.baseTank, {ring2="Defending Ring",ring1="Karieyh Ring +1",ammo="Homiliary"}) 
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.wakeUp = {head="Frenzy Sallet"}
-	sets.Obi = {waist="Hachirin-no-Obi"}
+	sets.obi = {waist="Hachirin-no-Obi"}
+	sets.oSash = {waist="Orpheus's Sash"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +3",}
 	sets.MagicFreeCast = set_combine(sets.MagicBurst, {ring1='Shiva Ring +1', ring2="Shiva Ring +1"})
@@ -412,7 +413,7 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 	-- Use the obi on swipe/lunge if it'd help
     if spell.english == 'Lunge' or spell.english == 'Swipe' then
         if (spell.element == world.day_element or spell.element == world.weather_element) then
-            equip(sets.Obi)
+            equip(sets.obi)
         end
     end
 

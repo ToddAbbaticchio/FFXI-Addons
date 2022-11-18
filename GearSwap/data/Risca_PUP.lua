@@ -94,7 +94,7 @@ function init_gear_sets()
 	-- Random one-off sets or small sets
 	sets.moveSpeed = {feet="Hermes' Sandals"}
 	sets.wakeUp = {}
-	sets.Obi = {}
+	sets.obi = {}
 	sets.pupOil = {ammo="Automat. Oil +3"}
 
 	-- JA Sets

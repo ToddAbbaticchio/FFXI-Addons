@@ -67,7 +67,7 @@ function init_gear_sets()
     }
 
     -- One-off and small sets
-    sets.Obi = {waist="Hachirin-no-Obi"}
+    sets.obi = {waist="Hachirin-no-Obi"}
     sets.moveSpeed = {feet="Fili Cothurnes +2"}
     sets.TH = {waist="Chaac Belt", head="Wh. Rarab Cap +1", "Per. Lucky Egg"}
     sets.windSkill = {head="Bihu Roundlet +3", body="Fili Hongreline +2", hands="Fili Manchettes +2", legs="Brioso Cann. +1", ear2="Fili Earring"}

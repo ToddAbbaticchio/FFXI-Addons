@@ -138,7 +138,8 @@ function init_gear_sets()
 	sets.magicAcc = {}
 
 	sets.moveSpeed = {feet="Desert Boots"}
-	sets.obi = {waist="Hachirin-no-obi"}
+	sets.obi = {waist="Hachirin-no-Obi"}
+	sets.oSash = {waist="Orpheus's Sash"}
 	sets.precast.FC['Cure'] = set_combine(sets.precast.FC, {back="Pahtli Cape"})
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash",})
 	sets.emDuration = {waist="Embla Sash", legs="Telchine Braconi", body="Telchine Chas.", feet="Telchine Pigaches", hands="Telchine Gloves"}

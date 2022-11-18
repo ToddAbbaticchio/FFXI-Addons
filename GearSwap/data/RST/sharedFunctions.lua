@@ -9,6 +9,20 @@ red = "\\cs(255,0,0)"
 green = "\\cs(0,255,0)"
 white = "\\cs(255,255,255)"
 
+eleWeaponSkills = S{
+	--[[daggger]]       'Gust Slash', 'Cyclone', 'Energy Steal', 'Energy Drain', 'Aeolian Edge',
+	--[[sword]]         'Burning Blade', 'Red Lotus Blade', 'Shining Blade', 'Seraph Blade', 'Sanguine Blade', 'Atonement',
+	--[[greatsword]]    'Frost Bite', 'Freeze Bite', 'Herculean Slash',
+	--[[axe]]           'Cloud Splitter', 'Primal Rend',
+	--[[scythe]]        'Dark Harvest', 'Shadow of Death', 'Infernal Scythe',
+	--[[polearm]]       'Thunder Thrust', 'Raiden Thrust',
+	--[[katana]]        'Blade: Teki', 'Blade: To', 'Blade: Chi', 'Blade: Ei', 'Blade: Yu',
+	--[[greatkatana]]   'Tachi: Goten', 'Tachi: Kagero', 'Tachi: Jinpu', 'Tachi: Koki',
+	--[[club]]          'Shining Strike', 'Seraph Strike', 'Flash Nova',
+	--[[staff]]         'Rock Crusher', 'Earth Crusher', 'Starburst', 'Sunburst', 'Cataclysm', 'Vidohunir', 'Garland of Bliss', 'Omniscience',
+	--[[ranged]]        'Flaming Arrow', 'Hot Shot', 'Wildfire', 'Trueflight', 'Leaden Salute'
+}
+
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
 -------------------------------------------------------------------------------------------------------------------
@@ -196,6 +210,51 @@ function bestObiElement()
 	end
 
 	return maxIntensityEle
+end
+
+function bestEleWsBelt(spell)
+	-- This assumes the actual gearset for the WS calls out your best option for waist
+	-- that isn't either oSash or obi. returning nil just won't override the defined set
+	-- waist option during postmidcast
+
+	-- have both defined
+	if sets.obi ~= nil and sets.oSash ~= nil then
+		local obiCheck = dayWeatherIntensity(spell.element)
+
+		-- at 2 or 3 intensity obi always beats oSash
+		if obiCheck >= 2 then
+			return sets.obi
+		end
+
+		-- at 1 intensity obi wins beyond 7 yalms. oSash wins inside 7
+		if obiCheck == 1 then
+			if spell.target.distance <= 7 then
+				return sets.oSash
+			else
+				return sets.obi
+			end
+		end
+		
+		-- no intensity: oSash within 10 yalms BiS Int/MAB belt outside that
+		if spell.target.distance <= 10 then
+			return sets.oSash
+		end
+
+		return nil
+	end
+
+	-- just have obi defined and bonus exists
+	if sets.obi ~= nil and dayWeatherIntensity(spell.element) > 0 then
+		return sets.obi
+	end
+
+	-- just have oSash defined and within 10 yalms
+	if sets.oSash ~= nil and spell.target.distance <= 10 then
+		return sets.oSash
+	end
+
+	-- nothing defined, no belt override set returned
+	return nil
 end
 
 function buffIdActive(buffId)
@@ -482,15 +541,22 @@ function job_precast(spell, action, spellMap, eventArgs)
         eventArgs.cancel = true
         return
 	end
+	if spell.target.distance > spell.range then
+		add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
+        eventArgs.cancel = true
+        return
+	end
 	
-	-- if weaponskill make sure we're facing the target
+	-- if weaponskill: face target and check/apply belt override conditions
 	if spell.type == 'WeaponSkill' then
 		faceTarget()
-	end
 
-	-- If not a WS and elementalObi could help, equip it
-	if not ('WeaponSkill,Rune'):contains(spell.type) and dayWeatherIntensity(spell.element) > 0 then
-		equip({waist="Hachirin-no-Obi"})
+		if eleWeaponSkills:contains(spell.name) then
+			local checkBelt = bestEleWsBelt(spell)
+			if checkBelt ~= nil then
+				equip(checkBelt)
+			end
+		end
 	end
 
 	-- Utsusemi helper

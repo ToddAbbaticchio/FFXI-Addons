@@ -129,7 +129,8 @@ function init_gear_sets()
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
-	sets.obi = {waist="Hachirin-no-obi"}
+	sets.obi = {waist="Hachirin-no-Obi"}
+	sets.oSash = {waist="Orpheus's Sash"}
     sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +3"})
 	
 	--Define Job Ability sets														-- I'd use these if i cared enough to get them:
