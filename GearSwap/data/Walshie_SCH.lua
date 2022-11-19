@@ -105,7 +105,7 @@ function init_gear_sets()
         --Upgrade to neck="Incanter's Torque",
         ear2="Meili Earring",
         --Upgrade to ring1="Haoma's Ring",
-        --Upgrade to ring2="Menelaus's Ring",
+        ring2="Menelaus's Ring",
         waist="Bishop's Sash",
     }
 
@@ -121,18 +121,14 @@ function init_gear_sets()
             Main	Gada
             Neck	Debilis Medallion
             Ring1	Haoma's Ring
-            Ring2	Menelaus's Ring
         ]]--
     })
 
     sets.midcast['Enhancing Magic'] = {
         head="Telchine Cap",
-        hands="Arbatel Bracers +3",
         legs="Telchine Braconi",
-        feet="Telchine Pigaches",
-        
-        waist="Embla Sash",
-        
+        feet="Telchine Pigaches",        
+        waist="Embla Sash",        
         ear1="Mimir Earring",
         
         --[[ BiS: 
@@ -146,7 +142,7 @@ function init_gear_sets()
         ]]--        
     }
 
-    sets.midcast.EnhancingDuration = {
+    sets.midcast.EnhancingDuration = set_combine(sets.midcast['Enhancing Magic'], {
         --Upgrade to main="Musa",
         --Upgrade to sub="Khonsu",
         head="Telchine Cap",
@@ -154,7 +150,7 @@ function init_gear_sets()
         legs="Telchine Braconi",
         feet="Telchine Pigaches",
         waist="Embla Sash",
-    }
+    })
 
     sets.midcast.Regen = set_combine(sets.midcast.EnhancingDuration, {
         --sub="Giuoco Grip",
@@ -401,21 +397,8 @@ function init_gear_sets()
     ------------------------------------------------------------------------------------------------
     sets.baseIdle = {
         main="Akademos",
-        --Upgrade to sub="Genmei Shield",
         sub="Alber Strap",
         ammo="Homiliary",
-        --Upgrade to head="Volte Beret",
-        --Upgrade to body="Acad. Gown +3",
-        --Upgrade to hands="Raetic Bangles +1",
-        --Upgrade to legs="Volte Brais",
-        --Upgrade to feet="Volte Gaiters",
-        --Upgrade to neck="Bathy Choker +1",
-        --Upgrade to ear1="Sanare Earring",
-        --Upgrade to ear2="Lugalbanda Earring",
-        --Upgrade to ring1={name="Stikini Ring +1", bag="wardrobe3"},
-        --Upgrade to ring2={name="Stikini Ring +1", bag="wardrobe4"},
-        --Upgrade to back=gear.SCH_FC_Cape,
-        --Upgrade to waist="Carrier's Sash",
         head="Agwu's Cap",
         body="Agwu's Robe",
         hands="Agwu's Gages",
@@ -436,7 +419,7 @@ function init_gear_sets()
         --Upgrade to head="Acad. Mortar. +3", --4
         --Upgrade to body="Peda. Gown +3", --5
         ear1="Savant's Earring",
-        waist="Embla Sash", --5
+        waist="Embla Sash",
      })
  
 
@@ -550,7 +533,7 @@ function init_modetables()
     --Setup weaponMode
 	weaponMode = {
 		["index"] = 0,
-		[0] = {name="Malignance Pole", set={main="Malignance Pole", sub="Enki Strap"}},
+		[0] = {name="Regular", set={main="Akademos", sub="Alber Strap"}},
 	}
 
 	--Setup autoBuff
@@ -883,7 +866,9 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
     if buffactive['Klimaform'] and dayWeatherIntensity(spell.element) >= 1 then
         equip(sets.buff['Klimaform'])
     end
+end
 
+function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
     -- Equip any gear in the form of sets.buff (such as sets.buff['Ebullience'])
     for buff,active in pairs(state.Buff) do
 		if active and sets.buff[buff] then
