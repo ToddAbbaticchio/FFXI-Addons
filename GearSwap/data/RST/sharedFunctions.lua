@@ -23,6 +23,13 @@ eleWeaponSkills = S{
 	--[[ranged]]        'Flaming Arrow', 'Hot Shot', 'Wildfire', 'Trueflight', 'Leaden Salute'
 }
 
+rangedWeaponSkills = S{
+	'Hot Shot', 'Split Shot', 'Sniper Shot', 'Slug Shot', 'Blast Shot', 'Heavy Shot', 'Detonator', 'Numbing Shot', 'Last Stand', 'Coronach',
+	'Wildfire', 'Trueflight', 'Leaden Salute',
+	'Flaming Arrow', 'Piercing Arrow', 'Dulling Arrow', 'Sidewinder', 'Blast Arrow', 'Arching Arrow', 'Empyreal Arrow', 'Refulgent Arrow',
+	'Apex Arrow', 'Namas Arrow', 'Jishnu\'s Radiance'
+}
+
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
 -------------------------------------------------------------------------------------------------------------------
@@ -528,7 +535,7 @@ end
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
 function job_precast(spell, action, spellMap, eventArgs)
-	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type)
+	--add_to_chat(1, 'Spell: '..spell.name..' SpellType: '..spell.type..' TargetDistance: '..spell.target.distance)
 	
 	-- don't try to do stuff if we can't do stuff (stop gearswap from switching gear if we can't act)
 	if buffactive['terror'] or buffactive['petrification'] or buffactive['stun'] or buffactive['sleep'] or (spell.type:contains('Magic') and buffactive['Silence']) or (spell.type == 'JobAbility' and buffactive['Amnesia']) then
@@ -536,21 +543,30 @@ function job_precast(spell, action, spellMap, eventArgs)
         eventArgs.cancel = true
         return
     end
-	if spell.type:contains('Magic') and not mpCheck(spell.name) then
-		add_to_chat(167, 'Action stopped: Not enough MP to cast '..spell.name..'!')
-        eventArgs.cancel = true
-        return
+	if spell.type:contains('Magic') then
+		if not mpCheck(spell.name) then
+			add_to_chat(167, 'Action stopped: Not enough MP to cast '..spell.name..'!')
+        	eventArgs.cancel = true
+        	return
+		end
+		if spell.target.distance > 21 then
+			add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
+			eventArgs.cancel = true
+			return
+		end
 	end
-	if spell.target.distance > spell.range then
-		add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
-        eventArgs.cancel = true
-        return
+	if spell.type == 'WeaponSkill' then
+		local isRanged = rangedWeaponSkills:contains(spell.name)
+		if (spell.target.distance > 25 and isRanged) or (spell.target.distance > 5 and not isRanged) then
+			add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
+			eventArgs.cancel = true
+			return
+		end
 	end
 	
 	-- if weaponskill: face target and check/apply belt override conditions
 	if spell.type == 'WeaponSkill' then
 		faceTarget()
-
 		if eleWeaponSkills:contains(spell.name) then
 			local checkBelt = bestEleWsBelt(spell)
 			if checkBelt ~= nil then
@@ -561,12 +577,10 @@ function job_precast(spell, action, spellMap, eventArgs)
 
 	-- Utsusemi helper
 	if spell.english:contains('Utsusemi') then
-		-- if we have 3 or 4+ shadows - don't cast utsusemi.  Cancel it.
 		if buffactive['Copy Image (3)'] or buffactive['Copy Image (4+)'] then
 			eventArgs.cancel = true
-			add_to_chat(123, '**!! ' .. spell.english .. ' Canceled: [3+ IMAGES] !!**')
-		-- if we have 1 or 2 shadows cancel them before the new spell (ichi can't overwrite ni)
-		elseif buffactive['Copy Image'] or buffactive['Copy Image (2)'] then
+		end
+		if buffactive['Copy Image'] or buffactive['Copy Image (2)'] then
 			send_command('cancel 66; cancel 444; cancel Copy Image; cancel Copy Image (2)')
 		end
 	end
@@ -597,7 +611,7 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 		equip({waist="Hachirin-no-Obi"})
 	end 
 	
-	if spell.type == 'WeaponSkill' and magical_ws:contains(spell.name) then
+	if spell.type == 'WeaponSkill' and eleWeaponSkills:contains(spell.name) then
 		if getDayWeatherEleIntensity(spell.element) >= 2 then
 			-- use hachi if bonus is 20% or better
 			equip { waist="Hachirin-no-Obi" }

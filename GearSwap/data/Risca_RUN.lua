@@ -143,7 +143,7 @@ function init_gear_sets()
 	})
 	sets.emSkill = {
 		--ammo="",
-		--head="",            			  --10
+		--head="",            			  
 		--body="",
 		hands="Runeist's Mitons +3",      --15
 		legs="Carmine Cuisses +1",        --18
@@ -174,11 +174,12 @@ function init_gear_sets()
 	sets.precast.FC = {
 		ammo="Impatiens",
 		head="Rune. Bandeau +3",   --14
-		body="Agwu's Robe",        --08
+		body="Erilaz Surcoat +3",  --13
 		hands="Leyline Gloves",    --08
 		legs="Agwu's Slops",       --07
 		feet="Carmine Greaves +1", --08
 		neck="Orunmila's Torque",  --05
+		waist="Kasiri Belt",
 		ear1="Etiolation Earring", --01
 		ear2="Loquac. Earring",    --05
 		ring1="Kishar Ring",       --04
@@ -545,19 +546,22 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
 	-- auto equip selected weapon set
-	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
-		send_command('input //gs equip sets.weapons')
+	if player.equipment.main == "empty" then
+		send_command('input /equip main "'..weaponMode[weaponMode.index].set.main..'"')
+	end
+	if player.equipment.sub == "empty" then
+		send_command('input /equip sub "'..weaponMode[weaponMode.index].set.sub..'"')
 	end
 
 	-- handle auto wake on sleep with frenzy sallet
-	if buffactive['Sleep'] and player.status == engaged then 
+	if buffactive['Sleep'] and player.status == 'Engaged' then
 		send_command('input //gs equip sets.wakeUp')
 	elseif player.equipment.head == "Frenzy Sallet" and not buffactive['Sleep'] then
-		evalState_equipGear()
+		send_command('input /equip head "'..gearMode[gearMode.index].engaged.head..'"')
 	end
 
 	-- If auto.fite mode don't do buffs when you should be pulling
-	if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
+	if auto.fite[auto.fite.index] == 'On' and not player.status == 'Engaged' then
 		return
 	end
 
