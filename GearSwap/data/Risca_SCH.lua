@@ -24,10 +24,10 @@ function init_gear_sets()
 		feet = "Agwu's Pigaches",           --06
 		neck = "Argute Stole +1",           --07
 		waist = "Eschan Stone",
-		left_ear = "Malignance Earring",
-		right_ear = "Barkaro. Earring",
-		left_ring = "Freke Ring",
-		right_ring = "Mujin Band",          --5*
+		ear1 = "Malignance Earring",
+		ear2 = "Barkaro. Earring",
+		ring1 = "Freke Ring",
+		ring2 = "Mujin Band",          --5*
 		back=gear.nukeCape,               
 	}
 
@@ -132,6 +132,8 @@ function init_gear_sets()
 	sets.LightArtsWeapons = {main="Daybreak",sub="Genmei Shield"}
 	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +1"}
 	sets.buff['Klimaform'] = {feet="Arbatel Loafers +1"}
+	sets.buff['Ebullience'] = {head="Arbatel Bonnet +1"}
+	sets.buff['Rapture'] = {head="Arbatel Bonnet +1"}
 
 	sets.emSkill = {head="Befouled Crown", neck="Incanter's Torque", waist="Olympus Sash", ear1="Mimir Earring", ear2="Andoaa Earring", body="Telchine Chas.",}
 	sets.enfeebSkill = {neck="Incanter's Torque", head="Befouled Crown", ring1="Kishar Ring", ring2="Jhakri Ring"}
@@ -153,8 +155,8 @@ function init_gear_sets()
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.midcast['Elemental Magic'], sets.enfeebSkill)
 	sets.midcast['Cure'] = {hands="Telchine Gloves",}
-	sets.midcast['Aspir'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
-	sets.midcast['Drain'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
+	sets.midcast['Aspir'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Agwu's Pigaches", head="Pixie Hairpin +1"})
+	sets.midcast['Drain'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Agwu's Pigaches", head="Pixie Hairpin +1"})
 
 	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
     sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +1", main="Bolelabunga"})
@@ -297,7 +299,6 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 		if active and sets.buff[buff] then
 			equip(sets.buff[buff])
         end
-
 	end
 
 	if spell.english:contains('helix') then
@@ -515,6 +516,15 @@ function job_buff_change(buff, active)
 		state.Buff[buff] = true
 	else
 		state.Buff[buff] = nil
+	end
+
+	if buff == 'sublimation: activated' and active then
+		sets.gearmode.index = 37
+		modeHud('update')
+	end
+	if buff == 'sublimation: activated' and not active then
+		sets.gearmode.index = 39
+		modeHud('update')
 	end
 
 	-- Handle weapons based on light arts vs dark arts
