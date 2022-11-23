@@ -521,7 +521,7 @@ function init_modetables()
     --Setup gearMode
     gearMode = {
 		["index"] = 0,
-		[0] = {name="Regular", idle=sets.baseIdle, engaged=sets.engaged}
+		[0] = {name="Regular", idle=sets.baseIdle, engaged=sets.engaged},
 	}
 
     --Setup weaponMode
@@ -851,22 +851,24 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
 		if spell.element == world.weather_element or spell_element == world.day_element then
 			equip({main="Chatoyant Staff"},sets.Obi[spell.element])
 		end
-		if buffactive.rapture then
-			equip({head="Savant's Bonnet +2"})
-		end
-    end
-
-    if buffactive['Klimaform'] and dayWeatherIntensity(spell.element) >= 1 then
-        equip(sets.buff['Klimaform'])
     end
 end
 
 function job_buff_change(buff, active)
-	if state.Buff[buff] == nil and active then
-		state.Buff[buff] = true
-	else
-		state.Buff[buff] = nil
-	end
+    if state.Buff[buff] == nil and active then
+        state.Buff[buff] = true
+    else
+        state.Buff[buff] = nil
+    end
+
+    if buff == 'sublimation: activated' and active then
+        sets.gearmode.index = 37
+        modeHud('update')
+    end
+    if buff == 'sublimation: activated' and not active then
+        sets.gearmode.index = 39
+        modeHud('update')
+    end
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
@@ -888,9 +890,7 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 end
 
 function extendedJobAftercast(spell, action, spellMap, eventArgs)
-    if buffactive['sublimation: activated'] then
-        equip(sets.maxSublimation)
-    end
+
 end
 
 function autoActions()
