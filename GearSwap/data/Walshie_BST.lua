@@ -1,6 +1,3 @@
--------------------------------------------------------------------------------------------------------------------
--- Handle imports
--------------------------------------------------------------------------------------------------------------------
 include('sharedFunctions.lua')
 function get_sets()
     mote_include_version = 2
@@ -18,9 +15,7 @@ function init_gear_sets()
 	--gear.tpCape = {name="Artio's Mantle", augments={'DEX + 20', 'SOMETHING ELSE'}}
 	gear.petCape = {name="Artio's Mantle", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20',}}
 
-	sets.baseTP = {
-		-- Gear Haste caps at +25%
-		-- /DNC DW +15%
+	sets.baseMelee = {
         ammo = "Coiste Bodhar", -- DA+3%
         head = "Nukumi Cabasset +2", -- Haste+8%
         neck = "Shulmanu Collar", -- DA+3%
@@ -34,12 +29,19 @@ function init_gear_sets()
         waist = "Windbuffet Belt +1", -- TA+2%; QA+2%
         legs = "Meg. Chausses +2", -- Haste+4%; TA+5%
         feet = "Nukumi Ocreae +2" -- Haste+3%
-		-- Total Haste: 23%
-		-- Total DW: 19%
-		-- Total XA%: DA: 24%; TA: 21%; QA: 2%
 	}
 
-	sets.precast.WS = {
+	sets.meleeAcc = set_combine(sets.baseMelee, {
+    })
+
+    sets.meleeHybrid = set_combine(sets.baseMelee, {
+        head="Malignance Chapeau",
+        hands="Malignance Gloves",
+        legs="Malignance Tights",
+        ring2="Defending Ring",
+    })
+
+	sets.baseWS = {
         ammo = "Coiste Bodhar",
         head = "Gleti's Mask",
         neck = "Fotia Gorget",
@@ -53,10 +55,7 @@ function init_gear_sets()
         waist = "Fotia Belt",
         legs = "Meghanada Chausses +2",
         feet = "Nukumi Ocreae +2"
-    }
-
-	sets.baseTank = {
-	}
+    }     
 
 	sets.baseIdle = {
 		head = "Gleti's Mask",
@@ -73,8 +72,9 @@ function init_gear_sets()
 		ear2 = "Enmerkar Earring"
 	}
 
-	sets.moveSpeed = {} --{feet="Skadi's Jambeaux"}
-	sets.TH = {legs="Valorous Hose", waist="Chaac Belt", ammo="Perfect Lucky Egg"}
+	sets.moveSpeed = {}
+	sets.Obi = {waist="Hachirin-no-Obi"}
+	sets.TH = {head="Wh. Rarab Cap +1", legs="Valorous Hose", waist="Chaac Belt", ammo="Perfect Lucky Egg"}
 	sets.precast.JA['Box Step'] = sets.TH
 
 	-- JA Sets
@@ -94,6 +94,7 @@ function init_gear_sets()
 	}
 	
 	-- WS Sets
+	sets.precast.WS = set_combine(sets.baseWS, {})
 	sets.precast.WS['Decimation'] = set_combine(sets.precast.WS, {})
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
 		ammo = "Voluspa Tathlum",
@@ -177,19 +178,14 @@ end
 -- Setup tables that control our various 'modes'
 -------------------------------------------------------------------------------------------------------------------
 function init_modetables()
-	--Setup gearMode
-	--TODO: replace these with the modes you want. Give name, set desired idle/engaged sets when in that mode.
 	gearMode = {
 		["index"] = 0,
-		[0] = {name="DPS", idle=set_combine(sets.a, sets.baseIdle), engaged=sets.baseTP},
-		[1] = {name="DPS-HighAcc", idle=set_combine(sets.baseTP, sets.baseIdle), engaged=sets.baseTP},
-		[2] = {name="DPS-MaxBuff", idle=set_combine(sets.baseTP, sets.baseIdle), engaged=sets.baseTP},
-		[3] = {name="PetDPS", idle=set_combine(sets.PetDT, sets.baseIdle), engaged=sets.PetDT},
-		[4] = {name="Tank", idle=set_combine(sets.baseTank, sets.baseIdle), engaged=sets.baseTank},
+		[0] = {name="DPS", idle=(sets.baseIdle), engaged=(sets.baseMelee)},
+		[1] = {name="DPS-Acc", idle=(sets.baseIdle), engaged=(sets.meleeAcc)},
+		[2] = {name="DPS-Hybrid", idle=(sets.baseIdle), engaged=(sets.meleeHybrid)},
+		--[3] = {name="PetDPS", idle=set_combine(sets.PetDT, sets.baseIdle), engaged=sets.PetDT},
 	}
 	
-	--Setup weaponMode
-	--TODO: replace these with the weapon modes you want.
 	weaponMode = {
 		["index"] = 0,
 		[0] = {name="Dolichenus", set={main="Dolichenus", sub="Guttler"}},
@@ -198,7 +194,6 @@ function init_modetables()
 		[3] = {name="SW-Guttler", set={main="Guttler", sub="Thorfinn Shield +1"}},
 	}
 
-	--Setup autoBuff
 	auto = {
 		["buff"] = {
 			["index"] = 0,
@@ -370,7 +365,11 @@ function init_modetables()
 		},
 	}
 	
-	evalState_equipGear()
+	sets.idle = gearMode[gearMode.index].idle
+	sets.engaged = gearMode[gearMode.index].engaged
+	sets.weapons = weaponMode[weaponMode.index].set
+	modeHud('update')
+	bstHud('update')
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -384,7 +383,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function extendedUserSetup()
 	--Setup job specific binds
-	send_command('bind ^= gs c summonPet')
+	--send_command('bind ^= gs c summonPet')
 	send_command('bind ^insert gs c petUp')
     send_command('bind ^delete gs c petDown')
 
@@ -399,14 +398,14 @@ function extendedUserSetup()
 	end
 end
 
-function user_unload()
-    send_command('unbind !1')
-    send_command('unbind !2')
-	send_command('unbind !3')
-	send_command('unbind !4')
-	send_command('unbind !5')
-	send_command('unbind !6')
-	send_command('unbind ^=')
+function extendedUserUnload()
+    send_command('unbind @1')
+    send_command('unbind @2')
+	send_command('unbind @3')
+	send_command('unbind @4')
+	send_command('unbind @5')
+	send_command('unbind @6')
+	--send_command('unbind ^=')
 	send_command('unbind ^insert')
 	send_command('unbind ^delete')
 end
@@ -427,17 +426,7 @@ end
 -- Special buff/debuff handling
 -------------------------------------------------------------------------------------------------------------------
 function job_buff_change(buff, active)
-	if buff == "Doom" then
-		if active then
-			send_command('input /p "Doomed, pls halp!')
-			equip({waist="Gishdubar Sash",ring1="Purity Ring"})
-			disable('ring1','waist')
-		else
-			send_command('input /p "Im saved!!! ...or Doom killed me?')
-			enable('ring1','waist')
-			evalState_equipGear()
-		end
-	end
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -517,10 +506,10 @@ function bstHud(action)
 		for btn = 6, 1, -1 do
 			if currPet.abilities[btn] ~= nil then
 				local ability = currPet.abilities[btn]
-				add_to_chat(122, 'alt+'..btn..' bound to: '..ability.command)
-				setKeyBind('!'..btn, 'input '..ability.command)
+				add_to_chat(122, 'win+'..btn..' bound to: '..ability.command)
+				send_command('bind @'..btn..' input '..ability.command)
 				
-				local abilText = 'alt+'..btn..' - '..ability.name..' - R.Charges: '..ability.cost
+				local abilText = 'win+'..btn..' - '..ability.name..' - R.Charges: '..ability.cost
 				if petActions == nil then
 					petActions = abilText
 				else
@@ -545,7 +534,6 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction function: called ~once per second
 -------------------------------------------------------------------------------------------------------------------
---fantodUsed = false
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()
 	local callBeastRecast = abilRecast[104]

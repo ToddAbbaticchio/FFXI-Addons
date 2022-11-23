@@ -14,9 +14,11 @@ function init_gear_sets()
     gear.strWSCape = { name="Toutatis's Cape", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}}
     gear.dexWSCape = {name="Toutatis's Cape", augments={'DEX+20','Accuracy+20 Attack+20','Crit.hit rate+10',}}
     gear.meleeTPCape = { name="Toutatis's Cape", augments={'DEX+20','Accuracy+20 Attack+20','DEX+10','"Store TP"+10',}}
+
+    gear.thPants = { name="Herculean Trousers", augments={'DEX+14','STR+11','"Treasure Hunter"+1',}}
     
     sets.baseMelee = {
-        ammo="Yetshila +1",
+        ammo="Cath Palug Stone",
         head="Adhemar Bonnet +1",
         body="Adhemar Jacket +1",
         hands="Adhemar Wristbands +1", 
@@ -24,12 +26,19 @@ function init_gear_sets()
         feet="Herculean Boots",
         neck="Asn. Gorget +2",
         ear1="Sherida Earring",
-        ear2="Cessance Earring",
+        ear2="Skulker's Earring",
         ring1="Chirich Ring +1", --ring1="Gere Ring",
-        ring2="Chirich Ring +1", --ring2="Epona's Ring",
+        ring2="Epona's Ring",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
     }
+
+    sets.meleeTH = set_combine(sets.baseMelee, {
+        head="Herculean Helm",
+        hands="Plunderer's Armlets +3",
+        legs=gear.thPants,
+        feet="Skulker's Poulaines +2",        
+    })
 
     sets.meleeAcc = {
         -- Move Chirich Rings here when other rings are in baseMelee
@@ -51,7 +60,7 @@ function init_gear_sets()
     sets.wakeUp = {}
     sets.Obi = {} --{waist="Hachirin-no-Obi"}
 
-    sets.TH = {head="Wh. Rarab Cap +1", hands="Plunderer's Armlets", feet="Skulker's Poulaines +2", }
+    sets.TH = {head="Herculean Helm", hands="Plunderer's Armlets +3", feet="Skulker's Poulaines +2", legs=gear.thPants}
    
     sets.naked = {head=empty, body=empty, hands=empty, legs=empty, feet=empty, neck=empty, waist=empty, ear1=empty, ear2=empty, ring1=empty, ring2=empty, back=empty}
 
@@ -69,8 +78,8 @@ function init_gear_sets()
         --neck="Fotia Gorget",
         --waist="Fotia Belt",
         --left_ear="Ishvara Earring",
-        --right_ear="Moonshade Earring",
-        --left_ring="Epona's Ring",
+        ear2="Moonshade Earring",--right_ear="Moonshade Earring",
+        ring1="Epona's Ring",--left_ring="Epona's Ring",
         ring2="Rajas Ring",
         back=gear.dexWSCape,
     }
@@ -109,7 +118,11 @@ function init_gear_sets()
 
     sets.precast.WS['Mandalic Stab'] = sets.precast.WS["Rudra's Storm"]
 
-    sets.precast.WS['Aeolian Edge'] = sets.TH
+    sets.precast.WS['Aeolian Edge'] = set_combine(sets.precast.WS['Evisceration'], {
+        ear1="Friomisi Earring",
+        ear2="Moonshade Earring",
+        back=gear.strWSCape,
+    })
     --set_combine(sets.baseWS, {
         --ammo="Ghastly Tathlum +1",
         --head=gear.Herc_MAB_head,
@@ -166,7 +179,7 @@ function init_gear_sets()
         }
 
     sets.precast.JA['Despoil'] = {ammo="Barathrum", feet="Skulker's Poulaines +2"} --{ legs="Skulk. Culottes +1", }
-    sets.precast.JA['Perfect Dodge'] = {} --{hands="Plun. Armlets +3"}
+    sets.precast.JA['Perfect Dodge'] = {hands="Plun. Armlets +2"}
     sets.precast.JA['Feint'] = {} --{legs="Plun. Culottes +3"}
     --sets.precast.JA['Sneak Attack'] = sets.buff['Sneak Attack']
     --sets.precast.JA['Trick Attack'] = sets.buff['Trick Attack']    
@@ -219,7 +232,7 @@ function init_modetables()
 		[0] = {name="DPS-Base", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
 		[1] = {name="DPS-Acc", idle=(set_combine(sets.meleeAcc, sets.baseIdle)), engaged=(sets.meleeAcc)},
         [2] = {name="DPS-Hybrid", idle=(set_combine(sets.meleeHybrid, sets.baseIdle)), engaged=(sets.meleeHybrid)},
-        [3] = {name="Full-TH", idle=(set_combine(sets.TH, sets.baseIdle)), engaged=(sets.TH)},
+        [3] = {name="DPS-TH", idle=sets.baseIdle, engaged=(sets.meleeTH)},
 	}
 	
 	--Setup weaponMode
@@ -228,7 +241,7 @@ function init_modetables()
 		[0] = {name="Tauret-Shijo", set={main="Tauret", sub="Shijo"}},
         [1] = {name="Naegling-Magian", set={main="Naegling", sub="Fusetto +2"}},
         [2] = {name="TH", set={main="Tauret", sub="Sandung"}},
-        [3] = {name="Lowdmg", set={main="Qutrub Knife", sub=""}},
+        [3] = {name="Lowdmg", set={main="Qutrub Knife", sub="Wind Knife"}},
 	}
 
 	--Setup autoBuff
@@ -272,13 +285,13 @@ function extendedUserSetup()
 
 	--Set default macro book / page
     if player.sub_job == 'DNC' then
-        set_macro_page(1, 2)
+        set_macro_page(1, 3)
     end
 	
 	--Load job-specific addons
 	windower.send_command('lua load thtracker')
 
-    --windower.send_command:schedule(4, 'input /lockstyleset 181')	
+    windower.send_command:schedule(4, 'input /lockstyleset 7')	
 end
 
 function extendedUserUnload()
@@ -348,6 +361,8 @@ function autoActions()
 
     local me = windower.ffxi.get_player()    
 
+    --notifyWhenMonsterNear("Sisyphus")
+
 	-- Auto equip selected weapon set
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -356,19 +371,25 @@ function autoActions()
     if auto.thief[auto.thief.index] == 'On' and not actionInProgress and not moving and me.status == 1 then
         if stealRecast == 0 then
             send_command('/steal')
-            add_to_chat(122, '[Steal]')
+            add_to_chat(006, '[Steal]')
             return
         end
 
         if mugRecast == 0 then
             send_command('/mug')
-            add_to_chat(122, '[Mug]')
+            add_to_chat(006, '[Mug]')
             return
         end
 
         if despoilRecast == 0 then
             send_command('/despoil')
-            add_to_chat(122, '[Despoil]')
+            add_to_chat(006, '[Despoil]')
+            return
+        end
+
+        if player.tp > 1000 then
+            send_command('/evisceration')
+            add_to_chat(006, '[Evisceration]')
             return
         end
     end

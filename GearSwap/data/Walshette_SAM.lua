@@ -11,12 +11,17 @@ end
 function init_gear_sets()
 
     --[[ Set up JSE Capes ]]--
-    gear.strWSCape = {name="Smertrios's Mantle", augments={'STR+20','Accuracy+20 Attack+20','DEX+10'}}
-    gear.dexTPCape = {name="Smertrios's Mantle", augments={'DEX+20'}}
+    gear.strWSCape = {name="Smertrios's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
+    gear.dexTPCape = {name="Smertrios's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Store TP"+10',}}
+
 
     --[[ Set up Augmented Gear ]]--
-    gear.valorWSHands = { name="Valorous Mitts", augments={'Weapon skill damage +4%','Accuracy+2','Attack+9',}}
+    gear.valorWSHead = { name="Valorous Mask", augments={'Accuracy+24','Weapon skill damage +5%','DEX+1',}}
     gear.valorJinpuHead = { name="Valorous Mask", augments={'"Mag.Atk.Bns."+25','Weapon skill damage +4%','Attack+9',}}
+    --hands={ name="Valorous Mitts", augments={'Attack+20','Weapon skill damage +4%','DEX+4','Accuracy+11',}}
+    gear.valorWSHands = { name="Valorous Mitts", augments={'Attack+23','Weapon skill damage +4%','STR+4',}}
+    gear.valorWSLegs={ name="Valorous Hose", augments={'"Store TP"+3','STR+10','Weapon skill damage +4%','Accuracy+18 Attack+18','Mag. Acc.+1 "Mag.Atk.Bns."+1',}}
+    gear.valorWSFeet = { name="Valorous Greaves", augments={'Accuracy+22 Attack+22','Weapon skill damage +4%','Accuracy+2',}}    
     
     sets.baseMelee = {
         sub="Utu Grip",
@@ -55,25 +60,37 @@ function init_gear_sets()
     
     sets.baseWS = {
         sub="Utu Grip",
+        neck="Samurai's Nodowa +2",
         ear1="Thrud Earring",
         ear2="Moonshade Earring",
-        back=gear.strWSCape,
-        --body = Sakonji Domaru +3 during Overwhelm (need to code Overwhelm logic)
+        body="Sakonji Domaru +3",
+        ring1="Epaminondas's Ring",
+        ring2="Ifrit Ring +1",
+        back=gear.strWSCape,    
+        waist="Sailfi Belt +1",    
     }     
 
     -- WS Sets
     sets.precast.WS = set_combine(sets.baseWS, {})
     sets.precast.WS['Impulse Drive'] = set_combine(sets.baseWS, {
-        --ammo="Knobkierrie",
-        head=gear.valorJinpuHead, --head="Mpaca's Cap",
-        neck="Samurai's Nodowa +2",
-        body="Kasuga Domaru +3", -- Sakonji +3
+        ammo="Knobkierrie",
+        head=gear.valorWSHead, --head="Mpaca's Cap",        
         hands=gear.valorWSHands, --- Kasuga +3
-        ring1="Apate Ring", -- Niqmaddu Ring
-        ring2="Ifrit Ring +1",
-        waist="Sailfi Belt +1",
-        legs="Valorous Hose", -- Wakido +3
-        feet="Valorous Greaves", --Kasuga +3
+        legs=gear.valorWSLegs, -- Wakido +3
+        feet=gear.valorWSFeet, --Kasuga +3
+    })
+
+    sets.precast.WS['Tachi: Jinpu'] = set_combine(sets.baseWS, {
+        --ammo="Knobkierrie",
+        head=gear.valorJinpuHead,
+        ear1="Friomisi Earring",
+        body="Sakonji Domaru +3",
+        hands=gear.valorWSHands, -- Valor Jinpu Aug / Kasuga (Empy) Kote +3
+        -- ring2= ???
+        back=strWSCape, -- Jinpu Ambu Cape needed
+        -- waist = o.sash or ???
+        legs=gear.valorWSLegs, -- Valor Jinpu Aug needed
+        feet=gear.valorWSFeet, -- Valor Jinpu Aug needed
     })
 
     sets.precast.FC = {
@@ -83,6 +100,8 @@ function init_gear_sets()
     sets.baseIdle = {
        
     }
+
+    sets.precast.JA['Meditate'] = {head="Wakido Kabuto +1", hands="Sakonji Kote +3", back=gear.dexTPCape}
 
     sets.moveSpeed = {}
     sets.Obi = {waist="Hachirin-no-Obi"}
@@ -106,7 +125,7 @@ function init_modetables()
 	weaponMode = {
 		["index"] = 0,
 		[0] = {name="Shining One", set={main="Shining One", sub=""}},
-        [1] = {name="GK", set={main="", sub=""}},        
+        [1] = {name="Ichigo", set={main="Ichigohitofuri", sub=""}},        
 	}
 
 	--Setup autoBuff
@@ -121,6 +140,11 @@ function init_modetables()
 			[0] = "Off",
 			[1] = "On",
 		},
+        ["sam"] = {
+            ["index"] = 0,
+            [0] = "Off",
+			[1] = "On",
+        }
 	}
 
 	sets.idle = gearMode[gearMode.index].idle
@@ -148,7 +172,10 @@ function extendedUserSetup()
 	-- Load addons
 
 	-- Set style lock
-	windower.send_command:schedule(4, 'input /lockstyleset 9')	
+	windower.send_command:schedule(4, 'input /lockstyleset 8')	
+
+    send_command('bind @q gs c cycleSAM')
+	set_macro_page(1, 2)
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -185,8 +212,16 @@ function extendedTWM(cmdParams, eventArgs)
 end
 
 function extendedJobSelfCommand(cmdParams, eventArgs)	
+    --[[ Cycle Auto SAM ]]--
+    if cmdParams[1] == 'cycleSAM' then
+        auto.sam.index = auto.sam.index + 1
+        if auto.sam.index > #auto.sam then
+            auto.sam.index = 0
+        end
+        windower.add_to_chat(013,'[SAM: '..auto.sam[auto.sam.index]..']')
+    end
 
-    --modeHud('update')
+    modeHud('update')
 end
 
 function extendedEvalState_equipGear()
@@ -194,7 +229,16 @@ function extendedEvalState_equipGear()
 end
 
 function extendedModeHud(hudText)
-    return hudText
+    skyblue = '\\cs(135,206,250)'
+    red = '\\cs(255,0,0)'
+	green = '\\cs(0,255,0)'
+    textColor = red
+    if auto.sam[auto.sam.index] == 'On' then
+        textColor = green
+    end
+
+    hudText:append(skyblue..'SAM: '..textColor..auto.sam[auto.sam.index]..white)
+	return hudText
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -208,19 +252,13 @@ function autoActions()
     local konzenRecast = abilRecast[132]
     local hassoRecast = abilRecast[138]
     local meditateRecast = abilRecast[134]
+    local sekkanokiRecast = abilRecast[140]
     local sengikoriRecast = abilRecast[141]
     local hagakureRecast = abilRecast[54]
     local lastResortRecast = abilRecast[87]
     local me = windower.ffxi.get_player()    
 
-    if (auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
-        if player.tp > 1750 and konzenRecast == 0 then
-            add_to_chat(207, '[~ Konzen Ittai ~]')
-            send_command('/konzenittai')
-            send_command:schedule(0.8, '/impulsedrive')
-            return
-        end
-
+    if(auto.sam[auto.sam.index] == 'On' and not actionInProgress and not moving) then
         if not buffactive['Hasso'] and hassoRecast == 0 then
             add_to_chat(207, '[~ Hasso ~]')
             send_command('/hasso')
@@ -233,6 +271,32 @@ function autoActions()
             return
         end
 
+        if not buffactive['Sekkanoki'] and sekkanokiRecast == 0 then
+            add_to_chat(207, '[~ Sekkanoki ~]')
+            send_command('/sekkanoki')
+            return
+        end     
+    end
+
+    if (auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
+        if not buffactive['Hasso'] and hassoRecast == 0 then
+            add_to_chat(207, '[~ Hasso ~]')
+            send_command('/hasso')
+            return
+        end
+
+        if meditateRecast == 0 then
+            add_to_chat(207, '[~ Meditate ~]')
+            send_command('/meditate')
+            return
+        end
+
+        if not buffactive['Sekkanoki'] and sekkanokiRecast == 0 then
+            add_to_chat(207, '[~ Sekkanoki ~]')
+            send_command('/sekkanoki')
+            return
+        end     
+
         if not buffactive['Sengikori'] and sengikoriRecast == 0 then
             add_to_chat(207, '[~ Sengikori ~]')
             send_command('/sengikori')
@@ -243,7 +307,8 @@ function autoActions()
             add_to_chat(207, '[~ Hagakure ~]')
             send_command('/hagakure')
             return
-        end        
+        end    
+  
     end
     
     if (auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
@@ -273,15 +338,20 @@ function autoActions()
             return
         end
 
+        if konzenRecast == 0 then
+            add_to_chat(207, '[~ Konzen Ittai ~]')
+            send_command('/konzenittai')
+            return
+        end
+
         if player.tp >= 1750 or (buffactive['Meikyo Shisui'] and player.tp >= 1000) then
             send_command('/impulsedrive')
             return
         end
-        --[[
+
         if not buffactive['Food'] then
-            send_command('input /item "Pork Cutlet Bowl" <me>')
+            send_command('input /item "S. Salis. Steak" <me>')
             return
         end   
-        ]]--
     end
 end

@@ -40,7 +40,9 @@ function init_gear_sets()
     }
 
     sets.meleeHybrid = set_combine(sets.baseMelee, {
-        head="Malignance Chapeau", --head=gear.Adhemar_D_head, --4/0
+        head="Malignance Chapeau",
+        hands="Malignance Gloves",
+        legs="Malignance Tights",
         --body="Ashera Harness", --7/7
         --neck="Loricate Torque +1", --6/6
         --ring1="Moonlight Ring", --5/5
@@ -58,7 +60,7 @@ function init_gear_sets()
         ear1="Ishvara Earring",
         ear2="Moonshade Earring",
         ring1="Petrov Ring", --ring1="Regal Ring",
-        ring2="Apate Ring", --ring2="Epaminondas's Ring",
+        ring2="Epaminondas's Ring",
         back=gear.evisCape,
         waist="Fotia Belt",
     }     
@@ -268,7 +270,7 @@ function init_gear_sets()
         ear1="Novio Earring", --ear1="Crematio Earring",
         ear2="Friomisi Earring",
         --ring1="Metamor. Ring +1",
-        --ring2="Epaminondas's Ring",
+        ring2="Epaminondas's Ring",
         --back="Argocham. Mantle",
         --waist="Orpheus's Sash",
     }
@@ -649,7 +651,7 @@ function autoActions()
             end
         end
         
-        -- Auto 1-hr
+        --[[ Auto 1-hr (put this in jobVars)
         if tranceRecast == 0 then
             add_to_chat(122, '[~ Trance ~]')
             send_command('/trance')
@@ -659,7 +661,7 @@ function autoActions()
             add_to_chat(122, '[~ Grand Pas ~]')
             send_command('/grandpas')
             return
-        end
+        end]]--
 
         --[[
         if not buffactive['Food'] then
