@@ -216,7 +216,7 @@ windower.register_event('incoming chunk', function(id,data,modified,injected,blo
         if cpBalance < 320000 then
             writeLog(true, 'Remaining CP: '..cpBalance..'! Stopping the loop!')
             active = false
-            windower.send_command('input //lua u cphelper')
+            windower.send_command:schedule(3, 'input //lua u cphelper')
         end
     end
 end)
@@ -240,8 +240,8 @@ windower.register_event('postrender', function()
 
         -- inventory is full.  sell things if we're close enough to a known sales vendor.
         if getFreeInventory() == 0 then
-            getConquestPointBalance()
             tryStartSale()
+            getConquestPointBalance()
         end
     end
 end)
