@@ -182,7 +182,6 @@ windower.register_event('addon command', function(...)
 	local action = arg[1]
 
     if arg[1]:lower() == 'test' then
-        getConquestPointBalance('Conquest Points (Windurst)')
     end
 
     if arg[1]:lower() == 'buy' then
@@ -221,9 +220,7 @@ windower.register_event('postrender', function()
         loopTime = os.time() + cycleDelay
 
         -- if low on CP, sell what we have and unload addon. mission complete
-        getConquestPointBalance()
-        if cpBalance < 100000 then
-            tryStartSale()
+        if cpBalance < 320000 then
             writeLog(true, 'Remaining CP: '..cpBalance..'! Stopping the loop!')
             windower.send_command('input //lua u cphelper')
         end
@@ -243,7 +240,8 @@ windower.register_event('postrender', function()
 
         -- inventory is full.  sell things if we're close enough to a known sales vendor.
         if getFreeInventory() == 0 then
-            tryStartSale()
+            getConquestPointBalance()
+            tryStartSale:schedule(3)
         end
     end
 end)
