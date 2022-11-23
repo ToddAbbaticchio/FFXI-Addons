@@ -210,20 +210,20 @@ windower.register_event('incoming chunk', function(id,data,modified,injected,blo
     -- watch for packets related to checking CP balance
     if (id == 0x113 or id == 0x118) then
         local responsePacket = packets.parse('incoming', data)
-        cpBalance = responsePacket[cpSearchString]
+        local cpBalance = responsePacket[cpSearchString]
         writeLog(true, 'cpBalance: '..cpBalance)
+       
+        if cpBalance < 320000 then
+            writeLog(true, 'Remaining CP: '..cpBalance..'! Stopping the loop!')
+            active = false
+            windower.send_command('input //lua u cphelper')
+        end
     end
 end)
 
 windower.register_event('postrender', function()
     if active and os.time() > loopTime then
         loopTime = os.time() + cycleDelay
-
-        -- if low on CP, sell what we have and unload addon. mission complete
-        if cpBalance < 320000 then
-            writeLog(true, 'Remaining CP: '..cpBalance..'! Stopping the loop!')
-            windower.send_command('input //lua u cphelper')
-        end
 
         -- if there was a colission and we're stuck for 5 seconds, autorecover
         if os.time() - lastComplete >= 5 then
@@ -241,7 +241,7 @@ windower.register_event('postrender', function()
         -- inventory is full.  sell things if we're close enough to a known sales vendor.
         if getFreeInventory() == 0 then
             getConquestPointBalance()
-            tryStartSale:schedule(3)
+            tryStartSale()
         end
     end
 end)
