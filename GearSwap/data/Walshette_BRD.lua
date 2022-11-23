@@ -14,16 +14,16 @@ function init_gear_sets()
 	gear.magicAccCape = {name="Intarabus's Cape", augments={'CHR+20',}}
     gear.savageCape = {name="Intarabus's Cape", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
 
-    sets.ghorn = {range="Gjallarhorn",}
-    sets.harp = {range="Blurred Harp +1",}
+    gear.extraSong = {name="Daurdabla"}
+    gear.songPotency = {name="Gjallarhorn"}
+    gear.linos = {name="Linos"}
 
 	------------------------------------------------------------------------------------------------
     ---------------------------------------- Precast Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
-
     -- Fast cast sets for spells
     sets.precast.FC = {
-        --sub="Kali", --7
+        --sub="Kali", --71
         --head="Volte Beret", --6
         body="Inyanga Jubbah +2", --14
         --hands="Gende. Gages +1", --7
@@ -37,9 +37,7 @@ function init_gear_sets()
         --back=gear.BRD_Song_Cape, --10
         --waist="Embla Sash", --5
     }
-
-	--sets.precast.FC['Enhancing Magic'] = sets.precast.FC
-    --sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash"})
+	sets.precast.FC['Enhancing Magic'] = sets.precast.FC
 
     sets.precast.FC.Cure = set_combine(sets.precast.FC, {
         --feet="Kaykaus Boots +1", --0/7
@@ -55,21 +53,18 @@ function init_gear_sets()
 
     sets.precast.FC.BardSong = set_combine(sets.precast.FC, {
         head="Fili Calot +2", --14
-        --body="Brioso Justau. +3", --15
+        body="Brioso Justau. +2", --15
         feet="Brioso Slippers +3", 
         --neck="Loricate Torque +1",
         --ear1="Odnowa Earring +1",
         --ring2="Defending Ring",
         neck="Mnbw. Whistle +1",
-        --range="Blurred Harp +1",
     })
 
     --sets.precast.FC.Dispelga = set_combine(sets.precast.FC, {main="Daybreak", sub="Ammurapi Shield", waist="Shinjutsu-no-Obi +1"})
 
-    -- Precast sets to enhance JAs
-
-    sets.precast.JA.Nightingale = {feet="Brioso Slippers +3"} --{feet="Bihu Slippers +3"}
-    sets.precast.JA.Troubadour = {} --{body="Bihu Jstcorps. +3"}
+    sets.precast.JA.Nightingale = {feet="Bihu Slippers +2"}
+    sets.precast.JA.Troubadour = {body="Bihu Justaucorps +2"}
     sets.precast.JA['Soul Voice'] = {} --{legs="Bihu Cannions +3"}
 
     sets.precast.Waltz = {}
@@ -77,64 +72,43 @@ function init_gear_sets()
 	------------------------------------------------------------------------------------------------
     ---------------------------------------- Midcast Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
-
-    -- General set for recast times.
-    sets.midcast.FastRecast = sets.precast.FC
-
-    sets.midcast.SpellInterrupt = {
-        --ammo="Staunch Tathlum +1", --11
-        --body="Ros. Jaseran +1", --25
-        --hands=gear.Chironic_WSD_hands, --20
-        --legs="Querkening Brais" --15
-        --neck="Loricate Torque +1", --5
-        --ear1="Halasz Earring", --5
-        --ear2="Magnetic Earring", --8
-        --ring2="Evanescence Ring", --5
-        --waist="Rumination Sash", --10
-    }
-
-    sets.midcast.Utsusemi = sets.midcast.SpellInterrupt
-
     -- Gear to enhance certain classes of songs.
     sets.midcast.Ballad = {legs="Fili Rhingrave +2"}
     sets.midcast.Carol = {} --{hands="Mousai Gages +1"}
-    sets.midcast.Etude = {} --{head="Mousai Turban +1"}
-    sets.midcast.HonorMarch = {} --{range="Marsyas", hands="Fili Manchettes +1"}
+    sets.midcast.Etude = {head="Mousai Turban +1"}
+    sets.midcast.HonorMarch = {range="Marsyas", hands="Fili Manchettes +2"}
     sets.midcast.Lullaby = {
-        head="Inyanga Tiara +2", --0/5
-        body="Fili Hongreline +2",
+        range="Blurred Harp +1",
+        head="Brioso Roundlet +2",
+        body="Brioso Justaucorps +2",
         hands="Inyanga Dastanas +2",
-        legs="Chironic Hose", --0/6
-        feet="Inyan. Crackows +2", --0/3
-
+        legs="Inyanga Shalwar +2",
+        feet="Bihu Slippers +2",
         neck="Moonbow Whistle +1",
         ring1="Stikini Ring",
         ring2="Stikini Ring",
-        ear1="Enchanter's Earring",
-        
+        ear1="Enchanter's Earring",        
         waist="Harfner's Sash",
         back=gear.magicAccCape,
-    } --hands="Brioso Cuffs +3"}
+    } 
     sets.midcast.Madrigal = {head="Fili Calot +2"}
     sets.midcast.Mambo = {} --{feet="Mou. Crackows +1"}
-    sets.midcast.March = {hands="Fili Manchettes"}
+    sets.midcast.March = {hands="Fili Manchettes +2"}
     sets.midcast.Minne = {} --{legs="Mou. Seraweels +1"}
     sets.midcast.Minuet = {body="Fili Hongreline +2"}
-    sets.midcast.Paeon = {} --{head="Brioso Roundlet +3"}
-    sets.midcast.Threnody = {} --{body="Mou. Manteel +1"}
-    sets.midcast['Adventurer\'s Dirge'] = {} --{range="Marsyas", hands="Bihu Cuffs +3"}
+    sets.midcast.Paeon = {head="Brioso Roundlet +2"}
+    sets.midcast.Threnody = {body="Mou. Manteel +1"}
+    sets.midcast['Adventurer\'s Dirge'] = {range="Marsyas"} -- bihu Cuffs
     sets.midcast['Foe Sirvente'] = {} --{head="Bihu Roundlet +3"}
     sets.midcast['Magic Finale'] = {legs="Fili Rhingrave +2"}
     sets.midcast["Sentinel's Scherzo"] = {feet="Fili Cothurnes +2"}
-    sets.midcast["Chocobo Mazurka"] = {} --{range="Marsyas"}
+    sets.midcast["Chocobo Mazurka"] = {range="Marsyas"}
 
     -- For song buffs (duration and AF3 set bonus)
     sets.midcast.SongEnhancing = {
-        --main="Carnwenhan",
-        --range="Gjallarhorn",
         head="Fili Calot +2",
         body="Fili Hongreline +2",
-        --hands="Fili Manchettes +1",
+        hands="Fili Manchettes +2",
         legs="Inyanga Shalwar +2",
         feet="Brioso Slippers +3",
         neck="Mnbw. Whistle +1",
@@ -146,29 +120,22 @@ function init_gear_sets()
 		ring2="Stikini Ring",
         --waist="Flume Belt +1",
         --back=gear.BRD_Song_Cape,
-        }
+    }
 
     -- For song defbuffs (duration primary, accuracy secondary)
     sets.midcast.SongEnfeeble = {
-        --main="Carnwenhan",
-        --sub="Ammurapi Shield",
-        --range="Gjallarhorn",
-        --head="Brioso Roundlet +3",
-        --body="Brioso Justau. +3",
-        --hands="Brioso Cuffs +3",
-        --legs="Brioso Cannions +3",
+        head="Brioso Roundlet +2",
+        body="Brioso Justau. +2",
+        hands="Brioso Cuffs +2",
+        legs="Brioso Cannions +2",
         feet="Brioso Slippers +3",
         neck="Mnbw. Whistle +1",
-        --ear1="Digni. Earring",
+        ear1="Enchanter's Earring", --ear1="Digni. Earring",
         --ear2="Regal Earring",
-        --ring1={name="Stikini Ring +1", bag="wardrobe3"},
-        --ring2="Metamor. Ring +1",
 		ring1="Stikini Ring",
 		ring2="Stikini Ring",
-        --waist="Acuity Belt +1",
+        waist="Harfner's Sash", --waist="Acuity Belt +1",
         back=gear.magicAccCape,
-        legs="Nyame Flanchard",
-        feet="Nyame Sollerets",
 	}
 
     -- For Horde Lullaby maxiumum AOE range.
@@ -178,8 +145,6 @@ function init_gear_sets()
         --ring2={name="Stikini Ring +1", bag="wardrobe4"},
         neck="Mnbw. Whistle +1",
     }
-
-    -- Placeholder song; minimize duration to make it easy to overwrite.
 
     -- Other general spells and classes.
     sets.midcast.Cure = {
@@ -193,7 +158,7 @@ function init_gear_sets()
         --neck="Incanter's Torque",
         --ear1="Beatific Earring",
         --ear2="Meili Earring",
-        ring1="Stikini Ring", --ring1="Menelaus's Ring",
+        ring1="Menelaus's Ring",
         ring2="Stikini Ring", --ring2="Haoma's Ring",
         --back="Solemnity Cape", --7
         --waist="Bishop's Sash",
@@ -207,13 +172,13 @@ function init_gear_sets()
     })
 
     sets.midcast.StatusRemoval = {
-        --head="Vanya Hood",
-        --body="Vanya Robe",
-        --legs="Aya. Cosciales +2",
-        --feet="Vanya Clogs",
+        head="Vanya Hood",
+        body="Vanya Robe",
+        legs="Aya. Cosciales +2",
+        feet="Vanya Clogs",
         --neck="Incanter's Torque",
         --ear2="Meili Earring",
-        --ring1="Menelaus's Ring",
+        ring1="Menelaus's Ring",
         --ring2="Haoma's Ring",
         --back=gear.BRD_Song_Cape,
         --waist="Bishop's Sash",
@@ -227,8 +192,6 @@ function init_gear_sets()
     })
 
     sets.midcast['Enhancing Magic'] = {
-        --main="Carnwenhan",
-        --sub="Ammurapi Shield",
         --head=gear.Telchine_ENH_head,
         --body=gear.Telchine_ENH_body,
         --hands=gear.Telchine_ENH_hands,
@@ -237,10 +200,8 @@ function init_gear_sets()
         --neck="Incanter's Torque",
         --ear1="Mimir Earring",
         --ear2="Andoaa Earring",
-		ring1="Stikini Ring",
-		ring2="Stikini Ring",
-        --ring1={name="Stikini Ring +1", bag="wardrobe3"},
-        --ring2={name="Stikini Ring +1", bag="wardrobe4"},
+		ring1="Stikini Ring", --ring1={name="Stikini Ring +1", bag="wardrobe3"},
+		ring2="Stikini Ring", --ring2={name="Stikini Ring +1", bag="wardrobe4"},
         --back="Fi Follet Cape +1",
         --waist="Embla Sash",
     }
@@ -260,8 +221,8 @@ function init_gear_sets()
         --sub="Ammurapi Shield",
         --head=empty;
         --body="Cohort Cloak +1",
-        --hands="Brioso Cuffs +3",
-        --legs="Brioso Cannions +3",
+        hands="Brioso Cuffs +2",
+        legs="Brioso Cannions +2",
         feet="Brioso Slippers +3",
         neck="Mnbw. Whistle +1",
         --ear1="Digni. Earring",
@@ -282,22 +243,20 @@ function init_gear_sets()
 
     -- Default set for any weaponskill that isn't any more specifically defined
     sets.precast.WS = {
-        --range=gear.Linos_WS,
         head="Nyame Helm", --head=gear.Chironic_WSD_head,
-        body="Nyame Mail", --body="Bihu Jstcorps. +3",
+        body="Bihu Jstcorps. +3",
         hands="Chironic Gloves",
         legs="Nyame Flanchard", --legs="Bihu Cannions +3",
-        feet="Nyame Sollerets", --feet="Bihu Slippers +3",
-        neck="Bard's Charm", --neck="Fotia Gorget",
-        ear1="Steelflash Earring", --ear1="Ishvara Earring",
+        feet="Bihu Slippers +2",
+        neck="Bard's Charm +2", --neck="Fotia Gorget",
+        ear1="Cessance Earring",
         ear2="Moonshade Earring",
         ring1="Ifrit Ring +1",
-        ring2="Apate Ring", --ring2="Ilabrat Ring",
+        ring2="Epaminondas's Ring",
         back=gear.savageCape,
         waist="Sailfi Belt +1",
     }
 
-    -- Specific weaponskill sets.  Uses the base set if an appropriate WSMod version isn't found.
     sets.precast.WS['Evisceration'] = set_combine(sets.precast.WS, {
     })
 
@@ -316,121 +275,75 @@ function init_gear_sets()
     sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {
     })
 
+    sets.precast.WS['Shining Blade'] = set_combine(sets.precast.WS, {
+        ear1="Friomisi Earring",
+        waist="Soil Belt",
+        feet="Nyame Sollerets",
+    })
+
 		------------------------------------------------------------------------------------------------
     ----------------------------------------- Idle Sets --------------------------------------------
     ------------------------------------------------------------------------------------------------
 
     sets.idle = {
-        --range="Gjallarhorn",
-        --head="Volte Beret",
-        --body="Mou. Manteel +1",
-        --hands="Raetic Bangles +1",
-        --legs="Volte Brais",
-        --legs="Volte Gaiters",
-        --neck="Bathy Choker +1",
-		neck="Moonbow Whistle +1",
+		neck="Moonbow Whistle +1", --neck="Bathy Choker +1",
         ear1="Enchanter's Earring",
         --ear1="Eabani Earring",
-        --ear2="Sanare Earring",
-		ring1="Vertigo Ring",
-		ring2="Fortified Ring",
-        --ring1={name="Stikini Ring +1", bag="wardrobe3"},
-        --ring2={name="Stikini Ring +1", bag="wardrobe4"},
+        ear2="Etiolation Earring", --ear2="Sanare Earring",
+		ring1="Fortified Ring", --ring1={name="Stikini Ring +1", bag="wardrobe3"},
+		ring2="Inyanga Ring", --ring2={name="Stikini Ring +1", bag="wardrobe4"},
         --back="Moonlight Cape",
         --waist="Flume Belt +1",
-        head="Inyanga Tiara +2", --0/5
-        body="Inyanga Jubbah +2", --0/8
-        hands="Inyanga Dastanas +2",
-        legs="Inyanga Shalwar +2", --0/6
-        feet="Inyan. Crackows +2", --0/3
-        ring2="Inyanga Ring",
+       --head="Inyanga Tiara +2", --head="Volte Beret",
+        --body="Inyanga Jubbah +2", --body="Mou. Manteel +1",
+        --hands="Inyanga Dastanas +2", --hands="Raetic Bangles +1",
+        --legs="Inyanga Shalwar +2", ---legs="Volte Brais",
+        --feet="Inyan. Crackows +2", --feet="Volte Gaiters",   
+        head="Fili Calot +2",
+        body="Nyame Mail",
+        hands="Nyame Gauntlets",
+        legs="Fili Rhingrave +2",
+        feet="Fili Cothurnes +2",
     }
-
-    sets.idle.DT = {
-        --head="Bihu Roundlet +3", --6/0
-        --body="Bihu Jstcorps. +3", --7/0
-        --hands="Raetic Bangles +1",
-        --legs="Brioso Cannions +3", --8/8
-        feet="Inyan. Crackows +2", --0/3
-        --neck="Loricate Torque +1", --6/6
-        --ear1="Odnowa Earring +1", --3/5
-        --ear2="Etiolation Earring", --0/3
-        --ring1="Moonlight Ring", --5/5
-        --ring2="Defending Ring",  --10/10
-        --back="Moonlight Cape", --6/6
-        --waist="Carrier's Sash",
-        }
-
-    sets.idle.MEva = {
-        head="Inyanga Tiara +2", --0/5
-        body="Inyanga Jubbah +2", --0/8
-        --hands="Raetic Bangles +1",
-        legs="Inyanga Shalwar +2", --0/6
-        feet="Inyan. Crackows +2", --0/3
-        --neck="Warder's Charm +1",
-        --ear1="Eabani Earring",
-        --ear2="Sanare Earring",
-        --ring1="Purity Ring",
-        ring2="Inyanga Ring",
-        --back="Moonlight Cape", --6/6
-        --waist="Carrier's Sash",
-        }
-
-    sets.idle.Town = set_combine(sets.Idle, {
-        --range="Gjallarhorn",
-        --head="Mousai Turban +1",
-        --body="Ashera Harness",
-        --legs="Mou. Seraweels +1",
-        --feet="Mou. Crackows +1",
-        --neck="Bard's Charm +2",
-        --ear1="Enchntr. Earring +1",
-        --ear2="Regal Earring",
-        --back=gear.BRD_Song_Cape,
-        --waist="Acuity Belt +1",
-        })
 
 	------------------------------------------------------------------------------------------------
     ---------------------------------------- Engaged Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
-
     sets.engaged = {
-        --range="Linos", --range=gear.Linos_TP,
+        range=gear.Linos,
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
         legs="Zoar Subligar +1",
-        --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
-        neck="Bard's Charm",     
+        neck="Bard's Charm +2",     
 		ear1="Cessance Earring",
-		ear2="Tripudio Earring", --ear2="Telos Earring",
+		ear2="Mache Earring +1", --ear2="Telos Earring",
 		ring1="Chirich Ring +1",
 		ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
-        feet="Nyame Sollerets",
+        feet="Volte Spats",
     }
 
     sets.engaged.DW = {
-        --range="Linos", --range=gear.Linos_TP,
+        range=gear.Linos,
         head="Ayanmo Zucchetto +2", --head="Volte Tiara",
         body="Ayanmo Corazza +2",
         hands="Ayanmo Manopolas +2", --hands="Raetic Bangles +1",
         legs="Zoar Subligar +1",
-        --feet="Ayanmo Gambieras +2", --feet=gear.Chironic_QA_feet,
-        neck="Bard's Charm",     
+        neck="Bard's Charm +2",     
         ear1="Cessance Earring",
-        ear2="Tripudio Earring", --ear2="Telos Earring",
+        ear2="Mache Earring +1",
         ring1="Chirich Ring +1",
         ring2="Chirich Ring +1",
         back=gear.meleeTPCape,
         waist="Windbuffet Belt +1",
-        feet="Nyame Sollerets",
-    } -- 26%
+        feet="Volte Spats",
+    }
 
     ------------------------------------------------------------------------------------------------
     ---------------------------------------- Hybrid Sets -------------------------------------------
     ------------------------------------------------------------------------------------------------
-
     sets.engaged.Hybrid = {
         --neck="Loricate Torque +1", --6/6
         --ring1="Moonlight Ring", --5/5
@@ -440,9 +353,6 @@ function init_gear_sets()
     ------------------------------------------------------------------------------------------------
     ---------------------------------------- Special Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
-
-    sets.SongDWDuration = {sub="Kali"}
-
     sets.buff.Doom = {
         --neck="Nicander's Necklace", --20
         --ring1={name="Eshmun's Ring", bag="wardrobe3"}, --20
@@ -456,13 +366,6 @@ function init_gear_sets()
 	sets.moveSpeed = {feet="Fili Cothurnes +2"}
     sets.TH = {head="Wh. Rarab Cap +1", legs="Chironic Hose"}
     sets.precast.JA['Box Step'] = sets.TH
-
-    sets.Carnwenhan = {} --{main="Carnwenhan", sub="Ternion Dagger +1"}
-    sets.Twashtar = {} --{main="Twashtar", sub="Taming Sari"}
-    sets.Tauret = {} --{main="Tauret", sub="Ternion Dagger +1"}
-    sets.Naegling = {} --{main="Naegling", sub="Centovente"}
-
-    sets.DefaultShield = {} --{sub="Genmei Shield"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -476,8 +379,10 @@ function init_modetables()
 
     weaponMode = {
 		["index"] = 0,
-		[0] = {name="Fusetto", set={main="Naegling", sub="Fusetto +2"}},
-        [1] = {name="Kali", set={main="Naegling", sub="Kali"}},        
+		[0] = {name="Naegling/Fusetto", set={main="Naegling", sub="Fusetto +2"}},
+        [1] = {name="Naegling/Kali", set={main="Naegling", sub="Kali"}},   
+        [2] = {name="AE", set={main="Tauret", sub="Kali"}},      
+        [3] = {name="Kali", set={main="Kali", sub=""}},    
 	}
 
 	auto = {
@@ -499,10 +404,17 @@ function init_modetables()
 	}	
 
     autoSongs = {
+        ['Honor March'] = {name="Honor March", expireTime=0, active=false},
+        --['Blade Madrigal'] = {name="Blade Madrigal", expireTime=0, active=false},
+        --['Archer\'s Prelude'] = {name="Archer's Prelude", expireTime=0, active=false},
+        --['Victory March'] = {name="Victory March", expireTime=0, active=false},
+        --['Sword Madrigal'] = {name="Sword Madrigal", expireTime=0, active=false},
         ['Valor Minuet V'] = {name="Valor Minuet V", expireTime=0, active=false},
-        ['Blade Madrigal'] = {name="Blade Madrigal", expireTime=0, active=false},
-        ['Victory March'] = {name="Victory March", expireTime=0, active=false},
         ['Valor Minuet IV'] = {name="Valor Minuet IV", expireTime=0, active=false},
+        ['Valor Minuet III'] = {name="Valor Minuet III", expireTime=0, active=false},    
+        ['Valor Minuet II'] = {name="Valor Minuet II", expireTime=0, active=false},      
+        --['Learned Etude'] = {name="Learned Etude", expireTime=0, active=false},
+        --['Quick Etude'] = {name="Quick Etude", expireTime=0, active=false},
     }
 
 	sets.idle = gearMode[gearMode.index].idle
@@ -571,26 +483,39 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)	
     if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
-        if (countSongs() < tablelength(autoSongs)-1) then            
-            equip({ranged="Blurred Harp +1"})
-            add_to_chat(015, '- Equipping Harp -')
-        elseif buffactive['Clarion Call'] and (countSongs() < tablelength(autoSongs)) then            
-            equip({ranged="Blurred Harp +1"})
-            add_to_chat(015, '- Equipping Harp -')
-        else                     
-            equip({ranged="Gjallarhorn"})
-            add_to_chat(015, '- Equipping Horn -')   
+        local maxSongs = tablelength(autoSongs) - 1
+        local currCount = countSongs()
+        if buffactive['Clarion Call'] then
+            maxSongs = maxSongs + 1
         end
+
+        if(spell.english == "Honor March") then
+            equip({range="Marsyas"})
+            return
+        end
+
+        if currCount >= maxSongs then
+            add_to_chat(015, '- Equipping Gjallarhorn -')
+            equip({ranged="Gjallarhorn"})
+            return
+        end
+
+        add_to_chat(015, '- Equipping Daurdabla -')
+        equip({ranged="Daurdabla"})
     end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)	
     if spell.name:contains('Minuet') then
         equip({body="Fili Hongreline +2"})
+    elseif spell.name:contains('March') then
+        equip({hands="Fili Manchettes +2"})
+    elseif spell.name:contains('Madrigal') then
+        equip({head="Fili Calot +2"})
     end
 
     if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
-        disable('body','legs','feet')
+        disable('head','body','hands','legs','feet','neck')
     end
 end
 
@@ -602,6 +527,10 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
             equip({ranged="Gjallarhorn"})
         end
     end]]--
+end
+
+function extendedJobAftercast(spell, action, spellMap, eventArgs)	
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -645,7 +574,7 @@ songTimer = os.time()
 songInProgress = false
 -- How long your songs last with just gear
 -- TODO: Calculate this via equipped gear during song listener
-baseSongDuration = 240 
+baseSongDuration = 250 
 -- How long the song should have left on it before we re-sing
 songBuffer = 60 
 
@@ -660,7 +589,7 @@ function autoActions()
     local me = windower.ffxi.get_player()  
 
     --[[ Auto Sing includes: Nightingale/Troubadour/Marcato, Songs ]]--
-    --[[ Auto Fite includes: SV/Clarion ]]--
+    --[[ Auto Fite includes: SV/Clarion and Food if set up]]--
     -- If we need to be pulling, do it and avoid all this code
     if auto.fite[auto.fite.index] == 'On' and not me.status == 1 then
         return
@@ -693,10 +622,11 @@ function autoActions()
         if (not buffactive['Soul Voice'] and marcatoRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0) then
             add_to_chat(013, '~ Marcato ~')
             send_command('/marcato')
+            autoSongs['Honor March'].expireTime = -1
             return
         end
         -- Nitro should be saved for SV if it's going to be used soon 
-        if (nightingaleRecast == 0 and troubadourRecast == 0 and (soulVoiceRecast > 300 and auto.fite[auto.fite.index] == 'On') and not buffactive['Nightingale']) then
+        if (nightingaleRecast == 0 and troubadourRecast == 0 and ((soulVoiceRecast > 300 and auto.fite[auto.fite.index] == 'On') or auto.fite[auto.fite.index] == 'Off') and not buffactive['Nightingale']) then
             -- TODO: Set first song's expiry to 0 so it plays next
             -- TODO: Set other songs right after so they get re-sung with nitro duration
             add_to_chat(013, '~ Nitro ~')
@@ -739,6 +669,11 @@ function autoActions()
             return
         end
 	end
+
+    if auto.fite[auto.fite.index] == 'On' and not songInProgress and not buffactive['Food'] then
+        send_command('input /item "Grape Daifuku +1" <me>')
+        return
+    end
 end
 
 windower.register_event('action',function(act)
@@ -773,7 +708,7 @@ windower.register_event('action',function(act)
                 local spellName = res.spells[param].en
                 if autoSongs[spellName] ~= nil then
                     -- Don't update expiry very far out it was Harp (want to re-sing it with Gjallarhorn in 60 sec)
-                    if (player.equipment.range == "Blurred Harp +1") then                    
+                    if (player.equipment.range == gear.extraSong) then                    
                         autoSongs[res.spells[param].en].expireTime = os.time() + songBuffer*2
                         add_to_chat(013, '~ Song Complete ['..res.spells[param].en..' : expireTime Set Short ('..(songBuffer*2)..')] ~')
                         autoSongs[spellName].active = true
@@ -793,7 +728,9 @@ windower.register_event('action',function(act)
                 end
 
                 if auto.sing[auto.sing.index] == 'On' then
-                    enable('body','legs','feet')
+                    enable('head','body','hands','legs','feet','neck')
+                    equip({range=gear.linos})
+                    add_to_chat(015, '- Equipping Linos -')
                 end
             end
             

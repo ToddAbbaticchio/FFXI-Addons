@@ -12,7 +12,9 @@ end
 -- Define sets and vars used by this job file.
 -------------------------------------------------------------------------------------------------------------------
 function init_gear_sets()
-	--gear.smnGloves = {name="Merlinic Dastanas", augments={'Blood Pact Dmg.+8'}}
+
+	gear.petMagCape = {name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+10',}}
+	gear.petAtkCape = {name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Pet: Attack+10 Pet: Rng.Atk.+10',}}
 
 	sets.precast.FC = {		
 		ammo="Incantor Stone",
@@ -41,37 +43,76 @@ function init_gear_sets()
 
 	--[[ BP Timer Gear (BP Recast Reduction, Avatar's Favor) ]]--
     sets.midcast.BP = {
-        main="Espiritus", --main={ name="Espiritus", augments={'Summoning magic skill +15','Pet: Mag. Acc.+30','Pet: Damage taken -4%',}},
+        main="Espiritus",
         sub="Vox Grip",
         ammo="Sancus Sachet +1",
-        head="Beckoner's Horn +2", --head="Beckoner's Horn +1", -- Always use Beckoner's Horn here. If you don't have it, quit SMN in shame until you make it.
+        head="Beckoner's Horn +2",
         --neck="Incanter's Torque",
         ear1="Cath Palug Earring",
-        --ear2="Lodurr Earring",
-        body="Convoker's Doublet +1", --body="Baayami Robe +1",
-        hands="Convoker's Bracers +1", --hands="Baayami Cuffs +1",
+        ear2="Lodurr Earring",
+        body="Baayami Robe", -- +1
+        hands="Baayami Cuffs", -- +1
         ring1="Stikini Ring +1",
         --ring2="Evoker's Ring",
-        --back={ name="Conveyance Cape", augments={'Summoning magic skill +5','Pet: Enmity+12','Blood Pact Dmg.+2',}},
+        back="Conveyance Cape", 
+        waist="Incarnation Sash", --waist="Kobo Obi",
+        legs="Beckoner's Spats +2", --legs="Baayami Slops +1",
+        feet="Baayami Sabots +1"
+    }
+
+	sets.BPReduction = {
+		main="Espiritus",
+        sub="Vox Grip",
+        ammo="Sancus Sachet +1",
+        head="Beckoner's Horn +2",
+        --neck="Incanter's Torque",
+        ear1="Cath Palug Earring",
+        ear2="Lodurr Earring",
+        body="Baayami Robe", -- +1
+        hands="Baayami Cuffs +1", -- +1
+        ring1="Stikini Ring +1",
+        --ring2="Evoker's Ring",
+        back="Conveyance Cape", 
         waist="Incarnation Sash", --waist="Kobo Obi",
         legs="Convoker's Spats +1", --legs="Baayami Slops +1",
         feet="Baayami Sabots +1"
-    }
+	}
+
+	sets.SmnSkill = {
+		main="Espiritus", 
+		sub="Vox Grip",
+		ammo="Sancus Sachet +1",
+		head="Baayami Hat", -- +1
+		--neck="Incanter's Torque",
+		ear1="Cath Palug Earring",
+		ear2="Lodurr Earring",
+		body="Baayami Robe", -- +1
+		hands="Baayami Cuffs",-- +1
+		ring1="Stikini Ring +1",
+		--ring2="Evoker's Ring",
+		back="Conveyance Cape",
+		waist="Incarnation Sash", ---waist="Kobo Obi",
+		legs="Convoker's Spats +1", --legs="Baayami Slops +1",
+		feet="Baayami Sabots +1"
+	}
+
+	sets.precast.BloodPactWard = set_combine(sets.SmnSkill, sets.BPReduction, {})
+    sets.precast.BloodPactRage = set_combine(sets.SmnSkill, sets.BPReduction, {})
 
 	-- Elemental Siphon sets. Zodiac Ring is affected by day, Chatoyant Staff by weather, and Twilight Cape by both.
 	sets.midcast.Siphon = {
 		main="Espiritus", 
 		sub="Vox Grip",
-		--ammo="Esper Stone +1",
-		head="Beckoner's Horn +2", --head="Baayami Hat +1",
+		ammo="Esper Stone +1",
+		head="Baayami Hat", -- +1
 		--neck="Incanter's Torque",
 		ear1="Cath Palug Earring",
-		--ear2="Lodurr Earring",
-		body="Convoker's Doublet +1", --body="Baayami Robe +1",
-		hands="Convoker's Bracers +1", --hands="Baayami Cuffs +1",
+		ear2="Lodurr Earring",
+		body="Baayami Robe", -- +1
+		hands="Baayami Cuffs", -- +1
 		ring1="Stikini Ring +1",
 		--ring2="Evoker's Ring",
-		--back={ name="Conveyance Cape", augments={'Summoning magic skill +5','Pet: Enmity+12','Blood Pact Dmg.+2',}},
+		back="Conveyance Cape",
 		--waist="Kobo Obi",
 		legs="Convoker's Spats +1", --legs="Baayami Slops +1",
 		feet="Baayami Sabots +1", --feet="Beck. Pigaches +1"
@@ -82,11 +123,11 @@ function init_gear_sets()
 
 	--[[ Summoning Midcast (Spell Interruption (Baayami Robe +1 + 2 more), DT) ]]--
     sets.midcast.Summon = set_combine(sets.DT_Base, {
-        --body="Baayami Robe +1",
+        body="Baayami Robe", -- +1
         --waist="Rumination Sash"
     })
 
-	sets.midcast["Mana Cede"] = {} --{ hands="Beckoner's Bracers +1" } 
+	sets.midcast["Mana Cede"] = {hands="Beckoner's Bracers +2" } 
     sets.midcast["Astral Flow"] = {} --{ head="Glyphic Horn +3" }
 
 	--[[ Blood Pacts ]]--
@@ -94,58 +135,59 @@ function init_gear_sets()
 
 		-- Physical BPs (BP Damage, Pet:DA), (Volt Strike, Pred Claws, etc.)
 		sets.pet_midcast.Physical_BP = {
-			main="Espiritus", --main="Nirvana", or Gridarvor
+			main="Gridarvor",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Beckoner's Horn +2", --head={ name="Helios Band", augments={'Pet: Attack+30 Pet: Rng.Atk.+30','Pet: "Dbl. Atk."+8','Blood Pact Dmg.+7',}},
+			head="Helios Band",
 			neck="Shulmanu Collar", --neck="Summoner's Collar +2",
-			ear1="Cath Palug Earring", --ear1="Lugalbanda Earring",
-			ear2="Kyrene's Earring",
-			body="Convoker's Doublet +1", --body="Glyphic Doublet +3",
-			hands="Convoker's Bracers +1", --hands={ name="Merlinic Dastanas", augments={'Pet: Attack+24 Pet: Rng.Atk.+24','Blood Pact Dmg.+9','Pet: STR+10','Pet: Mag. Acc.+7',}},
+			ear1="Lugalbanda Earring",
+			ear2="Beckoner's Earring",
+			body="Glyphic Doublet +3", 
+			hands="Merlinic Dastanas", 
 			ring1="Cath Palug Ring",
 			ring2="Varar Ring +1",
-			back="Perimede Cape", --back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
+			back=gear.petAtkCape,
 			waist="Incarnation Sash",
-			legs="Convoker's Spats +1", --legs={ name="Apogee Slacks +1", augments={'Pet: STR+20','Blood Pact Dmg.+14','Pet: "Dbl. Atk."+4',}},
-			feet="Baayami Sabots +1", --feet={ name="Helios Boots", augments={'Pet: Accuracy+28 Pet: Rng. Acc.+28','Pet: "Dbl. Atk."+8','Blood Pact Dmg.+7',}}
+			legs="Apogee Slacks +1",
+			feet="Helios Boots",
 		}
 
 		-- Physical pacts which benefit more from TP than Pet:DA (like Spinning Dive and other pacts you never use except that one time)
 		sets.pet_midcast.Physical_BP_TP = set_combine(sets.pet_midcast.Physical_BP, {
-			--head={ name="Apogee Crown +1", augments={'MP+80','Pet: Attack+35','Blood Pact Dmg.+8',}},
+			head="Apogee Crown +1",
 			--ear2="Gelos Earring",
 			--body="Convoker's Doublet +3",
 			ring1="Varar Ring +1",
-			--waist="Regal Belt",
+			waist="Regal Belt",
 			--legs="Enticer's Pants",
-			--feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: Attack+35','Blood Pact Dmg.+8',}}
+			name="Apogee Pumps +1",
 		})
 		
 		-- Used for all physical pacts when AccMode is true
 		sets.pet_midcast.Physical_BP_Acc = set_combine(sets.pet_midcast.Physical_BP, {
-			--head={ name="Apogee Crown +1", augments={'MP+80','Pet: Attack+35','Blood Pact Dmg.+8',}},
+			name="Apogee Crown +1",
 			--body="Convoker's Doublet +3",
-			--hands={ name="Merlinic Dastanas", augments={'Pet: Accuracy+28 Pet: Rng. Acc.+28','Blood Pact Dmg.+10','Pet: DEX+9','Pet: Mag. Acc.+9','Pet: "Mag.Atk.Bns."+3',}},
+			hands="Merlinic Dastanas",
 			--feet="Convoker's Pigaches +3"
 		})
 
 		-- Magic BPs (BP Damage, Pet:MAB)
 		sets.pet_midcast.Magic_BP_Base = {
-			main="Espiritus", --main={ name="Grioavolr", augments={'Blood Pact Dmg.+10','Pet: STR+5','Pet: Mag. Acc.+18','Pet: "Mag.Atk.Bns."+25',}},
+			main="Grioavolr",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Beckoner's Horn +2",  --head="Cath Palug Crown",
+			head="Cath Palug Crown",
 			neck="Adad Amulet", --neck="Summoner's Collar +2",
-			ear1="Cath Palug Earring", --ear1="Lugalbanda Earring",
-			--ear2="Gelos Earring",
-			body="Convoker's Doublet +1", --body={ name="Apo. Dalmatica +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-			hands="Convoker's Bracers +1", --hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+25 Pet: "Mag.Atk.Bns."+25','Blood Pact Dmg.+10','Pet: "Mag.Atk.Bns."+7',}},
+			ear1="Lugalbanda Earring",
+			ear2="Beckoner's Earring",
+			body="Apo. Dalmatica +1",
+			hands="Merlinic Dastanas",
 			ring1="Varar Ring +1",
 			ring2="Varar Ring +1",
-			--back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Eva.+20 /Mag. Eva.+20','Pet: Mag. Acc.+10','"Fast Cast"+10',}},
-			waist="Incarnation Sash", --waist="Regal Belt",
-			feet="Baayami Sabots +1", --feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}}
+			legs="Apogee Slacks +1",
+			back=gear.petMagCape,
+			waist="Regal Belt",
+			feet="Apogee Pumps +1",
 		}
 
 		-- Some magic pacts benefit more from TP than others.
@@ -157,7 +199,7 @@ function init_gear_sets()
 	
 		-- NoTP set used when you don't need Enticer's
 		sets.pet_midcast.Magic_BP_NoTP = set_combine(sets.pet_midcast.Magic_BP_Base, {
-			--legs={ name="Apogee Slacks +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}}
+			legs="Apogee Slacks +1",
 		})
 	
 		sets.pet_midcast.Magic_BP_TP_Acc = set_combine(sets.pet_midcast.Magic_BP_TP, {
@@ -174,39 +216,38 @@ function init_gear_sets()
 
 		-- Hybrid BPs (BP Damage >> Pet:MAB > Pet:Acc/Atk/Macc)
 		sets.pet_midcast.FlamingCrush = {			
-			main="Espiritus", --main="Nirvana", or Grioavolr
+			main="Grioavolr",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Beckoner's Horn +2", --head="Cath Palug Crown",
+			head="Cath Palug Crown",
 			neck="Adad Amulet", --neck="Summoner's Collar +2",
-			ear1="Cath Palug Earring", --ear1="Lugalbanda Earring",
-			--ear2="Gelos Earring",
-			body="Convoker's Doublet +1", --body="Convoker's Doublet +3",
-			hands="Convoker's Bracers +1", --hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+25 Pet: "Mag.Atk.Bns."+25','Blood Pact Dmg.+10','Pet: "Mag.Atk.Bns."+7',}},
+			ear1="Lugalbanda Earring",
+			ear2="Beckoner's Earring",
+			body="Apogee Dalmatica +1", --body="Convoker's Doublet +3",
+			hands="Merlinic Dastanas",
 			ring1="Varar Ring +1",
 			ring2="Varar Ring +1",
-			--back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
-			waist="Incarnation Sash", --waist="Regal Belt",
-			--legs={ name="Apogee Slacks +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-			legs="Convoker's Spats +1", --legs={ name="Apogee Slacks +1", augments={'Pet: STR+20','Blood Pact Dmg.+14','Pet: "Dbl. Atk."+4',}},
-			feet="Baayami Sabots +1", --feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}}
+			back=gear.petMagCape,
+			waist="Regal Belt",
+			legs="Apogee Slacks +1", -- This is Path D, could also be Path A
+			feet="Apogee Pumps +1",
 		}
 
 		-- Magic Acc (Debuffs: Shock Squall, etc.)
 		sets.pet_midcast.MagicAcc_BP = {
-			main="Espiritus", --main="Nirvana",
+			main="Espiritus",
 			sub="Vox Grip",
 			ammo="Sancus Sachet +1",
 			head="Beckoner's Horn +2", --head="Convoker's Horn +3",
 			neck="Adad Amulet",--neck="Summoner's Collar +2",
-			ear1="Cath Palug Earring", --ear1="Lugalbanda Earring",
-			ear2="Enmerkar Earring",
+			ear1="Lugalbanda Earring",
+			ear2="Beckoner's Earring",
 			body="Convoker's Doublet +1", --body="Convoker's Doublet +3",
 			hands="Convoker's Bracers +1", --hands="Lamassu Mitts +1",
 			ring1="Cath Palug Ring",
 			--ring2="Evoker's Ring",
-			--back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Eva.+20 /Mag. Eva.+20','Pet: Mag. Acc.+10','"Fast Cast"+10',}},
-			waist="Incarnation Sash", --waist="Regal Belt",
+			back=gear.petMagCape,
+			waist="Regal Belt",
 			legs="Convoker's Spats +1", --legs="Convoker's Spats +3",
 			feet="Convoker's Pigaches +1",--feet="Bunzi's Sabots"
 		}
@@ -217,15 +258,15 @@ function init_gear_sets()
 			main="Espiritus", 
 			sub="Vox Grip",
 			ammo="Sancus Sachet +1",
-			head="Beckoner's Horn +2", ---head="Baayami Hat +1",
+			head="Baayami Hat", -- +1
 			--neck="Incanter's Torque",
 			ear1="Cath Palug Earring",
-			--ear2="Lodurr Earring",
-			body="Convoker's Doublet +1", --body="Baayami Robe +1",
-			hands="Convoker's Bracers +1",--hands="Baayami Cuffs +1",
+			ear2="Lodurr Earring",
+			body="Baayami Robe", -- +1
+			hands="Baayami Cuffs",-- +1
 			ring1="Stikini Ring +1",
 			--ring2="Evoker's Ring",
-			--back={ name="Conveyance Cape", augments={'Summoning magic skill +5','Pet: Enmity+12','Blood Pact Dmg.+2',}},
+			back="Conveyance Cape",
 			waist="Incarnation Sash", ---waist="Kobo Obi",
 			legs="Convoker's Spats +1", --legs="Baayami Slops +1",
 			feet="Baayami Sabots +1"
@@ -237,7 +278,7 @@ function init_gear_sets()
 			--main="Nirvana",
 			--back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
 			--body={ name="Apo. Dalmatica +1", augments={'Summoning magic skill +20','Enmity-6','Pet: Damage taken -4%',}},
-			--feet={ name="Apogee Pumps +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}}
+			feet="Apogee Pumps +1",
 		})
 
 		-- Wind's Blessing (Pet:MND increases potency)
@@ -335,7 +376,7 @@ function init_gear_sets()
 		sets.midcast.Nuke = {
 			--main={ name="Grioavolr", augments={'"Fast Cast"+6','INT+2','"Mag.Atk.Bns."+17',}},
 			--sub="Niobid Strap",
-			--head="Cath Palug Crown",
+			head="Cath Palug Crown",
 			--neck="Sanctity Necklace",
 			ear1="Malignance Earring",
 			ear2="Friomisi Earring",
@@ -366,7 +407,7 @@ function init_gear_sets()
 			head="Beckoner's Horn +2",
 			body="Con. Doublet +1",
 			hands="Con. Bracers +1",
-			--legs="Beck. Spats +1",
+			legs="Beck. Spats +2",
 			feet="Con. Spats +1", --feet="Telchine Pigaches",
 			--neck="Sanctity Necklace",
 			--ear1="Evans Earring",
@@ -390,11 +431,11 @@ function init_gear_sets()
 			ear1="Cath Palug Earring",
 			--ear2="Moonshade Earring",
 			body="Inyanga Jubbah +2", --body={ name="Apo. Dalmatica +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
-			hands="Inyanga Dastanas +2", --hands={ name="Merlinic Dastanas", augments={'Pet: Crit.hit rate +2','"Mag.Atk.Bns."+25','"Refresh"+2','Mag. Acc.+10 "Mag.Atk.Bns."+10',}},
+			hands="Inyanga Dastanas +2",
 			ring1="Stikini Ring +1",
 			ring2="Defending Ring",
-			--back={ name="Campestres's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','Mag. Acc.+10','"Mag.Atk.Bns."+10','Phys. dmg. taken-10%',}},
-			--waist="Regal Belt",
+			back="Archon Cape",
+			waist="Regal Belt",
 			legs="Inyanga Shalwar +2", --legs="Assiduity Pants +1",
 			feet="Herald's Gaiters"
 		}
@@ -419,7 +460,7 @@ function init_gear_sets()
 			hands="Inyanga Dastanas +2", --hands={ name="Merlinic Dastanas", augments={'Pet: Crit.hit rate +2','"Mag.Atk.Bns."+25','"Refresh"+2','Mag. Acc.+10 "Mag.Atk.Bns."+10',}},
 			ring1="Stikini Ring +1",
 			--ring2="Evoker's Ring",
-			--back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
+			back="Campestres's Cape",
 			--waist="Lucidity Sash",
 			legs="Inyanga Shalwar +2", --legs="Assiduity Pants +1",
 			feet="Baayami Sabots +1"
@@ -437,8 +478,8 @@ function init_gear_sets()
 		-- Used when IdleMode is "Favor" to maximize avatar's favor effect.
 		-- Skill tiers are 512 / 575 / 670
 		sets.aftercast.Perp_Favor = set_combine(sets.aftercast.Perp_Refresh, {
-			--head="Beckoner's Horn +1",
-			--ear2="Lodurr Earring",
+			head="Beckoner's Horn +2",
+			ear2="Lodurr Earring",
 			ring1="Stikini Ring +1",
 			--ring2="Evoker's Ring",
 			feet="Baayami Sabots +1"
@@ -475,11 +516,11 @@ function init_gear_sets()
 			--neck="Incanter's Torque",
 			ear1="Cath Palug Earring",
 			--ear2="Evans Earring",
-			--body="Baayami Robe +1",
-			--hands="Baayami Cuffs +1",
+			body="Baayami Robe", -- +1
+			hands="Baayami Cuffs", -- +1
 			ring1="Stikini Ring +1",
 			--ring2="Evoker's Ring",
-			--back={ name="Conveyance Cape", augments={'Summoning magic skill +5','Pet: Enmity+12','Blood Pact Dmg.+2',}},
+			back="Conveyance Cape",
 			--waist="Lucidity Sash",
 			--legs="Glyphic Spats +3",
 			feet="Baayami Sabots +1"
@@ -487,6 +528,8 @@ function init_gear_sets()
 
 	THSpells = S{"Dia","Dia II","Diaga"}
 	sets.TH = {head="White Rarab Cap +1", waist="Chaac Belt", ammo="Perfect Lucky Egg"}
+
+	sets.moveSpeed = {feet="Herald's Gaiters"}
 end
 
 function job_setup()
@@ -550,119 +593,36 @@ function extendedUserSetup() -- Called from sharedFunctions' UserSetup
 	send_command('bind F12 input //gs reload')	
 	send_command('bind != gs c elesiphon')]]--
 
-	--[[Set default macro book / page
-    set_macro_page(1, 9)]]--
+    set_macro_page(1, 6)
 
-	--[[Set style lock
-	windower.send_command('wait 2; input /lockstyleset 7')]]--
+	windower.send_command('wait 2; input /lockstyleset 10')
 end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Precast
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)
-	--add_to_chat(167, '~Ability Name: '..spell.english..' RecastID: '..spell.recast_id..'~')
-
-	if (pet.isvalid and pet_midaction() and not spell.type=="SummonerPact") or spell.type=="Item" then
-        -- Do not swap if pet is mid-action. I added the type=SummonerPact check because sometimes when the avatar
-        -- dies mid-BP, pet.isvalid and pet_midaction() continue to return true for a brief time.
-        return
-    end
-
 	-- Spell fast cast
 	if sets.precast[spell.english] then
-		equip(sets.precast[spell.english])
-	elseif spell.action_type=="Magic" then
-		if spell.name=="Stoneskin" then
-			equip(sets.precast.FC,{waist="Siegel Sash"})
-		else
-			equip(sets.precast.FC)
+		equip(sets.precast[spell.english])	
+	end
+
+	-- BP Timer gear needs to swap here
+	if (spell.type=="BloodPactWard" or spell.type=="BloodPactRage") then
+		if not buffactive["Astral Conduit"] then
+			equip(sets.midcast.BP)
 		end
 	end
-
-   	-- DarkArts --> Addendum: Black
-	if spell.english == 'Dark Arts' and buffactive['Addendum: Black'] then
-		cancel_spell()
-		send_command('input /ja "Manifestation" <me>')
-		return
-	end
-	if spell.english == 'Dark Arts' and buffactive['Dark Arts'] then
-		cancel_spell()
-		send_command('input /ja "Addendum: Black" <me>')
-		return
-	end
-
-	-- LightArts --> Addendum: White
-	if spell.english == 'Light Arts' and buffactive['Addendum: White'] then
-		cancel_spell()
-		send_command('input /ja "Accession" <me>')
-		return
-	end
-	if spell.english == 'Light Arts' and buffactive['Light Arts'] then
-		cancel_spell()
-		send_command('input /ja "Addendum: White" <me>')
-		return
-	end
-
-	-- Switch to correct macro book/page based on avatar summoned
-	--[[ We don't have SMN macros 
-	if spell.english == 'Release' then
-        add_to_chat(167, '~Default SMN macro book loaded~')
-		set_macro_page(1, 9)
-    end
-	if spell.english == 'Carbuncle' then
-        add_to_chat(167, '~Carbuncle macro book loaded~')
-		set_macro_page(2, 9)
-    end
-	if spell.english == 'Fenrir' then
-        add_to_chat(167, '~Fenrir macro book loaded~')
-		set_macro_page(3, 9)
-    end
-	if spell.english == 'Ifrit' then
-        add_to_chat(167, '~Ifrit macro book loaded~')
-		set_macro_page(4, 9)
-    end
-	if spell.english == 'Titan' then
-        add_to_chat(167, '~Titan macro book loaded~')
-		set_macro_page(5, 9)
-    end
-	if spell.english == 'Leviathan' then
-        add_to_chat(167, '~Leviathan macro book loaded~')
-		set_macro_page(6, 9)
-    end
-	if spell.english == 'Garuda' then
-        add_to_chat(167, '~Garuda macro book loaded~')
-		set_macro_page(7, 9)
-    end
-	if spell.english == 'Shiva' then
-        add_to_chat(167, '~Shiva macro book loaded~')
-		set_macro_page(8, 9)
-    end
-	if spell.english == 'Ramuh' then
-        add_to_chat(167, '~Ramuh macro book loaded~')
-		set_macro_page(9, 9)
-    end
-	if spell.english == 'Cait Sith' then
-        add_to_chat(167, '~Cait Sith macro book loaded~')
-		set_macro_page(10, 9)
-    end
-	]]--
 end
 -------------------------------------------------------------------------------------------------------------------
 -- Midcast
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobMidcast(spell, action, spellMap, eventArgs)
-	if (pet.isvalid and pet_midaction()) or spell.type=="Item" then
-        return
-    end
-    -- BP Timer gear needs to swap here
-    if (spell.type=="BloodPactWard" or spell.type=="BloodPactRage") then
-        if not buffactive["Astral Conduit"] then
-            equip(sets.midcast.BP)
-        end
-
-    -- Spell Midcast & Potency Stuff
-    elseif sets.midcast[spell.english] then
+	if (spell.type=="BloodPactWard" or spell.type=="BloodPactRage") then
+		if not buffactive["Astral Conduit"] then
+			equip(sets.midcast.BP)
+		end
+	elseif sets.midcast[spell.english] then
         equip(sets.midcast[spell.english])
     elseif spell.name=="Elemental Siphon" then
         if pet.element==world.day_element and ZodiacElements:contains(pet.element) then
@@ -709,46 +669,51 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
     end
 end
 
-function pet_midcast(spell)
-    if spell=="Perfect Defense" then
+function job_pet_midcast(spell, action, spellMap, eventArgs)
+	spellname = spell.english
+    if spellname=="Perfect Defense" then
         equip(sets.pet_midcast.SummoningMagic)
-    elseif Debuff_BPs:contains(spell) then
+    elseif Debuff_BPs:contains(spellname) then
         equip(sets.pet_midcast.MagicAcc_BP)
-    elseif Buff_BPs_Healing:contains(spell) then
+    elseif Buff_BPs_Healing:contains(spellname) then
         equip(sets.pet_midcast.Buff_Healing)
-    elseif Buff_BPs_Duration:contains(spell) then
+    elseif Buff_BPs_Duration:contains(spellname) then
         equip(sets.pet_midcast.Buff)
-    elseif Buff_BPs_MND:contains(spell) then
+    elseif Buff_BPs_MND:contains(spellname) then
         equip(sets.pet_midcast.Buff_MND)
-    elseif spell=="Flaming Crush" then
+    elseif spellname=="Flaming Crush" then
 		equip(sets.pet_midcast.FlamingCrush)
-    elseif Magic_BPs_NoTP:contains(spell) then
+    elseif Magic_BPs_NoTP:contains(spellname) then
         if AccMode then
             equip(sets.pet_midcast.Magic_BP_NoTP_Acc)
         else
             equip(sets.pet_midcast.Magic_BP_NoTP)
         end
-    elseif Magic_BPs_TP:contains(spell) or string.find(spell," II") or string.find(spell," IV") then
+    elseif Magic_BPs_TP:contains(spellname) or string.find(spellname," II") or string.find(spellname," IV") then
         if AccMode then
             equip(sets.pet_midcast.Magic_BP_TP_Acc)
         else
             equip(sets.pet_midcast.Magic_BP_TP)
         end
-    elseif Merit_BPs:contains(spell) then
-        if spell=="Wind Blade" then
+    elseif Merit_BPs:contains(spellname) then
+        if spellname=="Wind Blade" then
             equip(sets.pet_midcast.Magic_BP_NoTP)
         else
             equip(sets.pet_midcast.Magic_BP_TP)
         end
-    elseif Debuff_Rage_BPs:contains(spell) then
+    elseif Debuff_Rage_BPs:contains(spellname) then
         equip(sets.pet_midcast.Debuff_Rage)
     else
-        if Physical_BPs_TP:contains(spell) then
+        if Physical_BPs_TP:contains(spellname) then
             equip(sets.pet_midcast.Physical_BP_TP)
         else
             equip(sets.pet_midcast.Physical_BP)
         end
     end
+end
+
+function job_pet_aftercast(spell, action, spellMap, eventArgs)
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -867,6 +832,8 @@ function autoActions()
 	local wardRecast = abil_recasts[174]
 	local subRecast = abil_recasts[234]
 	local siphonRecast = abil_recasts[175]
+	local astralFlowRecast = abil_recasts[0]
+	local astralConduitRecast = abil_recasts[254]
 	local currAvatar = windower.ffxi.get_mob_by_target('pet')
 	local me = windower.ffxi.get_player()    
 
@@ -879,7 +846,6 @@ function autoActions()
 		end
 
 		-- Sublimation Handling if we're /sch
-		--[[
 		if player.sub_job == 'SCH' then
 			-- if sublimation not active and not on cooldown - use it.
 			if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and subRecast == 0 then
@@ -893,7 +859,6 @@ function autoActions()
 				return
 			end
 		end
-		]]--
 		-- Avatar's Favor Handling
 		if pet.isvalid and not buffactive["Avatar's Favor"] then
 			send_command('input /ja "Avatar\'s Favor" <me>')
@@ -903,50 +868,59 @@ function autoActions()
 	-- Autofite (Summons)
     if (auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving) then	
 		
-		if not buffactive['Addendum: White'] then
-            if buffactive['Light Arts'] then
-                send_command('/addendumwhite')
-				add_to_chat(122, '[Addendum: White]')
-                return
-            else
-                send_command('/lightarts')
-				add_to_chat(122, '[Light Arts]')
-                return
-            end
-        end
-        
-        if not buffactive['Regen'] then
-            if get_current_strategem_count() > 1 then
-                send_command('/accession')
-                send_command:schedule(1, '/regen2')
-				add_to_chat(122, '[Regen-ga]')
-                return
-            end
-        end
+		--[[ /SCH Things ]]--
+		if player.sub_job == 'SCH' then
+			if not buffactive['Addendum: White'] then
+				if buffactive['Light Arts'] then
+					send_command('/addendumwhite')
+					add_to_chat(122, '[Addendum: White]')
+					return
+				else
+					send_command('/lightarts')
+					add_to_chat(122, '[Light Arts]')
+					return
+				end
+			end
+			--[[
+			if not buffactive['Regen'] then
+				if get_current_strategem_count() > 1 then
+					send_command('/accession')
+					send_command:schedule(1, '/regen2')
+					add_to_chat(122, '[Regen-ga]')
+					return
+				end
+			end]]--a
+		end
 
 		-- Myrkr!
-		if player.mpp < 50 and player.tp > 1000 then
-			add_to_chat(122,'-- MP below 35% - Myrkr! --')
-			send_command('input /ws "Myrkr" <me>')
-			return
+		if me.status == 1 then
+			local enemy = windower.ffxi.get_mob_by_target('t')
+			if player.mpp < 50 and player.tp > 1000 then
+				add_to_chat(122,'-- MP below 50% - Myrkr! --')
+				send_command('input /ws "Myrkr" <me>')
+				return
+				--[[
+			elseif player.tp > 1000 and me.status == 1 and enemy.hpp >= 80 then
+				add_to_chat(122,'-- MP is fine - Smash! --')
+				send_command('input /ws "Shell Crusher" <t>')
+				return]]--
+			end
 		end
-		--[[elseif player.tp > 1000 and me.status == 1 then
-			add_to_chat(122,'-- MP is fine - Smash! --')
-			send_command('input /ws "Shell Crusher" <t>')
-			return
-		end]]--
 		
 		local mainAvatar = "Ifrit"	
-		if not buffactive['Haste'] then
-			requiredAvatar = 'Garuda'
-		elseif not buffactive['TP Bonus'] then
-			requiredAvatar = 'Shiva'
-		--[[elseif not buffactive['Phalanx'] then
-			requiredAvatar = 'Diabolos']]--
-		else
-			requiredAvatar = mainAvatar
+		requiredAvatar = mainAvatar
+		if not buffactive['Astral Flow'] and not buffactive['Astral Conduit'] then
+			if not buffactive['Haste'] then
+				requiredAvatar = 'Garuda'
+			elseif not buffactive['TP Bonus'] then
+				requiredAvatar = 'Shiva'
+			--[[elseif not buffactive['Phalanx'] then
+				requiredAvatar = 'Diabolos']]--
+			else
+				requiredAvatar = mainAvatar
+			end
 		end
-		
+
 		if pet.isvalid then
 			if currAvatar.name ~= requiredAvatar then
 				send_command('/release')
@@ -970,6 +944,19 @@ function autoActions()
 		end
 
 		if currAvatar.name == 'Ifrit' then
+
+			if astralFlowRecast == 0 and astralConduitRecast == 0 and mainAvatar == "Ifrit" then
+				send_command('/astralflow')
+				send_command:schedule(1.0, '/astralconduit')
+				add_to_chat(122, '[! Astral Flow ~ Astral Conduit !]')
+				return
+			end
+
+			if buffactive['Astral Flow'] and not buffactive['Astral Conduit']  and astralConduitRecast == 0 then
+				send_command('/astralconduit')
+				return
+			end
+
 			if currAvatar.status == 1 and mainAvatar == "Ifrit" and rageRecast == 0 and player.mpp >= 35 then
 				send_command('/flamingcrush')
 				add_to_chat(122, '[Flaming Crush]')
