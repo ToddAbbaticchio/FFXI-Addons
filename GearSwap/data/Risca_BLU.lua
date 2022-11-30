@@ -20,10 +20,9 @@ function init_gear_sets()
 	sets.baseMelee = {
 		ammo="Ginsen",
 		head="Adhemar Bonnet +1",
-		--head="Hashishin Kavuk +3",
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wrist. +1",
-		legs="Samnhua Tights",
+		legs="Samnuha Tights",
 		feet="Herculean Boots",
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
@@ -207,8 +206,9 @@ function init_modetables()
 		[1] = {name="DPS", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
 		[2] = {name="EvaTank", idle=sets.evaTank, engaged=sets.evaTank},
 		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}},
-		[4] = {name="Learning", idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
-		[5] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)}
+		[4] = {name="Learning", hidden=true, idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
+		[5] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
+		[6] = {name="DPS+ACC", idle=(set_combine(sets.melee, sets.baseIdle, {head="Hashishin Kavuk +3"})), engaged=(set_combine(sets.baseMelee, {head="Hashishin Kavuk +3"}))}
 	}
 	
 	--Setup weaponMode
@@ -437,21 +437,12 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Buff table updating
--------------------------------------------------------------------------------------------------------------------
-function job_buff_change(buff, active)
-	if state.Buff[buff] == nil and active then
-		state.Buff[buff] = true
-	else
-		state.Buff[buff] = nil
-	end
-end
-
--------------------------------------------------------------------------------------------------------------------
 --  Self command handler
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobSelfCommand(cmdParams, eventArgs)
-	
+	if cmdParams[1]:lower() == 'learn' then
+		setModeIndex('gear', 4)
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -490,7 +481,15 @@ function autoActions()
 			partyLowHP(50, '/ma "Magic Fruit"')
 
 			if buffCheck('Berserk') then
-				send_command('input /ma "Berserk" <me>')
+				send_command('/berserk')
+			end
+
+			if buffCheck('Warcry') then
+				send_command('/warcry')
+			end
+
+			if not buffactive['Food'] then
+				send_command('/item "Dragon Steak"')
 			end
 		end
 		
@@ -504,10 +503,10 @@ function autoActions()
 			return
 		end
 
-		--[[ if buffCheck('Attack Boost', 'Nat. Meditation') then
+		if buffCheck('Attack Boost', 'Nat. Meditation') then
 			send_command('input /ma "Nat. Meditation" <me>')
 			return
-		end ]]
+		end
 
 		--[[ if buffCheck('Defense Boost', 'Cocoon') then
 			send_command('input /ma "Cocoon" <me>')

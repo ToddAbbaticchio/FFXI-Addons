@@ -211,7 +211,9 @@ windower.register_event('incoming chunk', function(id,data,modified,injected,blo
     if (id == 0x113 or id == 0x118) then
         local responsePacket = packets.parse('incoming', data)
         local cpBalance = responsePacket[cpSearchString]
-        writeLog(true, 'cpBalance: '..cpBalance)
+        if cpBalance ~= nil then
+            writeLog(true, 'cpBalance: '..cpBalance)
+        end
        
         if cpBalance < 320000 then
             writeLog(true, 'Remaining CP: '..cpBalance..'! Stopping the loop!')

@@ -109,6 +109,15 @@ windower.register_event('addon command',function(csCmd)
 		sendCommand('input //sellnpc bat fang')
 		sendCommand('input //sellnpc fiend blood')
 		sendCommand('input //sellnpc beastman blood')
+		sendCommand('input //sellnpc wind crystal')
+		sendCommand('input //sellnpc flame geode')
+		sendCommand('input //sellnpc soil geode')
+		sendCommand('input //sellnpc aqua geode')
+		sendCommand('input //sellnpc shivite')
+		sendCommand('input //sellnpc ramuite')
+		sendCommand('input //sellnpc leviatite')
+		sendCommand('input //sellnpc carbite')
+		sendCommand('input //sellnpc fenrite')
 	end
 
 -------------------------------------------------------------------------------------------------------------------

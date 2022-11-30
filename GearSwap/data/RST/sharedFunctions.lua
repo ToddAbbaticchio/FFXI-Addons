@@ -23,48 +23,44 @@ eleWeaponSkills = S{
 	--[[ranged]]        'Flaming Arrow', 'Hot Shot', 'Wildfire', 'Trueflight', 'Leaden Salute'
 }
 
-rangedWeaponSkills = S{
-	'Hot Shot', 'Split Shot', 'Sniper Shot', 'Slug Shot', 'Blast Shot', 'Heavy Shot', 'Detonator', 'Numbing Shot', 'Last Stand', 'Coronach',
-	'Wildfire', 'Trueflight', 'Leaden Salute',
-	'Flaming Arrow', 'Piercing Arrow', 'Dulling Arrow', 'Sidewinder', 'Blast Arrow', 'Arching Arrow', 'Empyreal Arrow', 'Refulgent Arrow',
-	'Apex Arrow', 'Namas Arrow', 'Jishnu\'s Radiance'
-}
-
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
 -------------------------------------------------------------------------------------------------------------------
 function job_self_command(cmdParams, eventArgs)
 	-- Mode toggle commands -----------------------------------------------------------------
 	if cmdParams[1]:lower() == 'toggleweaponmode' then
-		weaponMode.index = weaponMode.index + 1
-		if weaponMode.index > #weaponMode then
-			weaponMode.index = 0;
-		end
-		
 		if extendedTWM then
 			extendedTWM(cmdParams, eventArgs)
 		end
 
-		sets.weapons = weaponMode[weaponMode.index].set
-		--windower.add_to_chat(122,'-- WeaponMode: '..weaponMode[weaponMode.index].name..' --')
+		weaponMode.index = weaponMode.index + 1
+		if weaponMode[weaponMode.index] ~= nil and weaponMode[weaponMode.index].hidden ~= nil and weaponMode[weaponMode.index].hidden == true then
+			weaponMode.index = weaponMode.index + 1
+		end
+		if weaponMode.index > #weaponMode then
+			weaponMode.index = 0;
+		end
+		
+		updateSetsFromModes('weapon')
 		modeHud('update')
 		evalState_equipGear()
 	end
 	
 	-- Change current gear mode
 	if cmdParams[1]:lower() == 'togglegearmode' then
+		if extendedTGM then
+			extendedTGM(cmdParams, eventArgs)
+		end
+		
 		gearMode.index = gearMode.index + 1
+		if gearMode[gearMode.index] ~= nil and gearMode[gearMode.index].hidden ~= nil and gearMode[gearMode.index].hidden == true then
+			gearMode.index = gearMode.index + 1
+		end
 		if gearMode.index > #gearMode then
 			gearMode.index = 0
 		end
 
-		if extendedTGM then
-			extendedTGM(cmdParams, eventArgs)
-		end
-
-		sets.idle = gearMode[gearMode.index].idle
-		sets.engaged = gearMode[gearMode.index].engaged
-		--add_to_chat(122,'-- GearMode:'..gearMode[gearMode.index].name..' --')
+		updateSetsFromModes('gear')
 		modeHud('update')
 		evalState_equipGear()
 	end
@@ -80,7 +76,15 @@ function job_self_command(cmdParams, eventArgs)
 			extendedTMM(cmdParams, eventArgs)
 		end
 
-		sets.nukeSet = magicMode[magicMode.index].nukeSet
+		local currModeSet = magicMode[magicMode.index].set or nil
+		if currModeSet == nil then
+			add_to_chat(122, 'Check magicMode table format')
+			return
+		end
+
+		for magicType,gearSet in pairs(currModeSet) do
+			sets.midcast[magicType] = gearSet
+		end
 
 		modeHud('update')
 		evalState_equipGear()
@@ -106,13 +110,29 @@ function job_self_command(cmdParams, eventArgs)
 		modeHud('update')
 	end
 
+	if useElementalWheelHud then
+		if cmdParams[1]:lower() == 'elewheelup' then
+			eleMode.index = eleMode.index + 1
+			if eleMode.index > #eleMode then
+				eleMode.index = 0
+			end
+			eleHud('update')
+		end
+		if cmdParams[1]:lower() == 'elewheeldown' then
+			eleMode.index = eleMode.index - 1
+			if eleMode.index < 0 then
+				eleMode.index = #eleMode
+			end
+			eleHud('update')
+		end
+	end
+
 	-- Forward self commands on to the job_SelfCommand function in the job specific .lua, if it exists
 	if extendedJobSelfCommand ~= nil then
 		extendedJobSelfCommand(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		-- debug/testing stuff goes hererereereere
 	end
 
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
@@ -128,7 +148,7 @@ function user_setup()
 	send_command('bind F11 gs c toggleAutoBuff')
 	send_command('bind !F11 gs c toggleautofite')
 	send_command('bind F12 gs reload')
-	
+
 	--if an extendedUserSetup() exists in the job lua, call it
 	if extendedUserSetup ~= nil then
 		extendedUserSetup()
@@ -153,10 +173,14 @@ function user_unload()
 	if extendedUserUnload ~= nil then
 		extendedUserUnload()
 	end
+
+	if eleWheelText ~= nil then
+		eleHud('dispose')
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- UTILITY FUNCTIONSSSSSSS
+-- OUR CUSTOM UTILITY FUNCTIONSSSSSSS
 -------------------------------------------------------------------------------------------------------------------
 function evalState_equipGear()
 	if extendedEvalState_equipGear then
@@ -171,6 +195,34 @@ function evalState_equipGear()
 	if moving then
 		equip(sets.moveSpeed)
 	end
+end
+
+function updateSetsFromModes(mode)
+	if mode == 'gear' then
+		sets.idle = gearMode[gearMode.index].idle
+		sets.engaged = gearMode[gearMode.index].engaged
+		return
+	end
+	if mode == 'weapon' then
+		sets.weapons = weaponMode[weaponMode.index].set
+		return
+	end
+
+	-- if not specified update all
+	sets.idle = gearMode[gearMode.index].idle
+	sets.engaged = gearMode[gearMode.index].engaged
+	sets.weapons = weaponMode[weaponMode.index].set
+end
+
+function setModeIndex(mode, index)
+	if mode == 'gear' then
+		gearMode.index = index
+	end
+	if mode == 'weapon' then
+		weaponMode.index = index
+	end
+
+	updateSetsFromModes(mode)
 end
 
 function faceTarget()
@@ -308,21 +360,31 @@ end
 function onCooldown(actionName)
 	for k,v in pairs(res.job_abilities) do
 		if v.en == actionName and v.recast_id ~= 0 then
-			local recast = windower.ffxi.get_ability_recasts()[v.recast_id]
+			local recast = windower.ffxi.get_ability_recasts()[v.recast_id] or nil
+			if recast == nil then
+				break
+			end
 			if recast > 0 then
 				return true
 			end
-			return false
+			if recast == 0 then
+				return false
+			end
 		end
 	end
 
 	for k,v in pairs(res.spells) do
 		if v.en == actionName and v.recast_id ~= 0 then
-			local recast = windower.ffxi.get_spell_recasts()[v.recast_id]
+			local recast = windower.ffxi.get_spell_recasts()[v.recast_id] or nil
+			if recast == nil then
+				break
+			end
 			if recast > 0 then
 				return true
 			end
-			return false
+			if recast == 0 then
+				return false
+			end
 		end
 	end
 
@@ -462,7 +524,6 @@ function tellXYZ(monsterName)
 	end
 end
 
-
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel
@@ -531,6 +592,20 @@ function buffCheck(...)
 	return false
 end
 
+function tryAutoSpellStep(spell)
+    for spellFamily,spellList in pairs(spellSteps) do
+		if spell.en:startswith(spellFamily) then
+			local currIndex = table.find(spellList, spell.en) + 1
+			local swapSpell = spellList[currIndex]
+			while onCooldown(swapSpell) do
+				currIndex = currIndex + 1
+				swapSpell = spellList[currIndex]
+			end
+			send_command('/'..swapSpell)
+		end
+	end
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
@@ -549,15 +624,15 @@ function job_precast(spell, action, spellMap, eventArgs)
         	eventArgs.cancel = true
         	return
 		end
-		if spell.target.distance > 21 then
+		if spell.target.distance > 24 then
 			add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
 			eventArgs.cancel = true
 			return
 		end
 	end
 	if spell.type == 'WeaponSkill' then
-		local isRanged = rangedWeaponSkills:contains(spell.name)
-		if (spell.target.distance > 25 and isRanged) or (spell.target.distance > 5 and not isRanged) then
+		local isRanged = ranged_weaponskills:contains(spell.name)
+		if (spell.target.distance > 25 and isRanged) or (spell.target.distance > 6 and not isRanged) then
 			add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
 			eventArgs.cancel = true
 			return
@@ -585,6 +660,12 @@ function job_precast(spell, action, spellMap, eventArgs)
 		end
 	end
 
+	-- If on cooldown and in spellStep table, tryAutoStepSpell
+    if spell.type:contains('Magic') and spellSteps and onCooldown(spell.name) then
+        eventArgs.cancel = true
+        tryAutoSpellStep(spell)
+    end
+
 	-- if an extendedJobPrecast() exists in the job lua, call it
 	if extendedJobPrecast ~= nil then
 		extendedJobPrecast(spell, action, spellMap, eventArgs)
@@ -604,25 +685,15 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 		extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 	end
 	
-	-- if spell element matches day or weather element, and it's not an excluded type, use mega obi
-	--[[ local obiSpellTypes = "BlueMagic,ElementalMagic,HealingMagic"
-	if dayWeatherIntensity(spell.element) > 0 and obiSpellTypes:contains(spell.type) then
-		add_to_chat(1, 'Hachirin-no-Obi goooooooo!')
-		equip({waist="Hachirin-no-Obi"})
-	end 
-	
-	if spell.type == 'WeaponSkill' and eleWeaponSkills:contains(spell.name) then
-		if getDayWeatherEleIntensity(spell.element) >= 2 then
+	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
+		if getDayWeatherEleIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
-			equip { waist="Hachirin-no-Obi" }
-		elseif spell.target.distance < (7 - spell.target.model_size) then
-			-- use orpheus if distance is more than 7 - target size (no idea if that is ideal.  its just what youh had so i left it)
-			equip { waist="Orpheus's Sash"}
-		else
-			-- use MAB belt if both of those other things are not true
-			equip { waist="YourBestMABBelt" }
+			equip { sets.obi }
+		elseif spell.target.distance < (7 - spell.target.model_size) and sets.oSash then
+			-- use orpheus if distance is more than 7 - target size
+			equip { sets.oSash }
 		end
-	end]]
+	end
 end
 
 function job_aftercast(spell, action, spellMap, eventArgs)
@@ -636,7 +707,7 @@ function job_aftercast(spell, action, spellMap, eventArgs)
 end
 
 -------------------------------------------------------------------------------------------------------------------
--- Mode Display HUD
+-- Mode Display HUDs
 -------------------------------------------------------------------------------------------------------------------
 function modeHud(action)
 	if action == 'update' then
@@ -678,18 +749,94 @@ function modeHud(action)
 		hud.visible(modeHudWindow, true)
 		hud.pos(modeHudWindow, modeHud_xPos, modeHud_yPos)
 		hud.bg_alpha(modeHudWindow, 100)
-	end 
+	end
 
 	if action == 'remove' then
 		texts.visible(modeHudWindow, false)
 	end
 end
-
 function getBoolColor(bool)
 	if bool == 'On' then
 		return green..bool..white
 	end
 	return red..bool..white
+end
+
+function eleHud(action)
+	if action == 'create' then
+		useElementalWheelHud = true
+		send_command('bind ^insert gs c elewheelup')
+    	send_command('bind ^delete gs c elewheeldown')
+	
+		eleIconSize = 75
+		eleIconXpos = 1500
+		eleIconYpos = 75
+		local iconPath = windower.addon_path..'\\data\\RST\\icons\\'
+		
+		-- create prim eleIcon
+		windower.prim.create('eleWheelIcon')
+		windower.prim.set_color('eleWheelIcon', 255, 255, 255, 255)
+		windower.prim.set_fit_to_texture('eleWheelIcon', false)
+		windower.prim.set_texture('eleWheelIcon', iconPath..eleMode[eleMode.index].element..'.png')
+		windower.prim.set_visibility('eleWheelIcon', true)
+		windower.prim.set_position('eleWheelIcon', eleIconXpos, eleIconYpos)
+		windower.prim.set_size('eleWheelIcon', eleIconSize, eleIconSize)
+
+		-- setup ele table because life hacks
+		ele = {}
+		ele.find = {}
+		ele.list = S{'Light','Dark','Fire','Ice','Wind','Earth','Lightning','Water'}
+		ele.weak_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Ice', ['Ice']='Wind', ['Wind']='Earth', ['Earth']='Lightning', ['Lightning']='Water', ['Water']='Fire'}
+		ele.strong_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Water', ['Ice']='Fire', ['Wind']='Ice', ['Earth']='Wind', ['Lightning']='Earth', ['Water']='Lightning'}
+		ele.find.mainspell_of = {['Light']="Cure IV", ['Dark']="Impact", ['Fire']="Fire V", ['Earth']="Earth V",['Water']="Water V", ['Wind']="Aero V", ['Ice']="Blizzard V", ['Lightning']="Thunder V"}
+		ele.find.skillchain_of = {['Light']="Fusion", ['Dark']="Gravitation", ['Fire']="Fusion", ['Earth']="Gravitation",['Water']="Distortion", ['Wind']="Fragmentation", ['Ice']="Distortion", ['Lightning']="Fragmentation"}
+		ele.find.storm_of = {['Light']="Aurorastorm", ['Dark']="Voidstorm", ['Fire']="Firestorm", ['Earth']="Sandstorm",['Water']="Rainstorm", ['Wind']="Windstorm", ['Ice']="Hailstorm", ['Lightning']="Thunderstorm"}
+		ele.find.storm2_of = {['Light']="Aurorastorm II",['Dark']="Voidstorm II", ['Fire']="Firestorm II", ['Earth']="Sandstorm II", ['Water']="Rainstorm II", ['Wind']="Windstorm II",['Ice']="Hailstorm II", ['Lightning']="Thunderstorm II"}
+		ele.find.helix_of = {['Light']="Luminohelix", ['Dark']="Noctohelix", ['Fire']="Pyrohelix", ['Earth']="Geohelix",['Water']="Hydrohelix", ['Wind']="Anemohelix", ['Ice']="Cryohelix", ['Lightning']="Ionohelix"}
+		ele.find.helix2_of = {['Light']="Luminohelix II", ['Dark']="Noctohelix II", ['Fire']="Pyrohelix II", ['Earth']="Geohelix II",['Water']="Hydrohelix II", ['Wind']="Anemohelix II", ['Ice']="Cryohelix II", ['Lightning']="Ionohelix II"}
+		ele.spirit_of = {['Light']="Light Spirit", ['Dark']="Dark Spirit", ['Fire']="Fire Spirit", ['Earth']="Earth Spirit", ['Water']="Water Spirit", ['Wind']="Air Spirit", ['Ice']="Ice Spirit", ['Lightning']="Thunder Spirit"}
+		ele.rune_of = {['Light']='Lux', ['Dark']='Tenebrae', ['Fire']='Ignis', ['Ice']='Gelus', ['Wind']='Flabra', ['Earth']='Tellus', ['Lightning']='Sulpor', ['Water']='Unda'}
+
+		-- create texts eleText
+		texts = require('texts')
+		eleWheelText = texts.new('${element}\n${msg1}\n${msg2}')
+		texts.visible(eleWheelText, true)
+		eleWheelText.element = eleMode[eleMode.index].element
+		eleWheelText.msg1 = eleMode[eleMode.index].msg1
+		eleWheelText.msg2 = eleMode[eleMode.index].msg2
+		texts.pos(eleWheelText, eleIconXpos, eleIconYpos + 80)
+		texts.bg_alpha(eleWheelText, 0)
+		hudFadeTime = os.time()
+	end
+	
+	if action == 'update' then
+		windower.prim.set_texture('eleWheelIcon', iconPath..eleMode[eleMode.index].element..'.png')
+		texts.visible(eleWheelText, true)
+		eleWheelText.element = eleMode[eleMode.index].element
+		eleWheelText.msg1 = eleMode[eleMode.index].msg1
+		eleWheelText.msg2 = eleMode[eleMode.index].msg2
+		hudFadeTime = os.time()
+	end
+
+	if action == 'dispose' then
+		windower.prim.delete('eleWheelIcon')
+		texts.destroy(eleWheelText)
+	end
+end
+
+-------------------------------------------------------------------------------------------------------------------
+-- Buff table updating
+-------------------------------------------------------------------------------------------------------------------
+function job_buff_change(buff, active)
+	if state.Buff[buff] == nil and active then
+		state.Buff[buff] = true
+	else
+		state.Buff[buff] = nil
+	end
+
+	if extendedJobBuffChange ~= nil then
+		extendedJobBuffChange(buff, active)
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -759,6 +906,11 @@ windower.raw_register_event('prerender',function()
 				actionDelay = nil
 			end
 		end
+
+		-- if using elemental wheel, fade text after 3 seconds
+		if hudFadeTime ~= nil and (lastCycleTime - hudFadeTime > 3) then
+			texts.visible(eleWheelText, false)
+		end
 	end
 end)
 
@@ -776,6 +928,7 @@ windower.register_event('zone change', function()
 end)
 
 windower.register_event('action',function(action)
+	if not action then return end
 	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
 	if not actor or not player or not action then
 		return

@@ -258,9 +258,9 @@ function init_modetables()
 		["index"] = 0,
 		[0] = {name="Epeolatry", set={main="Epeolatry", sub="Utu Grip"}},
 		[1] = {name="Lionheart", set={main="Lionheart", sub="Utu Grip"}},
-		[2] = {name="Aettir", set={main="Aettir", sub="Utu Grip"}},
+		[2] = {name="Aettir", hidden=true, set={main="Aettir", sub="Utu Grip"}},
 		[3] = {name="G-Axe", set={main="Lycurgos", sub="Utu Grip"}},
-		[4] = {name="DW-Swords", set={main="Naegling", sub="Reikiko"}},
+		[4] = {name="DW-Swords", hidden=true, set={main="Naegling", sub="Reikiko"}},
 	}
 
 	--[[ magicMode = {
@@ -330,12 +330,8 @@ function extendedUserSetup()
 
 	--Handle weapons and stylelock based on subjob
 	if player.sub_job == 'DNC' or player.sub_job == 'NIN' then
-		--weaponMode.index = 3
-		--equip(weaponMode[weaponMode.index].set)
 		windower.send_command:schedule(4, 'input /lockstyleset 2')
 	else
-		--weaponMode.index = 0
-		--equip(weaponMode[weaponMode.index].set)
 		windower.send_command:schedule(4, 'input /lockstyleset 1')
 	end
 end
@@ -469,18 +465,39 @@ end
 -- Job specific function extensions
 -------------------------------------------------------------------------------------------------------------------
 function extendedTWM(cmdParams, eventArgs)
-	if weaponMode[weaponMode.index].name == "Aettir" and gearMode[gearMode.index].name ~= "MagicTank" then
+	local aettirHidden = weaponMode[2].hidden
+	local dwSwordsHidden = weaponMode[4].hidden
+
+	-- 'Aettir' hidden unless we're in MagicTank gearMode
+	if gearMode[gearMode.index].name == 'MagicTank' and aettirHidden then
+		weaponMode[2].hidden = false
+	else
+		if not aettirHidden then
+			weaponMode[2].hidden = true
+		end
+	end
+
+	-- DW-Swords hidden unless /nin or /dnc
+	if player.sub_job == 'NIN' or player.sub_job == 'DNC' and dwSwordsHidden then
+		weaponMode[4].hidden = false
+	else
+		if not dwSwordsHidden then
+			weaponMode[4].hidden = true
+		end
+	end
+
+	--[[ if weaponMode[weaponMode.index].name == "Aettir" and gearMode[gearMode.index].name ~= "MagicTank" then
 		weaponMode.index = weaponMode.index + 1
 		if weaponMode.index > #weaponMode then
 			weaponMode.index = 0;
 		end
-	end
-	if weaponMode[weaponMode.index].name == "DW-Swords" and (player.sub_job ~= "NIN" and player.sub_job ~= "DNC") then
+	end ]]
+	--[[ if weaponMode[weaponMode.index].name == "DW-Swords" and (player.sub_job ~= "NIN" and player.sub_job ~= "DNC") then
 		weaponMode.index = weaponMode.index + 1
 		if weaponMode.index > #weaponMode then
 			weaponMode.index = 0;
 		end
-	end
+	end ]]
 end
 
 function extendedJobSelfCommand(cmdParams, eventArgs)
