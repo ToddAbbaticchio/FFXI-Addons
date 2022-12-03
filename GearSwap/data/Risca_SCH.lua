@@ -16,7 +16,7 @@ function init_gear_sets()
 	gear.nukeCape = {name="Lugh's Cape", augments={'"Regen"+5'}}
 	gear.fcCape = {name="Lugh's Cape", augments={'"Fast Cast"+10'}}
 
-	sets.burst = {                         --Burst Bonus  13 from jpgifts. 
+	sets.burst = {                         --Total: 47/15 +13 from jp 
 		main = "Akademos",                  --10
 		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
@@ -31,7 +31,7 @@ function init_gear_sets()
 		ear2 = "Barkaro. Earring",
 		ring1 = "Freke Ring",
 		ring2 = "Mujin Band",               --5/5*
-		back=gear.nukeCape,
+		back=gear.nukeCape,					-- 13 from jp gifts?
 	}
 
 	sets.freeCast = {
@@ -156,7 +156,7 @@ function init_gear_sets()
     sets.sublimation = {waist="Embla Sash"}
 	sets.DarkArtsWeapons = {main="Akademos",sub="Enki Strap"}
 	sets.LightArtsWeapons = {main="Daybreak",sub="Genmei Shield"}
-
+	
     -- JA Sets
 	sets.precast.JA['Tabula Rasa'] = {--[[ legs="Peda. Pants +3" ]]}
     sets.precast.JA['Enlightenment'] = {--[[ body="Peda. Gown +3" ]]}
@@ -174,8 +174,10 @@ function init_gear_sets()
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
 	sets.midcast['Cure'] = {hands="Telchine Gloves",}
-	sets.midcast['Aspir'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
-	sets.midcast['Drain'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
+	
+	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
+	sets.midcast['Aspir'] = sets.absorbSpells
+	sets.midcast['Drain'] = sets.absorbSpells
 
 	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
     sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +2", main="Bolelabunga", sub="Genmei Shield"})
@@ -317,7 +319,7 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 		return
 	end
 
-	if auto.fite[auto.fite.index] == 'On' then
+	--[[ if auto.fite[auto.fite.index] == 'On' then
 		if spell.english:contains(' V') and strategemCount() > 3 then
 			if not (buffactive['Ebullience']) then
 				eventArgs.cancel = true
@@ -326,7 +328,7 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 				return
 			end
 		end
-	end
+	end ]]
 end
 
 function job_post_precast(spell, action, spellMap, eventArgs)
