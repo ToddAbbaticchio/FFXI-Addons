@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.2.2'
+_addon.version = '1.3.0'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -76,6 +76,21 @@ function initializeSessionVars(job, ...)
     if jobVars.target.assist then
         startMsg = startMsg..' assistTarget: '..jobVars.target.assist
     end
+
+    -- af react initial vars if table exists
+    afReact = jobVars.afReact or nil
+    if afReact then
+        actionQueue = {}
+        actionQueue.burst = {}
+        actionQueue.ws = {}
+        actionQueue.other = {}
+        burstWindow = false
+        burstWindowCloseTime = 0
+        skillchainWindow = false
+        skillchainWindowOpenTime = 0
+        skillchainWindowCloseTime = 0
+    end
+
     writeLog(startMsg, 1)
 end
 
@@ -143,6 +158,9 @@ function autoFite()
 
     -- check buffs regardless of mode (but not if we're stopped)
     if player.status == engaged then
+        if afReact then
+            afReactHandler(player)
+        end
         autoBuffHandler()
     end
 end
@@ -206,6 +224,24 @@ windower.register_event('addon command', function(...)
         windower.chat.input('//lua r autoFite')
     end
 
+    if afAction:lower() == 'help' then
+        local message = [[-----------------------------------------------------------------------------------------------
+- Start in pull mode:
+    //af <start/active/on/go> <targetname>
+    targetname can be a partial name and will match any monsters that contain <targetname>
+    //af start Apex would pull Apex Bats, Apex Crabs, and anything else with Apex in the name
+- Start in assist mode:
+    //af assist <assisttarget>
+    assistTarget is case sensitive and must be an exact matched
+    '//af assist Risca' would engage and fight anything Risca engages
+- For information re: the various tell command options use:
+    //af helptells
+-----------------------------------------------------------------------------------------------]]
+        for _,line in ipairs(message:split('\n')) do
+            windower.add_to_chat(207, line)
+        end
+    end
+
     -- Some testing / debug commands because apparently we hate having a working console
     if afAction:lower() == 'distance' then
         windower.add_to_chat(200, '-- Distance from target: ' .. windower.ffxi.get_mob_by_target('t').distance .. ' meleeDistance: '..jobVars.meleeDistance..' --')
@@ -213,31 +249,24 @@ windower.register_event('addon command', function(...)
     end
 
     if afAction:lower() == 'test' then
-        res = require 'resources'
-        local spellId = 422
-
-        writeLog('Mapped to english: '..res.spells[spellId].en, 1)
+       
     end
 
     if afAction:lower() == 'fix' then
         pressKey('enter',0.1)
     end
 
-    if afAction:lower() == 'report' then
-        local ct = windower.ffxi.get_mob_by_target('t')
-        local bt = windower.ffxi.get_mob_by_target('bt')
-        
-        writeLog('ct '..ct.name..' id/index: '..ct.id..'/'..ct.index..' bt '..bt.name..' id/index: '..bt.id..'/'..bt.index, 1)
-    end
 end)
 
 -- Call actionHandler once every second
-lastTick = 0
+local loopTime = 0
+local tickDelay = 1
 windower.register_event('postrender', function()
     local now = os.time()
-    if now > lastTick and active == true then
-        lastTick = now
+    if active and now >= loopTime then
+        evalWindows(now)
         autoFite()
+        loopTime = os.time() + tickDelay
     end
 end)
 

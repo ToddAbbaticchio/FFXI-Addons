@@ -4,6 +4,9 @@ vars.BLU = {
         ["Warcry"] = "Warcry",
         ["Berserk"] = "Berserk",
     },
+    afReact = {
+        --['Action'] = {actor='', response=''},
+    },
     ws = "Savage Blade",
     --targetTp = 1750,
     targetTp = 1000,
@@ -34,13 +37,18 @@ vars.RUN = {
 
 vars.SCH = {
     autoBuffs = {
-        -- ["Dark Arts"] = "Addendum: Black"
-        ["Light Arts"] = "Addendum: White"
+        ['Dark Arts'] = "Dark Arts",
     },
-    -- ws = "Myrkr",
-    ws = "Starlight",
-    targetTp = 3000,
-    pullCommand = '/ma "Dia II" '
+    afReact = {
+        ['Darkness'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
+        ['Distortion'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
+        ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
+        ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
+    },
+
+    ws = "Myrkr",
+    targetTp = 9999,
+    pullCommand = '/ma "Frazzle" '
 }
 
 vars.PUP = {

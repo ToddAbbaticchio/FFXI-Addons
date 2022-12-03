@@ -1,4 +1,30 @@
--- Ver 1.2.2
+-- Ver 1.3.0
+-------------------------------------------------------------------------------------------------------------------
+-- Global Variables!  Wheeeeeeeeee!
+-------------------------------------------------------------------------------------------------------------------
+scTable = T{
+	[288] = {name='Light', elements={'Light','Thunder','Wind','Fire'}},
+	[289] = {name='Darkness', elements={'Dark','Ice','Water','Earth'}},
+	[290] = {name='Gravitation', elements={'Dark','Earth'}},
+	[291] = {name='Fragmentation', elements={'Thunder','Wind'}},
+	[292] = {name='Distortion', elements={'Ice','Water'}},
+	[293] = {name='Fusion', elements={'Light','Fire'}},
+	[294] = {name='Compression', elements={'Dark'}},
+	[295] = {name='Liquefaction', elements={'Fire'}},
+	[296] = {name='Induration', elements={'Ice'}},
+	[297] = {name='Reverberation', elements={'Water'}},
+	[298] = {name='Transfixion', elements={'Light'}},
+	[299] = {name='Scission', elements={'Earth'}},
+	[300] = {name='Detonation', elements={'Wind'}},
+	[301] = {name='Impaction', elements={'Thunder'}},
+	[767] = {name='Radiance', elements={'Light','Thunder','Wind','Fire'}},
+	[768] = {name='Umbra', elements={'Dark','Ice','Water','Earth'}},
+	[769] = {name='Radiance', elements={'Light','Thunder','Wind','Fire'}},
+	[770] = {name='Umbra', elements={'Dark','Ice','Water','Earth'}},
+}
+
+--startCats = L{7,8,9,12}
+--finishCats = L{2,3,5}
 
 -------------------------------------------------------------------------------------------------------------------
 -- Utility Functions
@@ -17,7 +43,7 @@ function writeLog(message, logLevel)
         logMode = 1
     end
     if logMode >= logLevel then
-        windower.add_to_chat(200, '-- ' .. message .. ' --')
+        windower.add_to_chat(207, '-- ' .. message .. ' --')
     end
 end
 
@@ -115,6 +141,51 @@ function isPullAction(category, param)
     return false
 end
 
+function evalWindows(now)
+    -- close burst window when time runs out
+    if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
+        burstWindow = false
+    end
+    
+    -- open/close skillchainWindow
+    if not skillchainWindow and now >= skillchainWindowOpenTime and now <= skillchainWindowCloseTime then
+        skillchainWindow = true
+    end
+end
+
+function tryCleanQueue(category, param)
+    local actionName = nil
+    if category == 3 then
+        actionName = res.weapon_skills[param].en or nil
+        if actionName and actionQueue.ws[1]:contains(actionName) then
+            table.remove(actionQueue.ws, 1)
+        end
+    end
+
+    if category == 4 then
+        actionName = res.spells[param].en or nil
+        if actionName then
+            if actionQueue.burst[1]:contains(actionName) then
+                table.remove(actionQueue.burst, 1)
+            end
+            if actionQueue.other[1]:contains(actionName) then
+                table.remove(actionQueue.other, 1)
+            end
+        end
+    end
+
+    if category == 6 then
+        actionName = res.job_abilities[param].en or nil
+        if actionName and actionQueue.other[1]:contains(actionName) then
+            table.remove(actionQueue.other, 1)
+        end
+    end
+end
+
+function handleActionInProgress()
+    actionInProgress = false
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Combat Functions
 -------------------------------------------------------------------------------------------------------------------
@@ -167,7 +238,8 @@ end
 
 -- perform the pull action!
 function tryPull(monster)
-    if pulledMonster or not isAutofiteTarget(monster) then
+    local now = time.os()
+    if pulledMonster or not isAutofiteTarget(monster) or now < pullRateTimer then
         return
     end
 
@@ -230,31 +302,134 @@ function wsHandler()
     end
 end
 
+-- afReact handling
+function afReactHandler(player)
+    if actionInProgress then
+        return
+    end
+
+    local now = os.time()
+    -- if burst window is open / we have burst commands queued, only try bursting
+    if burstWindow and #actionQueue.burst >= 1 then
+        --local response = afReact[skillchainName].response
+        --windower.chat.input(response)
+        windower.chat.input(actionQueue.burst[1])
+        return
+    end
+
+    -- if skillchain window open, close it before trying other reactions
+    if skillchainWindow and #actionQueue.ws >= 1 then
+        if player.tp > 1000 then
+            --local response = afReact[wsName].response
+            --windower.chat.input(response)
+            windower.chat.input(actionQueue.ws[1])
+        end
+        return
+    end
+
+    -- process commands in reactionQueue
+    if #actionQueue.other >= 1 then
+        windower.chat.input(actionQueue.other[1])
+    end
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Event Listeners
 -------------------------------------------------------------------------------------------------------------------
-windower.register_event('action',function (act)
-    if not active then
+windower.register_event('action',function (action)
+    if not active or not action then
         return
     end
-
-    local actor = windower.ffxi.get_mob_by_id(act.actor_id) or nil
+    
+    local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
-    if actor == nil or player == nil then
+    local target = windower.ffxi.get_mob_by_target('t') or nil
+
+    if not actor or not player then
         return
     end
 
-	local category = act.category
-    local param = act.param
+    local category = action.category
+    local param = action.param
+    
+    -- Specific handling for actions we initiated
     if actor.id == player.id then
-        -- cat4: spellCastComplete cat6: jaComplete
-        if (category == 4 or category == 6) and isPullAction(category, param) then
-            pulledMonster = act.targets[1].id or nil
-        end
+        -- a ws/spell/ja completes
+		if category == 3 or category == 4 or category == 6 then
+            actionInProgress = true
+            coroutine.schedule(handleActionInProgress(), 0.5)
+            tryCleanQueue(category, param)
         
-        -- pulled with ranged attack (don't do this.  really i should take it out)
-        if category == 2 then
-            pulledMonster = act.targets[1].id or nil
+            -- if it was our pull action and completed, set pulledMonster var
+            if isPullAction(category, param) then
+                pulledMonster = action.targets[1].id or nil
+                pullRateTimer = os.time() + 6
+                return
+            end
+        end
+
+        -- a spell starts or is interrupted
+        if category == 8 then
+            if param == 28787 then
+                actionInProgress = true
+                coroutine.schedule(handleActionInProgress(), 0.5)
+                return
+            end
+            actionInProgress = true
+            return
+        end
+    end
+
+    -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
+    local actionTarget = action.targets[1].id or nil
+    local currTargetId = windower.ffxi.get_mob_by_target('t').id or nil
+    if actionTarget.id and target.id and actionTarget.id == target.id then
+        -- weaponskills
+        if category == 3 then
+            -- if a WS lands on our target while window(s) are open, they be closed. (if it makes a chain it just reopens a new window right after)
+            if burstWindow or skillchainWindow then
+                local now = time.os()
+                burstWindowCloseTime = now
+                skillchainWindowCloseTime = now
+                burstWindow = false
+                skillchainWindow = false
+            end
+
+            -- Check for skillchain; Check if skillchain in afReact table
+            local skillchainId = action.targets[1].actions[1].add_effect_message or nil
+            local skillchainName = scTable[skillchainId].name or nil
+            local reaction = afReact[skillchainName] or nil
+            if skillchainName and reaction then
+                burstWindowCloseTime = os.time() + 8
+                burstWindow = true
+                table.insert(actionQueue.burst, reaction.response)
+                if reaction.response2 then
+                    table.insert(actionQueue.burst, reaction.response2)
+                end
+                return
+            end
+
+            -- Check if wsname in afReact table
+            local wsName = res.weapon_skills[param].en or nil
+            local reaction = afReact[wsName] or nil
+            if wsName and reaction then
+                skillchainWindowOpenTime = os.time() + 3
+                skillchainWindowCloseTime = os.time() + 8
+                table.insert(actionQueue.ws, reaction.response)
+                return
+            end
+        end
+    end
+    
+    -- Specific handling for actions started by enemy
+    if target and target.Id and target.Id == actor.Id then
+        if category == 7 and param == 24931 then
+            local abilityName = res.monster_abilities[act.targets[1].actions[1].param].en or nil
+            local reaction = afReact[abilityName] or nil
+            if abilityName and reaction and reaction.actor == 'enemy' then
+                table.insert(actionQueue.other, reaction.response)
+                --windower.send_command('input '..response)
+            end
         end
     end
 end)
@@ -341,4 +516,16 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
             return
         end
     end
+end)
+
+windower.register_event('target change', function()
+    local now = os.time()
+    actionQueue = {}
+    actionQueue.burst = {}
+    actionQueue.ws = {}
+    actionQueue.other = {}
+    burstWindowCloseTime = now
+    skillchainWindowCloseTime = now
+    burstWindow = false
+    skillchainWindow = false
 end)

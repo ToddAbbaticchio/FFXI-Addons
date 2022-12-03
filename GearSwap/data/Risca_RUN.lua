@@ -205,6 +205,7 @@ function init_gear_sets()
 	sets.precast.JA['Pflug'] = sets.baseEnmity
     sets.precast.JA['Battuta'] = set_combine(sets.baseEnmity, {head="Fu. Bandeau +3"})
     sets.precast.JA['Liement'] = set_combine(sets.baseEnmity, {body="Futhark Coat +3"})
+	sets.precast.JA['One for All'] = sets.baseEnmity
     sets.precast.JA['Lunge'] = sets.MagicBurst
     sets.precast.JA['Swipe'] = sets.MagicBurst
     sets.precast.JA['Gambit'] = {hands="Runeist's Mitons +3"}

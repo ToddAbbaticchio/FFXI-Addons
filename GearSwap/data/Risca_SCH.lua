@@ -74,13 +74,13 @@ function init_gear_sets()
 		body = "Agwu's Robe",
 		hands = "Arbatel Bracers +2",
 		legs = "Chironic Hose",
-		feet = "Arbatel Loafers +2",
+		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +1",
 		waist = "Eschan Stone",
-		left_ear = "Malignance Earring",
-		right_ear = "Barkaro. Earring",
-		left_ring = "Stikini Ring +1",
-		right_ring = "Stikini Ring +1",
+		ear1 = "Malignance Earring",
+		ear2 = "Arbatel Earring +1",
+		ring1 = "Stikini Ring +1",
+		ring2 = "Stikini Ring +1",
 		back=gear.nukeCape,
 	}
 
@@ -162,7 +162,7 @@ function init_gear_sets()
     sets.precast.JA['Enlightenment'] = {--[[ body="Peda. Gown +3" ]]}
 	sets.grimoireEffect = {head="Pedagogy Mortarboard +3", --[[ feet="Acad. Loafers +3" ]]}
 	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +2"}
-	sets.buff['Klimaform'] = {feet="Arbatel Loafers +2"}
+	sets.buff['Klimaform'] = {feet="Arbatel Loafers +3"}
 	sets.buff['Ebullience'] = {head="Arbatel Bonnet +2"}
 	sets.buff['Rapture'] = {head="Arbatel Bonnet +2"}
     
@@ -172,10 +172,10 @@ function init_gear_sets()
 
 	sets.midcast['Elemental Magic'] = sets.burst
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
-	sets.midcast['Enfeebling Magic'] = set_combine(sets.midcast['Elemental Magic'], sets.enfeebSkill)
+	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
 	sets.midcast['Cure'] = {hands="Telchine Gloves",}
-	sets.midcast['Aspir'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Agwu's Pigaches", head="Pixie Hairpin +1"})
-	sets.midcast['Drain'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Agwu's Pigaches", head="Pixie Hairpin +1"})
+	sets.midcast['Aspir'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
+	sets.midcast['Drain'] = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1"})
 
 	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
     sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +2", main="Bolelabunga", sub="Genmei Shield"})
@@ -193,10 +193,10 @@ function init_modetables()
 	--Setup gearMode
 	gearMode = {
 		["index"] = 0,
-		[0] = {name="Normal", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
-		[1] = {name="DmgTaken", idle=(sets.superTank), engaged=(sets.baseTank)},
-		[2] = {name="MaxRefresh", idle=(sets.magicEvaTank), engaged=(sets.magicEvaTank)},
-        [3] = {name="Sublimation", hidden=true, idle=(sets.magicEvaTank), engaged=(sets.magicEvaTank)},
+		[0] = {name="Normal", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseIdle)},
+		[1] = {name="DmgTaken", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseIdle)},
+		[2] = {name="MaxRefresh", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseIdle)},
+        [3] = {name="Sublimation", hidden=true, idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseIdle)},
 	}
 	
 	--Setup weaponMode
@@ -233,7 +233,7 @@ function init_modetables()
     --Setup eleMode for elemental wheel HUD
     eleMode = {
         ["index"] = 0,
-		[0] = {element="Dark", msg1="", msg2=""},
+		[0] = {element="Dark"},
 		[1] = {element="Light"},
 		[2] = {element="Earth"},
 		[3] = {element="Water"},
@@ -277,7 +277,7 @@ function job_setup()
 		['Blizzard'] = {[0]='Blizzard V', [1]='Blizzard IV', [2]='Blizzard III', [3]='Blizzard II', [4]='Blizzard'},
 		['Thunder'] = {[0]='Thunder V', [1]='Thunder IV', [2]='Thunder III', [3]='Thunder II', [4]='Thunder'},
 		['Aspir'] = {[0]='Aspir II', [1]='Aspir'},
-		['Sleep'] = {[0]='Sleei II', [1]='Sleep'},
+		['Sleep'] = {[0]='Sleep II', [1]='Sleep'},
 		['Cure'] = {[0]='Cure IV', [1]='Cure III', [2]='Cure II', [3]='Cure'}
 	}
 end
@@ -315,6 +315,17 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 		eventArgs.cancel = true
 		send_command('input /ja "Addendum: White" <me>')
 		return
+	end
+
+	if auto.fite[auto.fite.index] == 'On' then
+		if spell.english:contains(' V') and strategemCount() > 3 then
+			if not (buffactive['Ebullience']) then
+				eventArgs.cancel = true
+				send_command('/ebullience')
+				send_command:schedule(0.5, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
+				return
+			end
+		end
 	end
 end
 
@@ -475,17 +486,22 @@ function autoActions()
         end
 
         -- Full time buffs
-		if not buffactive[ele.find.storm1_of[eleMode[eleMode.index].element]] then
+		if not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
             send_command('/'..ele.find.storm2_of[eleMode[eleMode.index].element])
         end
         if buffCheck('Klimaform') then
             send_command('/klimaform')
         end
+		if buffCheck('Haste') then
+			send_command('/haste')
+		end
     end
 
     -- auto.fite mode on
     if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
-		
+		if player.mp < 1000 and windower.ffxi.get_mob_by_target('t').name:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
+			send_command('/aspir2')
+		end
 	end
 end
 

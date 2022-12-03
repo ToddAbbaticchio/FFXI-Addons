@@ -287,7 +287,8 @@ function bestEleWsBelt(spell)
 
 		-- at 1 intensity obi wins beyond 7 yalms. oSash wins inside 7
 		if obiCheck == 1 then
-			if spell.target.distance <= 7 then
+			local dist = spell.target.distance or nil
+			if dist and dist <= 7 then
 				return sets.oSash
 			else
 				return sets.obi
@@ -686,7 +687,7 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	end
 	
 	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
-		if getDayWeatherEleIntensity(spell.element) >= 2 and sets.obi then
+		if dayWeatherIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
 			equip { sets.obi }
 		elseif spell.target.distance < (7 - spell.target.model_size) and sets.oSash then
@@ -771,7 +772,7 @@ function eleHud(action)
 		eleIconSize = 75
 		eleIconXpos = 1500
 		eleIconYpos = 75
-		local iconPath = windower.addon_path..'\\data\\RST\\icons\\'
+		iconPath = windower.addon_path..'\\data\\RST\\icons\\'
 		
 		-- create prim eleIcon
 		windower.prim.create('eleWheelIcon')
