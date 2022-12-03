@@ -120,6 +120,30 @@ function onCooldown(actionName)
     return false
 end
 
+--[[ function onCooldown(actionName)
+	local recastId = res.job_abilities:with('en', actionName) and res.spells:with('en', actionName).recastId or nil
+    if recastId then
+        local recastTime = ffxi.windower.get_ability_recasts()[recastId] or nil
+        if recastTime and recastTime > 0 then
+            return true
+        end
+    end
+
+	local recastId = res.spells:with('en', actionName) and res.spells:with('en', actionName).recastId or nil
+    if recastId then
+        local recastTime = ffxi.windower.get_spell_recasts()[recastId] or nil
+        if recastTime and recastTime > 0 then
+            return true
+        end
+    end
+
+    if not recastId then
+        writeLog('Couldnt find recastId for ' .. actionName .. ' is not in the spell or jobability tables!', 1)
+    end
+
+    return false
+end ]]
+
 -- determine if current action is our pull action
 function isPullAction(category, param)
     if not active or mode ~= 'pull' then
@@ -155,29 +179,43 @@ end
 
 function tryCleanQueue(category, param)
     local actionName = nil
+    local queueAction = nil
+    ---
     if category == 3 then
         actionName = res.weapon_skills[param].en or nil
-        if actionName and actionQueue.ws[1]:contains(actionName) then
+        queueAction = actionQueue.ws[1] or nil
+        if actionName and queueAction and queueAction:contains(actionName) then
             table.remove(actionQueue.ws, 1)
+            return
         end
     end
-
+    ---
     if category == 4 then
         actionName = res.spells[param].en or nil
-        if actionName then
-            if actionQueue.burst[1]:contains(actionName) then
+        queueAction = actionQueue.burst[1] or nil
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
                 table.remove(actionQueue.burst, 1)
+                return
             end
-            if actionQueue.other[1]:contains(actionName) then
+        end
+        queueAction = actionQueue.other[1] or nil
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
                 table.remove(actionQueue.other, 1)
+                return
             end
         end
     end
 
     if category == 6 then
         actionName = res.job_abilities[param].en or nil
-        if actionName and actionQueue.other[1]:contains(actionName) then
-            table.remove(actionQueue.other, 1)
+        queueAction = actionQueue.other[1] or nil
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
+                table.remove(actionQueue.other, 1)
+                return
+            end
         end
     end
 end
@@ -238,7 +276,7 @@ end
 
 -- perform the pull action!
 function tryPull(monster)
-    local now = time.os()
+    local now = os.time()
     if pulledMonster or not isAutofiteTarget(monster) or now < pullRateTimer then
         return
     end
@@ -357,13 +395,13 @@ windower.register_event('action',function (action)
         -- a ws/spell/ja completes
 		if category == 3 or category == 4 or category == 6 then
             actionInProgress = true
-            coroutine.schedule(handleActionInProgress(), 0.5)
+            coroutine.schedule(handleActionInProgress:prepare(), 0.5)
             tryCleanQueue(category, param)
         
             -- if it was our pull action and completed, set pulledMonster var
             if isPullAction(category, param) then
                 pulledMonster = action.targets[1].id or nil
-                pullRateTimer = os.time() + 6
+                pullRateTimer = os.time() + 10
                 return
             end
         end
@@ -372,7 +410,7 @@ windower.register_event('action',function (action)
         if category == 8 then
             if param == 28787 then
                 actionInProgress = true
-                coroutine.schedule(handleActionInProgress(), 0.5)
+                coroutine.schedule(handleActionInProgress:prepare(), 0.5)
                 return
             end
             actionInProgress = true
@@ -381,14 +419,13 @@ windower.register_event('action',function (action)
     end
 
     -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
-    local actionTarget = action.targets[1].id or nil
-    local currTargetId = windower.ffxi.get_mob_by_target('t').id or nil
-    if actionTarget.id and target.id and actionTarget.id == target.id then
+    local actionTargetId = action.targets[1] and action.targets[1].id or nil
+    if actionTargetId and target.id and actionTargetId == target.id then
         -- weaponskills
         if category == 3 then
             -- if a WS lands on our target while window(s) are open, they be closed. (if it makes a chain it just reopens a new window right after)
             if burstWindow or skillchainWindow then
-                local now = time.os()
+                local now = os.time()
                 burstWindowCloseTime = now
                 skillchainWindowCloseTime = now
                 burstWindow = false
@@ -397,7 +434,7 @@ windower.register_event('action',function (action)
 
             -- Check for skillchain; Check if skillchain in afReact table
             local skillchainId = action.targets[1].actions[1].add_effect_message or nil
-            local skillchainName = scTable[skillchainId].name or nil
+            local skillchainName = scTable[skillchainId] and scTable[skillchainId].name or nil
             local reaction = afReact[skillchainName] or nil
             if skillchainName and reaction then
                 burstWindowCloseTime = os.time() + 8

@@ -37,7 +37,7 @@ vars.RUN = {
 
 vars.SCH = {
     autoBuffs = {
-        ['Dark Arts'] = "Dark Arts",
+        --['Dark Arts'] = "Dark Arts",
     },
     afReact = {
         ['Darkness'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},

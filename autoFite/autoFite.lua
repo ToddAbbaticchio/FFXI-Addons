@@ -77,6 +77,8 @@ function initializeSessionVars(job, ...)
         startMsg = startMsg..' assistTarget: '..jobVars.target.assist
     end
 
+    pullRateTimer = 0
+
     -- af react initial vars if table exists
     afReact = jobVars.afReact or nil
     if afReact then
