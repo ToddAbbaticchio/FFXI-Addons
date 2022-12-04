@@ -445,9 +445,10 @@ windower.register_event('action',function (action)
             end
 
             -- Check if wsname in afReact table
+            local damageDealt = action.targets[1].actions[1].param or nil
             local wsName = res.weapon_skills[param].en or nil
             local reaction = afReact[wsName] or nil
-            if wsName and reaction then
+            if wsName and reaction and damageDealt then
                 skillchainWindowOpenTime = os.time() + 3
                 skillchainWindowCloseTime = os.time() + 8
                 table.insert(actionQueue.ws, reaction.response)
