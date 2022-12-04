@@ -23,7 +23,7 @@ function init_gear_sets()
 			ammo="Coiste Bodhar",
 			head="Flamma Zucchetto +2", --target Wakido
 			body="Kasuga Domaru +3", 
-			hands="Tatenashi Gote +1",  --target hands="Wakido Kote +3",
+			hands="Wakido Kote +3",  --target hands="Wakido Kote +3",
 			legs="Kasuga Haidate +3",
 			feet="Tatenashi Sune-ate +1", -- target Wakido
 			neck="Sam. Nodowa +2",
@@ -31,7 +31,7 @@ function init_gear_sets()
 			left_ear="Dedition Earring",
 			right_ear="Kasuga Earring", --SAM Sortie Earring
 			left_ring="Niqmaddu Ring",
-			right_ring="Chirich Ring",   --need +1
+			right_ring="Chirich Ring +1",   --need +1
 	        back=gear.STPCape,
 		}
 
@@ -43,7 +43,7 @@ function init_gear_sets()
 			hands="Kasuga Kote +3",
 			legs="Nyame Flanchard",
 			feet="Nyame Sollerets",
-			neck="Samauri Nodowa +2",
+			neck="Samurai's Nodowa +2",
 			waist="Sailfi Belt +1",
 			left_ear="Moonshade Earring",
 			right_ear="Thrud Earring",
@@ -54,13 +54,13 @@ function init_gear_sets()
 	    sets.baseSubtleBlow = {
 	        ammo="Aurgelmir Orb",
 	        head="Ken. Jinpachi +1",
-	        --body="Dagon Breastplate",
-	        hands="Wakido Kote +1",
+	        body="Dagon Breastplate",
+	        hands="Wakido Kote +3",
 	        --legs="Mpaca's Hose",
 	        --feet="Ryuo Sune-Ate +1",   --path c 
-	        neck="Bathy Choker +1",
+	        --neck="Bathy Choker +1",
 	        --waist="Sarissapho. Belt",
-	        left_ear="Dignitary's earring",
+	        --left_ear="Dignitary's earring",
 	        right_ear="Schere Earring",
 	        left_ring="Niqmaddu Ring",
 	        right_ring="Chirich Ring +1",
@@ -78,9 +78,26 @@ function init_gear_sets()
 	       -- left_ear="Flashward Earring",
 	        --right_ear="Eabani Earring",
 	        --left_ring="Purity Ring",
-	        right_ring="Defending Earring",
+	        right_ring="Defending Ring",
 	        back=gear.MVACape,
 		}
+
+		sets.MeleeHybrid = {
+	        ammo="Knobkierrie",
+	        head="Nyame Helm",
+	        body="Nyame Mail",
+	        hands="Nyame Gauntlets",
+	        legs="Nyame Flanchard",
+	        feet="Nyame Sollerets",
+	        neck="Samurai's Nodowa +2",
+	        waist="Orpheus's Sash",
+	        left_ear="Friomisi Earring",
+	        right_ear="Moonshade Earring",
+	        left_ring="Epaminondas's Ring",
+	        right_ring="Karieyh Ring",
+	        back=gear.HybridCape,
+		}
+
 		sets.defaulttemplate = {
 	        ammo="",
 	        head="",
@@ -98,20 +115,20 @@ function init_gear_sets()
 		}
 	
 		-- Idle and initial engaged set
-	    sets.baseIdle = {head="Wakido Kabuto +1",right_ring="Defending Ring",left_ring="Karieyh Ring +1",}
+	    sets.baseIdle = {head="Wakido Kabuto +1",right_ring="Defending Ring",left_ring="Karieyh Ring",}
 	    sets.moveSpeed = {}
 	    sets.wakeUp = {neck="Vim Torque",}
 	
 		-- JA Sets
-		sets.precast.JA['Hasso'] = {hands="Wakido Kote +1",legs="Kasuga Haidate +2"}
+		sets.precast.JA['Hasso'] = {hands="Wakido Kote +3",legs="Kasuga Haidate +3"}
 	    sets.precast.JA['Meditate'] = {head="Wakido Kabuto +1",hands="Sakonji Kote +3"}
 	    sets.precast.JA['Seigan'] = {head="Kasuga Kabuto +2"} -- remain on while seigan is active 
-	    sets.precast.JA['Third Eye'] = {hands="Wakido Kote +1"}
+	    sets.precast.JA['Third Eye'] = {hands="Wakido Kote +3"}
 	    sets.precast.JA['Sekkanoki'] = {hands=empyrean_hands}  -- this needs to be on while Sekkanoki is active 
 	    sets.precast.JA['Konzen-ittai'] = {}
 	    sets.precast.JA['Shikikoyo'] = {legs="Sakonji Haidate +3"}
 	    sets.precast.JA['Blade Bash'] = {hands="Sakonji Kote +3"}
-	    sets.precast.JA['Sengikori'] = {feet="Kasuge Sune-Ate +3"}
+	    sets.precast.JA['Sengikori'] = {feet="Kasuga Sune-Ate +3"}
 	    sets.precast.JA['Hamanoha'] = {}
 	    sets.precast.JA['Ikishoten'] = {head="Sakonji Kabuto +3"}
 	    sets.precast.JA['Hagakure'] = {}
@@ -125,12 +142,12 @@ function init_gear_sets()
 	    sets.precast.WS['Tachi: Hobaku'] = set_combine(sets.baseWS, {})
 		sets.precast.WS['Tachi: Goten'] = set_combine(sets.baseWS, {})
 	    sets.precast.WS['Tachi: Kagero'] = set_combine(sets.baseWS, {})
-	    sets.precast.WS['Tachi: Jinpu'] = set_combine(sets.baseWS, {left_ear="Friomisi Earring",hands="Nayme Gauntlets",head="Nyame Helm",waist="Orpheus's Sash"})
+	    sets.precast.WS['Tachi: Jinpu'] = set_combine(sets.baseWS, {left_ear="Friomisi Earring",hands="Nyame Gauntlets",head="Nyame Helm",waist="Orpheus's Sash"})
 	    sets.precast.WS['Tachi: Koki'] = set_combine(sets.baseWS, {})
 	    sets.precast.WS['Tachi: Yukikaze'] = set_combine(sets.baseWS, {hands="Kasuga Kote +3"})
 	    sets.precast.WS['Tachi: Gekko'] = set_combine(sets.baseWS, {hands="Kasuga Kote +3"})
 	    sets.precast.WS['Tachi: Kasha'] = set_combine(sets.baseWS, {hands="Kasuga Kote +3"})
-	    sets.precast.WS['Tachi: Ageha'] = set_combine(sets.baseWS, {head="Kasuga Kabuto +2",body="Kasuga Domaru +3",hands="Kasuga Domaru +3",legs="Kasuga Haidate +2",feet="Kasuge Sune-Ate +3",neck="Sanctity Necklace",})
+	    sets.precast.WS['Tachi: Ageha'] = set_combine(sets.baseWS, {head="Kasuga Kabuto +2",body="Kasuga Domaru +3",hands="Kasuga Domaru +3",legs="Kasuga Haidate +3",feet="Kasuga Sune-Ate +3",neck="Sanctity Necklace",})
 	    sets.precast.WS['Tachi: Shoha'] = set_combine(sets.baseWS, {})
 	    sets.precast.WS['Tachi: Kaiten'] = set_combine(sets.baseWS, {})
 	    sets.precast.WS['Tachi: Fudo'] = set_combine(sets.baseWS, {hands="Kasuga Kote +3"})
@@ -152,8 +169,9 @@ function init_modetables()
     gearMode = {
 		["index"] = 0,
 		[0] = {name="DPS", idle=(sets.baseIdle), engaged=(sets.baseMelee)},
-		[1] = {name="DPS-Acc", idle=(sets.baseIdle), engaged=(sets.meleeAcc)},
-		[2] = {name="DPS-Hybrid", idle=(sets.baseIdle), engaged=(sets.meleeHybrid)},
+		[1] = {name="DPS-SB", idle=(sets.baseIdle), engaged=(sets.baseSubtleBlow)},
+		[2] = {name="DPS-Hybrid", idle=(sets.baseIdle), engaged=(sets.MeleeHybrid)},
+		[3] = {name="Damage taken", idle=(sets.baseIdle), engaged=(sets.DamageTaken)},
 	}
 	
 	--Setup weaponMode
@@ -161,6 +179,10 @@ function init_modetables()
 		["index"] = 0,
 		[0] = {name="Shining One", set={main="Shining One", sub="Utu Grip",}},
 		[1] = {name="Hime", set={main="Himetsuruichimonji", sub="Utu Grip",}},
+		[2] = {name="Iapetus", set={main="Iapetus", sub="Utu Grip",}},
+		[3] = {name="Lotus Katana", set={main="Lotus Katana", sub="Utu Grip",}},
+		[4] = {name="Soboro", set={main="Soboro Sukehiro", sub="Utu Grip",}},
+		[5] = {name="Signet", set={main="Federation Signet Staff", sub="Utu Grip",}},
         --[2] = {name="MasamuneRange", set={main="Masamune", sub="Utu Grip", range="Ullr",ammo=""}},
  		--[3] = {name="ShiningOneRange", set={main="Shining One", sub="Utu Grip",range="Ullr",ammo=""}},
 		--[4] = {name="Malevolence", set={main="Malevolence", sub=""}},
@@ -190,8 +212,9 @@ function init_modetables()
 
 	food = {
 		["index"] = 0,
-		[0] = 'Grape Daifuku',
+		[0] = 'Grape Daifuku +1',
 		[1] = 'Behemoth Steak',
+		[2] = 'Dragon Steak',
 	}
 	
 	--Setup autoBuff
@@ -208,8 +231,9 @@ function init_modetables()
 		},
 		["stance"] = {
 			["index"] = 0,
-			[0] = "Hasso",
-			[1] = "Seigan",
+			[0] = "Off",
+			[1] = "Hasso",
+			[2] = "Seigan",
 		},
 		["doom"] = {
 			["index"] = 0,
@@ -351,21 +375,17 @@ function extendedEvalState_equipGear()
 end
 
 function extendedModeHud(hudText)
-	-- job specific location override?
-	--modeHud_xPos = 1200
-	--modeHud_yPos = 50
-
 	local autoStance = auto.stance[auto.stance.index]
 	hudText:append(white..'auto.stance: '..getStanceColor(autoStance))
-	--return hudText
+	
 
 	local autoFoodMode = auto.foodmode[auto.foodmode.index]
 	hudText:append(white..'auto.autoFoodMode: ' ..getBoolColor(autoFoodMode))
-	--return hudText
+	
 	
 	local autoFood = food[food.index]
 	hudText:append(white..'food: '..autoFood)
-	--return hudText
+	
 
 	local autoWeaponSkillMode = auto.weaponskillmode[auto.weaponskillmode.index]
 	hudText:append(white..'auto.autoWeaponSkillMode: ' ..getBoolColor(autoWeaponSkillMode))
@@ -374,8 +394,6 @@ function extendedModeHud(hudText)
 	hudText:append(white..'WeaponSkill: ' ..getBoolColor(WeaponSkill))
 
 	return hudText
-
-
 end
 
 function getStanceColor(bool)
@@ -415,47 +433,48 @@ function autoActions()
  		end
  	end
 
+	 if auto.stance[auto.stance.index] == 'Hasso' then
+		if hassoRecast == 0 and not buffactive['Hasso'] then 
+			send_command('input /ja "Hasso" <me>')
+			return
+		end
+	end
+
+	if auto.stance[auto.stance.index] == 'Seigan' then
+		if seiganRecast == 0 and not buffactive['Seigan'] then 
+			send_command('input /ja "Seigan" <me>')
+			return
+		end
+		
+		if thirdEyeRecast == 0 and not buffactive['Third Eye'] then
+			send_command('input /ja "Third Eye" <me>')
+			return
+		end					
+	end
+
     if auto.weaponskillmode[auto.weaponskillmode.index] == 'On' and (auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
         if player.tp > 1750 and konzenRecast == 0 then
-            add_to_chat(207, '[~ Konzen Ittai ~]')
+        --    add_to_chat(207, '[~ Konzen Ittai ~]')
             send_command('/konzenittai')
             send_command:schedule(0.8, 'input /ws "' ..weaponskills[weaponskills.index].. '" <t>')
             return
         end
 
-		if auto.stance[auto.stance.index] == 'Hasso' then
-			if hassoRecast == 0 and not buffactive['Hasso'] then 
-				send_command('input /ja "Hasso" <me>')
-				return
-			end
-		end
-
-		if auto.stance[auto.stance.index] == 'Seigan' then
-			if seiganRecast == 0 and not buffactive['Seigan'] then 
-				send_command('input /ja "Seigan" <me>')
-				return
-			end
-			
-			if thirdEyeRecast == 0 and not buffactive['Third Eye'] then
-				send_command('input /ja "Third Eye" <me>')
-				return
-			end					
-		end
 
         if meditateRecast == 0 then
-            add_to_chat(207, '[~ Meditate ~]')
+        --    add_to_chat(207, '[~ Meditate ~]')
             send_command('/meditate')
             return
         end
 
         if not buffactive['Sengikori'] and sengikoriRecast == 0 then
-            add_to_chat(207, '[~ Sengikori ~]')
+        --    add_to_chat(207, '[~ Sengikori ~]')
             send_command('/sengikori')
             return
         end
 
         if not buffactive['Hagakure'] and hagakureRecast == 0 then
-            add_to_chat(207, '[~ Hagakure ~]')
+         --   add_to_chat(207, '[~ Hagakure ~]')
             send_command('/hagakure')
             return
         end        
@@ -465,25 +484,25 @@ function autoActions()
         local enemy = windower.ffxi.get_mob_by_target('t')       
 
         if jumpRecast == 0 and player.tp < 1750 and player.sub_job == 'DRG' then
-            add_to_chat(207, '[~ Jump ~]')
+         --   add_to_chat(207, '[~ Jump ~]')
             send_command('/jump')
             return
         end
 
         if highJumpRecast == 0 and player.tp < 1750 and player.sub_job == 'DRG' then
-            add_to_chat(207, '[~ High Jump ~]')
+         --   add_to_chat(207, '[~ High Jump ~]')
             send_command('/highjump')
             return
         end
 
         if lastResortRecast == 0 and player.sub_job == 'DRK' then
-            add_to_chat(207, '[~ Last Resort ~]')
+         --   add_to_chat(207, '[~ Last Resort ~]')
             send_command('/lastresort')
             return
         end
 
         if meikyoRecast == 0 then
-            add_to_chat(207, '[~ Meikyo Shisui ~]')
+         --   add_to_chat(207, '[~ Meikyo Shisui ~]')
             send_command('/meikyoshisui')
             return
         end

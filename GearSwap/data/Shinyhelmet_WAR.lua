@@ -39,7 +39,7 @@ function init_gear_sets()
 	head="Agoge mask +3",
 	body="Pummeler's Lorica +3",
 	hands="Sakpata's Gauntlets",
-	legs="Sakpata's Cuisses +2",
+	legs="Sakpata's Cuisses",
 	feet="Sulev. Leggings +2",
 	neck="Warrior's Bead Necklace +2",
 	waist="Sailfi Belt +1",
@@ -55,7 +55,7 @@ function init_gear_sets()
 		head="Agoge mask +3",
 		body="Pummeler's Lorica +3",
 		hands="Boii Mufflers +2",
-		legs="Sakpata's Cuisses +2",
+		legs="Sakpata's Cuisses",
 		feet="Sulev. Leggings +2",
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
@@ -69,7 +69,7 @@ function init_gear_sets()
     sets.baseIdle = {
 	ammo="Staunch Tathlum +1",
 	head="Genmei Kabuto",
-	neck="Loricate Torque +1",
+	neck="Loricate Torque",
 	ear1="Genmei Earring",
 	ear2="Ethereal Earring",
 	body="Tartarus Platemail",
@@ -133,7 +133,7 @@ function init_modetables()
 		[3] = {name="Shining", set={main="Shining One", sub="Utu Grip"}},
 		[4] = {name="Naegling", set={main="Naegling", sub="Blurred Shield +1"}},
 		[5] = {name="Montante", set={main="Montante +1", sub="Utu Grip"}},
-		[6] = {name="Loxotic", set={main="Laphria", sub="Blurred Shield +1"}},
+		[6] = {name="Loxotic", set={main="Loxotic Mace +1", sub="Blurred Shield +1"}},
 		[7] = {name="Gozuki", set={main="Gozuki Mezuki", sub="Utu Grip"}},
 		[8] = {name="DW-Swords", set={main="Naegling", sub="Zantetsuken"}},
 		[9] = {name="Dagger", set={main="Qutrub knife", sub="Blurred Shield +1"}},
@@ -145,6 +145,7 @@ function init_modetables()
 		[15] = {name="GKatana", set={main="Lotus Katana", sub="Utu Grip"}},
 		[16] = {name="Club", set={main="Apkallu scepter", sub="Blurred Shield +1"}},
 		[17] = {name="Staff", set={main="Fourth Staff", sub="Utu Grip"}},
+		[18] = {name="ZaDah", set={main="Za'Dha Chopper",sub="Utu Grip"}},
 		
 	}
 
