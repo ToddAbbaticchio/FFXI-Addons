@@ -164,7 +164,8 @@ function isPullAction(category, param)
     return false
 end
 
-function evalWindows(now)
+function evalWindows()
+    local now = os.time()
     -- close burst window when time runs out
     if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
         burstWindow = false
@@ -419,7 +420,7 @@ windower.register_event('action',function (action)
 
     -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
     local actionTargetId = action.targets[1] and action.targets[1].id or nil
-    if actionTargetId and target.id and actionTargetId == target.id then
+    if actionTargetId and target and target.id and actionTargetId == target.id then
         -- weaponskills
         if category == 3 then
             -- if a WS lands on our target while window(s) are open, they be closed. (if it makes a chain it just reopens a new window right after)

@@ -269,7 +269,7 @@ local tickDelay = 1
 windower.register_event('postrender', function()
     local now = os.time()
     if active and now >= loopTime then
-        evalWindows(now)
+        evalWindows()
         autoFite()
         loopTime = os.time() + tickDelay
     end
