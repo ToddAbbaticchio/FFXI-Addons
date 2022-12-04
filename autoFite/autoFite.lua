@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.3.0'
+_addon.version = '1.3.1'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
