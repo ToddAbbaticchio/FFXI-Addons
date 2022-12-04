@@ -388,11 +388,11 @@ windower.register_event('action',function (action)
         return
     end
     
-    local actorId = windower.ffxi.get_mob_by_id(action.actor_id) or nil
+    local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
     local target = windower.ffxi.get_mob_by_target('t') or nil
 
-    if not actorId or not player then
+    if not actor or not player then
         return
     end
 
@@ -400,7 +400,7 @@ windower.register_event('action',function (action)
     local param = action.param
     
     -- Specific handling for actions we initiated
-    if actorId == player.id then
+    if actor.id == player.id then
         -- a ws/spell/ja completes
 		if category == 3 or category == 4 or category == 6 then
             actionInProgress = true
@@ -472,11 +472,10 @@ windower.register_event('action',function (action)
     end
 
     -- Specific handling for actions started by enemy
-    if target and target.id and target.id == actorId then
+    if target and target.id and target.id == actor.id then
         if category == 7 and param ~= 0 then
             local abilityName = res.monster_abilities[action.targets[1].actions[1].param].en or nil
             local reaction = afReact[abilityName] or nil
-            
             if abilityName and reaction and reaction.actor == 'enemy' then
                 table.insert(actionQueue.other, reaction.response)
                 return
