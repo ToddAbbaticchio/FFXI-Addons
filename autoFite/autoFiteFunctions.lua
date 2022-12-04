@@ -121,26 +121,38 @@ end
 end ]]
 
 function onCooldown(actionName)
-	local recastId = res.job_abilities:with('en', actionName) and res.spells:with('en', actionName).recast_id or nil
-    if recastId then
-        local recastTime = ffxi.windower.get_ability_recasts()[recastId] or nil
-        if recastTime and recastTime > 0 then
-            return true
-        end
-    end
+	for k,v in pairs(res.job_abilities) do
+		if v.en == actionName and v.recast_id ~= 0 then
+			local recast = windower.ffxi.get_ability_recasts()[v.recast_id] or nil
+			if recast == nil then
+				break
+			end
+			if recast > 0 then
+				return true
+			end
+			if recast == 0 then
+				return false
+			end
+		end
+	end
 
-	local recastId = res.spells:with('en', actionName) and res.spells:with('en', actionName).recast_id or nil
-    if recastId then
-        local recastTime = ffxi.windower.get_spell_recasts()[recastId] or nil
-        if recastTime and recastTime > 0 then
-            return true
-        end
-    end
+	for k,v in pairs(res.spells) do
+		if v.en == actionName and v.recast_id ~= 0 then
+			local recast = windower.ffxi.get_spell_recasts()[v.recast_id] or nil
+			if recast == nil then
+				break
+			end
+			if recast > 0 then
+				return true
+			end
+			if recast == 0 then
+				return false
+			end
+		end
+	end
 
-    if not recastId then
-        writeLog('Couldnt find recastId for ' .. actionName .. ' is not in the spell or jobability tables!', 1)
-    end
-    return false
+	add_to_chat(1, 'Didnt find a match for actionName: '..actionName..' in res.job_abilities or res.spells!')
+	return true --return true to stop attempts to spam ability
 end
 
 -- determine if current action is our pull action
@@ -376,11 +388,11 @@ windower.register_event('action',function (action)
         return
     end
     
-    local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
+    local actorId = windower.ffxi.get_mob_by_id(action.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
     local target = windower.ffxi.get_mob_by_target('t') or nil
 
-    if not actor or not player then
+    if not actorId or not player then
         return
     end
 
@@ -388,7 +400,7 @@ windower.register_event('action',function (action)
     local param = action.param
     
     -- Specific handling for actions we initiated
-    if actor.id == player.id then
+    if actorId == player.id then
         -- a ws/spell/ja completes
 		if category == 3 or category == 4 or category == 6 then
             actionInProgress = true
@@ -412,23 +424,6 @@ windower.register_event('action',function (action)
             end
             actionInProgress = true
             return
-        end
-    end
-
-    -- Specific handling for actions started by enemy
-    if target and target.Id and target.Id == actor.Id then
-        windower.add_to_chat(1, 'THE CRAB DID A THING! category: '..category..' param: '..param)
-
-        if category == 7 and param ~= 0 then
-            local abilityName = res.monster_abilities[act.targets[1].actions[1].param].en or nil
-            local reaction = afReact[abilityName] or nil
-            
-            windower.add_to_chat(1, 'monster used: '..abilityName..' adding: '..reaction..' to queue')
-            
-            if abilityName and reaction and reaction.actor == 'enemy' then
-                table.insert(actionQueue.other, reaction.response)
-                return
-            end
         end
     end
 
@@ -471,6 +466,19 @@ windower.register_event('action',function (action)
                 skillchainWindowOpenTime = os.time() + 3
                 skillchainWindowCloseTime = os.time() + 8
                 table.insert(actionQueue.ws, reaction.response)
+                return
+            end
+        end
+    end
+
+    -- Specific handling for actions started by enemy
+    if target and target.id and target.id == actorId then
+        if category == 7 and param ~= 0 then
+            local abilityName = res.monster_abilities[action.targets[1].actions[1].param].en or nil
+            local reaction = afReact[abilityName] or nil
+            
+            if abilityName and reaction and reaction.actor == 'enemy' then
+                table.insert(actionQueue.other, reaction.response)
                 return
             end
         end

@@ -26,9 +26,6 @@ vars.RUN = {
         --["Valiance"] = "Valiance,One for All",
         --["One for All"] = "Valiance,One for All"
     },
-    afReact = {
-        ['Darkness'] = {actor='any', response='preserveBurstWindow'}
-    },
     maintainAftermath = false,
     ws = "Resolution",
     targetTp = 1000,
@@ -48,7 +45,6 @@ vars.SCH = {
         ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
         ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
     },
-    respectBurstWindow = true,
     ws = "Myrkr",
     targetTp = 9999,
     pullCommand = '/ma "Frazzle" '

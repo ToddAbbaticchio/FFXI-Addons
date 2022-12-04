@@ -528,7 +528,7 @@ function autoActions()
 			return
 		end
 
-		-- AoE regen5
+		-- AoE regen5 (3 strats because +1 to get addendum: black back on after)
 		if strategemCount() >= 3 and not buffactive['Regen'] then
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')
 			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
@@ -543,6 +543,14 @@ function autoActions()
 			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
+		end
+
+		if strategemCount() >= 3 and not buffactive['Protect'] then
+			table.insert(multiStepAction, '/ja "Light Arts" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Protect V" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Shell V" <me>')
 		end
 	end
 end
