@@ -45,7 +45,7 @@ vars.SCH = {
         ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
         ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
     },
-    respectSkillchainWindow = true,
+    respectBurstWindow = true,
     ws = "Myrkr",
     targetTp = 9999,
     pullCommand = '/ma "Frazzle" '

@@ -162,7 +162,7 @@ function autoFite()
         end
         autoBuffHandler()
         
-        if jobVars.respectSkillchainWindow and skillchainWindow then
+        if jobVars.respectSkillchainWindow and burstWindow then
             return
         end
         faceTarget()    
