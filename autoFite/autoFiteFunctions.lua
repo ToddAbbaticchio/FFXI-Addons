@@ -357,11 +357,9 @@ function afReactHandler(player)
 
     -- if skillchain window open, close it before trying other reactions
     if skillchainWindow and #actionQueue.ws >= 1 then
-        if player.tp > 1000 then
             --local response = afReact[wsName].response
             --windower.chat.input(response)
             windower.chat.input(actionQueue.ws[1])
-        end
         return
     end
 
