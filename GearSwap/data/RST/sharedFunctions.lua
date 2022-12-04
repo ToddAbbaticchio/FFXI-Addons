@@ -133,6 +133,8 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
+		add_to_chat(1, 'oncooldown: '..tostring(onCooldown('Sublimation')))
+		--isMonsterNear('Skeea')
 	end
 
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
@@ -328,7 +330,8 @@ function buffIdActive(buffId)
 end
 
 function betterBuffActive(buffName, buffCount)
-	local buffId = nil
+	local buffId = res.buffs:with('en', buffName) and res.buffs:with('en', buffName).id
+
 	for k,v in pairs(res.buffs) do
 		if v.en == buffName then
 			buffId = v.id
@@ -460,26 +463,27 @@ function checkMagicalHasteCap()
 	return false
 end
 
-function mpCheck(spell)
-	for k,v in pairs(res.spells) do
-		if v.en == spell then
-			if player.mp >= v.mp_cost then
-				return true
-			end
-			break
-		end
+function mpCheck(spellName)
+	local spellmp = res.spells:with('en', spellName) and res.spells:with('en', spellName).mp_cost or nil
+	if spellmp and player.mp >= spellmp then
+		return true
 	end
 	return false
 end
 
-function notifyWhenMonsterNear(monsterName)
+function isMonsterNear(monsterName)
 	local monsters = windower.ffxi.get_mob_array()
-    for _,monster in pairs(monsters) do
+	add_to_chat(1, type(monsters))
+	local foundMonster = monsters:where('name', monsterName) or nil
+	if foundMonster then
+		send_command('input /p ~~ZOMG its '..monsterName..' <call>~~')
+	end
+	--[[ for _,monster in pairs(monsters) do
         if monster.name == monsterName then
            send_command('input /p ~~ZOMG its '..monsterName..' <call>~~')
             return
         end
-    end
+    end ]]
 end
 
 function tellXYZ(monsterName)

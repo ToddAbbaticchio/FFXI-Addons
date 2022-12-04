@@ -21,9 +21,9 @@ function init_gear_sets()
 		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",   --4*
-		body = "Agwu's Robe",               --10
+		body = "Merlinic Jubbah",           --11
 		hands = "Amalric Gages +1",         --6*
-		legs = "Agwu's Slops",              --09
+		legs = "Merlinic Shalwar",          --09
 		feet = "Agwu's Pigaches",           --06
 		neck = "Argute Stole +1",           --07
 		waist = "Eschan Stone",
