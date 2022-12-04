@@ -95,7 +95,7 @@ function buffActive(currBuffs, buffName)
 end
 
 -- feed an action name (spell or ja). Returns true if onCooldown, false if not
-function onCooldown(actionName)
+--[[ function onCooldown(actionName)
     -- make sure the action is in our megaTable
     if (spellAbilityTable[actionName] == nil) then
         writeLog('The action: ' .. actionName .. ' is not in the spell_ability_table!', 1)
@@ -118,10 +118,10 @@ function onCooldown(actionName)
         return true
     end
     return false
-end
+end ]]
 
---[[ function onCooldown(actionName)
-	local recastId = res.job_abilities:with('en', actionName) and res.spells:with('en', actionName).recastId or nil
+function onCooldown(actionName)
+	local recastId = res.job_abilities:with('en', actionName) and res.spells:with('en', actionName).recast_id or nil
     if recastId then
         local recastTime = ffxi.windower.get_ability_recasts()[recastId] or nil
         if recastTime and recastTime > 0 then
@@ -129,7 +129,7 @@ end
         end
     end
 
-	local recastId = res.spells:with('en', actionName) and res.spells:with('en', actionName).recastId or nil
+	local recastId = res.spells:with('en', actionName) and res.spells:with('en', actionName).recast_id or nil
     if recastId then
         local recastTime = ffxi.windower.get_spell_recasts()[recastId] or nil
         if recastTime and recastTime > 0 then
@@ -140,9 +140,8 @@ end
     if not recastId then
         writeLog('Couldnt find recastId for ' .. actionName .. ' is not in the spell or jobability tables!', 1)
     end
-
     return false
-end ]]
+end
 
 -- determine if current action is our pull action
 function isPullAction(category, param)
