@@ -459,6 +459,7 @@ windower.register_event('action',function (action)
                     if reaction.response2 then
                         table.insert(actionQueue.burst, reaction.response2)
                     end
+                end
                 return
             end
 
