@@ -26,6 +26,9 @@ vars.RUN = {
         --["Valiance"] = "Valiance,One for All",
         --["One for All"] = "Valiance,One for All"
     },
+    afReact = {
+        ['Darkness'] = {actor='any', response='preserveBurstWindow'}
+    },
     maintainAftermath = false,
     ws = "Resolution",
     targetTp = 1000,

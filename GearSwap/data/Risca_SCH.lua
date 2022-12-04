@@ -256,6 +256,7 @@ function init_modetables()
 			["index"] = 0,
 			[0] = "Off",
 			[1] = "On",
+			[2] = "AutoBurstMode",
 		}
 	}
 
@@ -465,7 +466,6 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
-local buffQueue = {}
 function autoActions()
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -501,15 +501,49 @@ function autoActions()
     end
 
     -- auto.fite mode on
-    if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
-		if player.mp < 1000 and windower.ffxi.get_mob_by_target('t').name:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
+	if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
+		if not buffactive['Addendum: Black'] then
+			send_command('/darkarts')
+			return
+		end
+
+		local targetName = windower.ffxi.get_mob_by_target('t') and windower.ffxi.get_mob_by_target('t').name or nil
+		if targetName and player.mp < 1000 and targetName:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
 			send_command('/aspir2')
+			return
+		end
+	end
+
+    if auto.fite[auto.fite.index] == 'AutoBurstMode' and not actionInProgress and not moving then
+		-- maintain addendum: black
+		if not buffactive['Addendum: Black'] then
+			send_command('/darkarts')
+			return
 		end
 
-		if not buffactive['Regen'] and strategemCount() >= 4 then
-						
+		-- aspir
+		local targetName = windower.ffxi.get_mob_by_target('t') and windower.ffxi.get_mob_by_target('t').name or nil
+		if targetName and player.mp < 1000 and targetName:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
+			send_command('/aspir2')
+			return
 		end
 
+		-- AoE regen5
+		if strategemCount() >= 3 and not buffactive['Regen'] then
+			table.insert(multiStepAction, '/ja "Light Arts" <me>')
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Regen V" <me>')
+			return
+		end
+
+		-- AoE storm2 of eleMode
+		if strategemCount() >= 3 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
+			table.insert(multiStepAction, '/ja "Light Arts" <me>')
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
+		end
 	end
 end
 

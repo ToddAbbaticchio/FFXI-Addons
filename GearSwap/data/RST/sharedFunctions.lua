@@ -22,6 +22,7 @@ eleWeaponSkills = S{
 	--[[staff]]         'Rock Crusher', 'Earth Crusher', 'Starburst', 'Sunburst', 'Cataclysm', 'Vidohunir', 'Garland of Bliss', 'Omniscience',
 	--[[ranged]]        'Flaming Arrow', 'Hot Shot', 'Wildfire', 'Trueflight', 'Leaden Salute'
 }
+multiStepAction = {}
 
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
@@ -611,6 +612,45 @@ function tryAutoSpellStep(spell)
 	end
 end
 
+function tryCleanQueue(category, param)
+    local actionName = nil
+    local queueAction = multiStepAction[1] or nil
+    ---
+    if category == 3 then
+        actionName = res.weapon_skills[param].en or nil
+        if actionName and queueAction and queueAction:contains(actionName) then
+            table.remove(multiStepAction, 1)
+            return
+        end
+    end
+    ---
+    if category == 4 then
+        actionName = res.spells[param].en or nil
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
+                table.remove(multiStepAction, 1)
+                return
+            end
+        end
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
+                table.remove(multiStepAction, 1)
+                return
+            end
+        end
+    end
+
+    if category == 6 then
+        actionName = res.job_abilities[param].en or nil
+        if actionName and queueAction then
+            if queueAction:contains(actionName) then
+                table.remove(multiStepAction, 1)
+                return
+            end
+        end
+    end
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
@@ -900,6 +940,10 @@ windower.raw_register_event('prerender',function()
 	if os.time() > lastCycleTime then
 		lastCycleTime = os.time()
 		if autoActions ~= nil then
+			if #multiStepAction >= 1 then
+				send_command('input '..multiStepAction[1])
+				return
+			end
 			autoActions()
 		end
 
@@ -934,6 +978,7 @@ end)
 
 windower.register_event('action',function(action)
 	if not action then return end
+	
 	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
 	if not actor or not player or not action then
 		return
@@ -942,23 +987,24 @@ windower.register_event('action',function(action)
 	local category = action.category
     local param = action.param
 	if actor.id == player.id then
-    	-- is a spell, but not a 'spell was interrupted' action
-		if category == 8 and param ~= 28787 then
-			actionInProgress = true
-			actionDelay = 0
-		end
+    	-- a ws/spell/ja completes
+		if category == 3 or category == 4 or category == 6 then
+            actionInProgress = true
+            actionDelay = 5
+            tryCleanQueue(category, param)
+        end
 
-		-- a spell completes or is interrupted
-		if category == 4 or (category == 8 and param == 28787) then
-			actionInProgress = true
-			actionDelay = 3
-		end
-		
-		-- a job ability completes (delay set higher because there is less action downtime after a JA)
-		if category == 6 then
-			actionInProgress = true
-			actionDelay = 5
-		end
+        -- a spell starts or is interrupted
+        if category == 8 then
+            if param == 28787 then
+                actionInProgress = true
+                actionDelay = 0
+                return
+            end
+            actionInProgress = true
+            actionDelay = 3
+			return
+        end
     end
 
 	if extendedActionEvent ~= nil then

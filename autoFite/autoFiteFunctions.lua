@@ -164,8 +164,7 @@ function isPullAction(category, param)
     return false
 end
 
-function evalWindows()
-    local now = os.time()
+function evalWindows(now)
     -- close burst window when time runs out
     if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
         burstWindow = false
@@ -318,6 +317,10 @@ end
 
 -- Weaponskillsssss
 function wsHandler()
+    if jobVars.respectBurstWindow and (burstWindow or skillchainWindow) then
+        return
+    end
+
     local player = windower.ffxi.get_player()
     if jobVars.maintainAftermath == true then
         if buffActive(player.buffs, "Aftermath: Lv.3") == false then
@@ -331,11 +334,7 @@ function wsHandler()
         end
     else
         if player.vitals.tp >= jobVars.targetTp then
-            if wsCommand:contains('Starlight') then
-                windower.chat.input(wsCommand .. ' <me>')
-            else
-                windower.chat.input(wsCommand .. '<t>')
-            end
+            windower.chat.input(wsCommand .. '<t>')
         end
     end
 end
@@ -416,6 +415,23 @@ windower.register_event('action',function (action)
         end
     end
 
+    -- Specific handling for actions started by enemy
+    if target and target.Id and target.Id == actor.Id then
+        windower.add_to_chat(1, 'THE CRAB DID A THING! category: '..category..' param: '..param)
+
+        if category == 7 and param ~= 0 then
+            local abilityName = res.monster_abilities[act.targets[1].actions[1].param].en or nil
+            local reaction = afReact[abilityName] or nil
+            
+            windower.add_to_chat(1, 'monster used: '..abilityName..' adding: '..reaction..' to queue')
+            
+            if abilityName and reaction and reaction.actor == 'enemy' then
+                table.insert(actionQueue.other, reaction.response)
+                return
+            end
+        end
+    end
+
     -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
     local actionTargetId = action.targets[1] and action.targets[1].id or nil
     if actionTargetId and target and target.id and actionTargetId == target.id then
@@ -437,10 +453,12 @@ windower.register_event('action',function (action)
             if skillchainName and reaction then
                 burstWindowCloseTime = os.time() + 8
                 burstWindow = true
-                table.insert(actionQueue.burst, reaction.response)
-                if reaction.response2 then
-                    table.insert(actionQueue.burst, reaction.response2)
-                end
+                -- for reactions other than 'preserveBurstWindow', insert them into actionQueue
+                if reaction ~= 'preserveBurstWindow' then
+                    table.insert(actionQueue.burst, reaction.response)
+                    if reaction.response2 then
+                        table.insert(actionQueue.burst, reaction.response2)
+                    end
                 return
             end
 
@@ -453,18 +471,6 @@ windower.register_event('action',function (action)
                 skillchainWindowCloseTime = os.time() + 8
                 table.insert(actionQueue.ws, reaction.response)
                 return
-            end
-        end
-    end
-    
-    -- Specific handling for actions started by enemy
-    if target and target.Id and target.Id == actor.Id then
-        if category == 7 and param == 24931 then
-            local abilityName = res.monster_abilities[act.targets[1].actions[1].param].en or nil
-            local reaction = afReact[abilityName] or nil
-            if abilityName and reaction and reaction.actor == 'enemy' then
-                table.insert(actionQueue.other, reaction.response)
-                --windower.send_command('input '..response)
             end
         end
     end
