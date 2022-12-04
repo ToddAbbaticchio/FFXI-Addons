@@ -465,6 +465,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
+local buffQueue = {}
 function autoActions()
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
@@ -504,6 +505,11 @@ function autoActions()
 		if player.mp < 1000 and windower.ffxi.get_mob_by_target('t').name:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
 			send_command('/aspir2')
 		end
+
+		if not buffactive['Regen'] and strategemCount() >= 4 then
+						
+		end
+
 	end
 end
 
