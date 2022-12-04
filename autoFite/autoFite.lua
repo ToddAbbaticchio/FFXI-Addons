@@ -110,10 +110,10 @@ function autoFite()
 
         if player.status == engaged then
             pulledMonster = nil
-            faceTarget()
+            --[[ faceTarget()
             if jobVars.ws ~= nil then
                 wsHandler()
-            end
+            end ]]
 
             -- If target moves out of range
             local monster = windower.ffxi.get_mob_by_target('t') or nil
@@ -152,9 +152,6 @@ function autoFite()
             if currentTarget and assistTarget.distance < 2 then
                 approachTarget(currentTarget, jobVars.meleeDistance, 0.1)
             end
-            
-            faceTarget()
-            wsHandler()
         end
     end
 
@@ -164,6 +161,12 @@ function autoFite()
             afReactHandler(player)
         end
         autoBuffHandler()
+        
+        if jobVars.respectSkillchainWindow and skillchainWindow then
+            return
+        end
+        faceTarget()    
+        wsHandler()
     end
 end
 
