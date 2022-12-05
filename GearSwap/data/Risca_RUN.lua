@@ -35,7 +35,7 @@ function init_gear_sets()
 		ring2="Niqmaddu Ring",
 		back=gear.STRCape,
 	}
-	sets.baseTank = {                     --Total: 54 | DT44 | PDT10
+	sets.baseTank = {                     --Total: 50 | DT40 | PDT10
 		ammo="Staunch Tathlum +1",        --DT03
 		head="Nyame Helm",                --DT07
 		body="Runeist's Coat +3",
@@ -47,7 +47,7 @@ function init_gear_sets()
 		ear1="Telos Earring",
 		ear2="Sherida Earring",
 		ring1="Moonlight Ring",           --DT05
-		ring2="Defending Ring",           --DT10
+		ring2="Moonlight Ring",           --DT05
 		back=gear.STRCape,                --PDT10
 	}
 	sets.evaTank = {
@@ -81,7 +81,7 @@ function init_gear_sets()
 		back=gear.EnmityCape,							--030/00
 	}
 	sets.superTank = {
-		ammo="Yamarang",
+		ammo="Staunch Tathlum +1",
 		head="Nyame Helm",                --DT07
 		body="Runeist's Coat +3",
 		hands="Nyame Gauntlets",          --DT07
@@ -92,7 +92,7 @@ function init_gear_sets()
 		ear1="Tuisto Earring",
 		ear2="Odnowa Earring +1",
 		ring1="Moonlight Ring",           --DT05
-		ring2="Defending Ring",           --DT10
+		ring2="Moonlight Ring",           --DT05
 		back=gear.EnmityCape,             --PDT10
 	}
 	sets.baseWS = {                                 --Total: haha get wrecked
@@ -110,13 +110,13 @@ function init_gear_sets()
 		ring2="Niqmaddu Ring",
 		back=gear.STRCape,
 	}
-	sets.baseEnmity = {                             --Toal: 95+23   DT:43+25  (+ from epeo)
+	sets.baseEnmity = {                   --Toal: 89+23             DT:49 (without epeo)
 		ammo="Aqreqaq Bomblet",           --2
 		head="Halitus Helm",              --8
 		body="Emet Harness +1",           --10                      P06
 		hands="Kurys Gloves",             --9                       02
 		legs="Erilaz Leg Guards +3",      --13                      13
-		feet="Erilaz Greaves +3",         --6                       P05
+		feet="Erilaz Greaves +3",         --8                       11
 		neck="Futhark Torque +2",         --10                      07
 		waist="Kasiri Belt",              --3
 		ear1="Cryptic Earring",           --4
@@ -186,9 +186,24 @@ function init_gear_sets()
 		ring2="Defending Ring",
 		back=gear.CASTCape,        --10
 	}
+	sets.magicAcc = {
+		ammo="Impatiens",
+		head="Erilaz Galea +3",
+		body="Erilaz Surcoat +3",
+		hands="Erilaz Gauntlets +2",
+		legs="Erilaz Leg Guards +3",
+		feet="Erilaz Greaves +3",
+		neck="Incanter's Torque",
+		waist="Eschan Stone",
+		--ear1="Etiolation Earring",
+		ear2="Erilaz Earring +1",
+		ring1="Stikini Ring +1",
+		ring2="Stikini Ring +1",
+		back=gear.CASTCape,
+	}
 
 	-- Random one-off sets or small sets
-    sets.baseIdle = set_combine(sets.baseTank, {ring2="Defending Ring",ring1="Karieyh Ring +1",ammo="Homiliary"}) 
+    sets.baseIdle = set_combine(sets.baseTank, {ring1="Karieyh Ring +1",ammo="Homiliary"}) 
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.wakeUp = {head="Frenzy Sallet"}
 	sets.obi = {waist="Hachirin-no-Obi"}
@@ -196,6 +211,7 @@ function init_gear_sets()
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +3",}
 	sets.MagicFreeCast = set_combine(sets.MagicBurst, {ring1='Shiva Ring +1', ring2="Shiva Ring +1"})
+	sets.holyWater = {neck="Nicander's Necklace", ring1="Purity Ring", ring2="Blenmot's Ring +1"}
 	sets.naked = {head=empty, body=empty, hands=empty, legs=empty, feet=empty, neck=empty, waist=empty, ear1=empty, ear2=empty, ring1=empty, ring2=empty, back=empty}
 	
 	-- JA Sets
@@ -238,6 +254,10 @@ function init_gear_sets()
     sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +3",})
 	sets.midcast['Cocoon'] = sets.baseTank
 	sets.midcast['Stoneskin'] = set_combine(sets.baseTank, sets.emSkill, {waist="Siegel Sash",})
+
+	sets.absorbSpells = set_combine(sets.magicAcc, {neck="Erra Pendant", ring1="Evanescence Ring", ring2="Kishar Ring", waist="Fucho-no-Obi"})
+	sets.midcast['Drain'] = sets.absorbSpells
+	sets.midcast['Aspir'] = sets.absorbSpells
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -453,10 +473,13 @@ function job_buff_change(buff, gain)
 	if buff == 'Doom' then
 		if gain then
 			send_command('input /p Doomed! Haaaaaalp!')
-			equip({waist="Gishdubar Sash",ring1="Purity Ring"})
-			disable('ring1','waist')
+			equip(sets.holyWater)
+			disable('neck','ring1','ring2')
+			--[[ equip({waist="Gishdubar Sash",ring1="Purity Ring"})
+			disable('ring1','waist') ]]
 		else
-			enable('ring1','waist')
+			send_command('input /p Doom all better. (or Im dead? RIP)')
+			enable('neck','ring1','ring2')
 			evalState_equipGear()
 		end
 	end
@@ -583,7 +606,7 @@ function autoActions()
 		return
 	end
 
-	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+	if auto.buff[auto.buff.index] == 'On' and not midaction() and not moving then
 		-- auto rune
 		if auto.rune[auto.rune.index] == 'On' and buffCheck(currRune, 3) then
 			windower.send_command('rh userune')
