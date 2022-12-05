@@ -1,4 +1,4 @@
--- Ver 1.3.1
+-- Ver 1.3.2
 -------------------------------------------------------------------------------------------------------------------
 -- Global Variables!  Wheeeeeeeeee!
 -------------------------------------------------------------------------------------------------------------------
@@ -356,25 +356,22 @@ function afReactHandler(player)
     if actionInProgress then
         return
     end
-
     local now = os.time()
+
     -- if burst window is open / we have burst commands queued, only try bursting
     if burstWindow and #actionQueue.burst >= 1 then
-        --local response = afReact[skillchainName].response
-        --windower.chat.input(response)
         windower.chat.input(actionQueue.burst[1])
         return
     end
-
     -- if skillchain window open, close it before trying other reactions
     if skillchainWindow and #actionQueue.ws >= 1 then
-            --local response = afReact[wsName].response
-            --windower.chat.input(response)
-            windower.chat.input(actionQueue.ws[1])
+            local tp = windower.ffxi.get_player() and windower.ffxi.get_player().tp or nil
+            if tp and tp >= 1000 then
+                windower.chat.input(actionQueue.ws[1])
+            end
         return
     end
-
-    -- process commands in reactionQueue
+    -- Finally, process commands in actionQueue.other
     if #actionQueue.other >= 1 then
         windower.chat.input(actionQueue.other[1])
     end
@@ -474,7 +471,10 @@ windower.register_event('action',function (action)
     -- Specific handling for actions started by enemy
     if target and target.id and target.id == actor.id then
         if category == 7 and param ~= 0 then
-            local abilityName = res.monster_abilities[action.targets[1].actions[1].param].en or nil
+            local abilParam = action.targets[1].actions[1].param or nil
+            local theTable = res.monster_abilities[abilParam] or nil
+            local abilityName = theTable.en or nil
+            --local abilityName = res.monster_abilities[action.targets[1].actions[1].param].en or nil
             local reaction = afReact[abilityName] or nil
             if abilityName and reaction and reaction.actor == 'enemy' then
                 table.insert(actionQueue.other, reaction.response)

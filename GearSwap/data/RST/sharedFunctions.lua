@@ -617,7 +617,7 @@ function tryCleanQueue(category, param)
     local queueAction = multiStepAction[1] or nil
     ---
     if category == 3 then
-        actionName = res.weapon_skills[param].en or nil
+        actionName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
         if actionName and queueAction and queueAction:contains(actionName) then
             table.remove(multiStepAction, 1)
             return
@@ -625,7 +625,7 @@ function tryCleanQueue(category, param)
     end
     ---
     if category == 4 then
-        actionName = res.spells[param].en or nil
+		actionName = res.spells[param] and res.spells[param].en or nil
         if actionName and queueAction then
             if queueAction:contains(actionName) then
                 table.remove(multiStepAction, 1)
@@ -641,7 +641,7 @@ function tryCleanQueue(category, param)
     end
 
     if category == 6 then
-        actionName = res.job_abilities[param].en or nil
+        actionName = res.job_abilities[param] and res.job_abilities[param].en or nil
         if actionName and queueAction then
             if queueAction:contains(actionName) then
                 table.remove(multiStepAction, 1)
@@ -1010,8 +1010,4 @@ windower.register_event('action',function(action)
 	if extendedActionEvent ~= nil then
 		extendedActionEvent(action, actor, me, category, param)
 	end
-end)
-
-windower.register_event('gain buff',function(buffId)
-	--add_to_chat(122, 'buffid: '..buffId)
 end)

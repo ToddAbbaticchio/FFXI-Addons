@@ -154,7 +154,7 @@ function init_gear_sets()
 	sets.obi = {waist="Hachirin-no-Obi"}
 	sets.oSash = {waist="Orpheus's Sash"}
     sets.sublimation = {waist="Embla Sash"}
-	sets.DarkArtsWeapons = {main="Akademos",sub="Enki Strap"}
+	sets.staffSet = {main="Akademos",sub="Enki Strap"}
 	sets.LightArtsWeapons = {main="Daybreak",sub="Genmei Shield"}
 	
     -- JA Sets
@@ -175,7 +175,7 @@ function init_gear_sets()
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
 	sets.midcast['Cure'] = {hands="Telchine Gloves",}
 	
-	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
+	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",sub="Culminus",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
 	sets.midcast['Aspir'] = sets.absorbSpells
 	sets.midcast['Drain'] = sets.absorbSpells
 

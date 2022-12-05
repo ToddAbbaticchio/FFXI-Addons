@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.3.1'
+_addon.version = '1.3.2'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -81,17 +81,16 @@ function initializeSessionVars(job, ...)
 
     -- af react initial vars if table exists
     afReact = jobVars.afReact or nil
-    if afReact then
-        actionQueue = {}
-        actionQueue.burst = {}
-        actionQueue.ws = {}
-        actionQueue.other = {}
-        burstWindow = false
-        burstWindowCloseTime = 0
-        skillchainWindow = false
-        skillchainWindowOpenTime = 0
-        skillchainWindowCloseTime = 0
-    end
+    actionQueue = {}
+    actionQueue.burst = {}
+    actionQueue.ws = {}
+    actionQueue.other = {}
+    burstWindow = false
+    burstWindowCloseTime = 0
+    skillchainWindow = false
+    skillchainWindowOpenTime = 0
+    skillchainWindowCloseTime = 0
+    
 
     writeLog(startMsg, 1)
 end
