@@ -255,8 +255,8 @@ function init_modetables()
 		["fite"] = {
 			["index"] = 0,
 			[0] = "Off",
-			[1] = "On",
-			[2] = "AutoBurstMode",
+			[1] = "AutoHeal",
+			[2] = "AutoBurst",
 		}
 	}
 
@@ -467,6 +467,7 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
+	--add_to_chat(122, 'autoActions heartbeat')
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
 	end
@@ -489,32 +490,23 @@ function autoActions()
         end
 
         -- Full time buffs
-		if not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
-            send_command('/'..ele.find.storm2_of[eleMode[eleMode.index].element])
-        end
-        if buffCheck('Klimaform') then
+		if buffCheck('Klimaform') then
             send_command('/klimaform')
         end
 		if buffCheck('Haste') then
 			send_command('/haste')
 		end
+
+		-- Maintain storm if not in an auto.fite mode
+		if auto.fite[auto.fite.index] == 'Off' and not moving then
+			if not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
+				send_command('/'..ele.find.storm2_of[eleMode[eleMode.index].element])
+			end
+		end
     end
 
-    -- auto.fite mode on
-	if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
-		if not buffactive['Addendum: Black'] then
-			send_command('/darkarts')
-			return
-		end
-
-		local targetName = windower.ffxi.get_mob_by_target('t') and windower.ffxi.get_mob_by_target('t').name or nil
-		if targetName and player.mp < 1000 and targetName:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
-			send_command('/aspir2')
-			return
-		end
-	end
-
-    if auto.fite[auto.fite.index] == 'AutoBurstMode' and not actionInProgress and not moving then
+    -- auto.fite modes 
+	if auto.fite[auto.fite.index] == 'AutoBurst' and not actionInProgress and not moving then
 		-- maintain addendum: black
 		if not buffactive['Addendum: Black'] then
 			send_command('/darkarts')
@@ -549,6 +541,62 @@ function autoActions()
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "Protect V" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Shell V" <me>')
+		end
+	end
+
+	if auto.fite[auto.fite.index] == 'AutoHeal' and not moving then
+		-- maintain addendum: white
+		if not buffactive['Addendum: White'] then
+			send_command('/lightarts')
+			return
+		end
+
+		partyLowHP(50, '/ma "Cure IV"')
+
+		-- AoE regen5
+		if strategemCount() >= 2 and not buffactive['Regen'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Regen V" <me>')
+			return
+		end
+
+		-- AoE Phalanx
+		if strategemCount() >= 2 and not buffactive['Phalanx'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Phalanx" <me>')
+			return
+		end
+
+		-- AoE Adloquium
+		if strategemCount() >= 2 and not buffactive['Regain'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Adloquium" <me>')
+			return
+		end
+
+		-- AoE storm2 of eleMode
+		if strategemCount() >= 2 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
+			return
+		end
+
+		-- AoE Prot5
+		if strategemCount() >= 2 and not buffactive['Protect'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Protect V" <me>')
+			return
+		end
+
+		-- AoE Shell5
+		if strategemCount() >= 1 and not buffactive['Shell'] then
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "Shell V" <me>')
 		end

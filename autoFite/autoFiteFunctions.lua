@@ -470,11 +470,13 @@ windower.register_event('action',function (action)
 
     -- Specific handling for actions started by enemy
     if target and target.id and target.id == actor.id then
+        --if category == 7 and param == 24931 then
         if category == 7 and param ~= 0 then
-            local abilParam = action.targets[1].actions[1].param or nil
-            local theTable = res.monster_abilities[abilParam] or nil
-            local abilityName = theTable.en or nil
-            --local abilityName = res.monster_abilities[action.targets[1].actions[1].param].en or nil
+            local abilityName = actor and actor.targets and actor.targets[1] and actor.targets[1].actions and actor.targets[1].actions[1] and actor.targets[1].actions[1].param and res.monster_abilities[actor.targets[1].actions[1].param].en or nil
+            if abilityName then
+                windower.add_to_chat(122, 'This asshole just used '..abilityName)
+            end
+
             local reaction = afReact[abilityName] or nil
             if abilityName and reaction and reaction.actor == 'enemy' then
                 table.insert(actionQueue.other, reaction.response)

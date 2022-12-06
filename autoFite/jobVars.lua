@@ -4,9 +4,7 @@ vars.BLU = {
         ["Warcry"] = "Warcry",
         ["Berserk"] = "Berserk",
     },
-    afReact = {
-        --['Action'] = {actor='', response=''},
-    },
+    afReact = {},
     ws = "Savage Blade",
     --targetTp = 1750,
     targetTp = 1000,
@@ -101,6 +99,7 @@ vars.SMN = {
 
 vars.RDM = {
     autoBuffs = {},
+    afReact = {},
     ws = "Savage Blade",
     targetTp = 1000,
     pullCommand = '/ma "Dia III" '

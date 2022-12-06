@@ -8,6 +8,8 @@ res = require 'resources'
 red = "\\cs(255,0,0)"
 green = "\\cs(0,255,0)"
 white = "\\cs(255,255,255)"
+lightBlue = "\\cs(102,255,255)"
+purple = "\\cs(101,31,255)"
 
 eleWeaponSkills = S{
 	--[[daggger]]       'Gust Slash', 'Cyclone', 'Energy Steal', 'Energy Drain', 'Aeolian Edge',
@@ -134,7 +136,7 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		add_to_chat(1, 'oncooldown: '..tostring(onCooldown('Sublimation')))
+		add_to_chat(1, 'test: '..tostring(test))
 		--isMonsterNear('Skeea')
 	end
 
@@ -601,9 +603,10 @@ end
 function tryAutoSpellStep(spell)
     for spellFamily,spellList in pairs(spellSteps) do
 		if spell.en:startswith(spellFamily) then
-			local currIndex = table.find(spellList, spell.en) + 1
-			local swapSpell = spellList[currIndex]
-			while onCooldown(swapSpell) do
+			local triedSpell = table.find(spellList, spell.en) or nil
+			local currIndex = triedSpell and triedSpell + 1 or nil
+			local swapSpell = currIndex and spellList[currIndex] or nil
+			while swapSpell and onCooldown(swapSpell) do
 				currIndex = currIndex + 1
 				swapSpell = spellList[currIndex]
 			end
@@ -706,7 +709,7 @@ function job_precast(spell, action, spellMap, eventArgs)
 	end
 
 	-- If on cooldown and in spellStep table, tryAutoStepSpell
-    if spell.type:contains('Magic') and spellSteps and onCooldown(spell.name) then
+    if spell.type:contains('Magic') and onCooldown(spell.name) and spellSteps then
         eventArgs.cancel = true
         tryAutoSpellStep(spell)
     end
@@ -787,8 +790,8 @@ function modeHud(action)
 		-- add auto.buff and auto.fite status
 		local autoBuff = auto.buff[auto.buff.index]
 		local autoFite = auto.fite[auto.fite.index]
-		hudText:append('auto.Buff: '..getBoolColor(autoBuff))
-		hudText:append('auto.Fite: '..getBoolColor(autoFite))
+		hudText:append('auto.Buff: '..getModeColor(autoBuff))
+		hudText:append('auto.Fite: '..getModeColor(autoFite))
 
 		hud.text(modeHudWindow, hudText:concat('  |  '))
 		hud.visible(modeHudWindow, true)
@@ -800,11 +803,19 @@ function modeHud(action)
 		texts.visible(modeHudWindow, false)
 	end
 end
-function getBoolColor(bool)
-	if bool == 'On' then
-		return green..bool..white
+function getModeColor(mode)
+	if mode == 'On' then
+		return green..mode..white
 	end
-	return red..bool..white
+	if mode == 'Off' then
+		return red..mode..white
+	end
+	if mode:contains('Heal') then
+		return green..mode..white
+	end
+	if mode:contains('Burst') or mode:contains('Nuke') then
+		return purple..mode..white
+	end
 end
 
 function eleHud(action)
@@ -888,12 +899,11 @@ end
 -- THE LOOOOOOOOOOOP
 -------------------------------------------------------------------------------------------------------------------
 -- initial vars for autoCast looping
-actionInProgress = false
-lastCycleTime = os.time()
+local lastCycleTime = os.time()
 
 -- initial vars for movement detection / movespeed swap
 local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index)
-mov = {
+local mov = {
 	counter = 0,
 	x = playerInfo.x or 0,
 	y = playerInfo.y or 0,
@@ -937,28 +947,21 @@ windower.raw_register_event('prerender',function()
 	end
 
 	-- everytime os.time updates (once a second) call autoActions() if it exists and handle actionDelay counter
-	if os.time() > lastCycleTime then
+	local now = os.time()
+	if now > lastCycleTime then
 		lastCycleTime = os.time()
-		if autoActions ~= nil then
+
+		-- if using elemental wheel, fade text after 3 seconds
+		if hudFadeTime ~= nil and (lastCycleTime - hudFadeTime > 3) then
+			texts.visible(eleWheelText, false)
+		end
+		
+		if autoActions and not midaction() then
 			if #multiStepAction >= 1 then
 				send_command('input '..multiStepAction[1])
 				return
 			end
 			autoActions()
-		end
-
-		-- Compensate for cast animations lasting longer than 'actual' spellcast
-		if actionDelay and not actionLock then
-			actionDelay = actionDelay + 1
-			if actionDelay > 5 then
-				actionInProgress = false
-				actionDelay = nil
-			end
-		end
-
-		-- if using elemental wheel, fade text after 3 seconds
-		if hudFadeTime ~= nil and (lastCycleTime - hudFadeTime > 3) then
-			texts.visible(eleWheelText, false)
 		end
 	end
 end)
@@ -989,25 +992,11 @@ windower.register_event('action',function(action)
 	if actor.id == player.id then
     	-- a ws/spell/ja completes
 		if category == 3 or category == 4 or category == 6 then
-            actionInProgress = true
-            actionDelay = 5
             tryCleanQueue(category, param)
-        end
-
-        -- a spell starts or is interrupted
-        if category == 8 then
-            if param == 28787 then
-                actionInProgress = true
-                actionDelay = 0
-                return
-            end
-            actionInProgress = true
-            actionDelay = 3
-			return
         end
     end
 
 	if extendedActionEvent ~= nil then
-		extendedActionEvent(action, actor, me, category, param)
+		extendedActionEvent(action, actor, player, category, param)
 	end
 end)
