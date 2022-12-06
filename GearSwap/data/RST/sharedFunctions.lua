@@ -946,7 +946,7 @@ windower.raw_register_event('prerender',function()
         mov.counter = 0
 	end
 
-	-- everytime os.time updates (once a second) call autoActions() if it exists and handle actionDelay counter
+	-- everytime os.time updates (once a second) call autoActions() if it exists
 	local now = os.time()
 	if now > lastCycleTime then
 		lastCycleTime = os.time()
@@ -997,6 +997,6 @@ windower.register_event('action',function(action)
     end
 
 	if extendedActionEvent ~= nil then
-		extendedActionEvent(action, actor, player, category, param)
+		extendedActionEvent(action, actor, category, param)
 	end
 end)
