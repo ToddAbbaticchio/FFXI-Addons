@@ -72,7 +72,7 @@ function init_gear_sets()
 		ammo = "Pemphredo Tathlum",
 		head = "Arbatel Bonnet +2",
 		body = "Agwu's Robe",
-		hands = "Arbatel Bracers +2",
+		hands = "Arbatel Bracers +3",
 		legs = "Chironic Hose",
 		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +1",
@@ -161,7 +161,7 @@ function init_gear_sets()
 	sets.precast.JA['Tabula Rasa'] = {--[[ legs="Peda. Pants +3" ]]}
     sets.precast.JA['Enlightenment'] = {--[[ body="Peda. Gown +3" ]]}
 	sets.grimoireEffect = {head="Pedagogy Mortarboard +3", --[[ feet="Acad. Loafers +3" ]]}
-	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +2"}
+	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +3"}
 	sets.buff['Klimaform'] = {feet="Arbatel Loafers +3"}
 	sets.buff['Ebullience'] = {head="Arbatel Bonnet +2"}
 	sets.buff['Rapture'] = {head="Arbatel Bonnet +2"}
@@ -537,13 +537,13 @@ function autoActions()
 			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
 		end
 
-		if strategemCount() >= 3 and not buffactive['Protect'] then
+		--[[ if strategemCount() >= 3 and not buffactive['Protect'] then
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "Protect V" <me>')
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "Shell V" <me>')
-		end
+		end ]]
 	end
 
 	if auto.fite[auto.fite.index] == 'AutoHeal' and not moving then

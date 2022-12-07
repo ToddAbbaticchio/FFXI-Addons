@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.3.3'
+_addon.version = '1.3.4'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -256,7 +256,6 @@ windower.register_event('addon command', function(...)
     if afAction:lower() == 'fix' then
         pressKey('enter',0.1)
     end
-
 end)
 
 -- Call actionHandler once every second

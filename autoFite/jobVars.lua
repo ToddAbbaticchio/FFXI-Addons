@@ -39,7 +39,9 @@ vars.SCH = {
     },
     afReact = {
         ['Darkness'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
+        --['Darkness'] = {actor='any', response='preserveBurstWindow'},
         ['Distortion'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
+        --['Distortion'] = {actor='any', response='preserveBurstWindow'},
         ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
         ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
     },
@@ -92,8 +94,14 @@ vars.WAR = {
 
 vars.SMN = {
     autoBuffs = {},
+    afReact = {
+        ['Darkness'] = {actor='any', response='/pet "Heavenly Strike" <t>'},
+        ['Distortion'] = {actor='any', response='/pet "Heavenly Strike" <t>'},
+        --['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
+        --['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
+    },
     ws = "Myrkr",
-    targetTp = 9999,
+    targetTp = 2000,
     pullCommand = '/ma "Stone" '
 }
 
@@ -112,4 +120,22 @@ vars.BRD = {
     targetTp = 1500,
     pullCommand = '/ma "Carnage Elegy" ',
     meleeDistance = 999
+}
+
+
+
+
+
+
+
+vars.DEMORUN = {
+    autoBuffs = {
+        ["Swordplay"] = "Swordplay",
+        ["Last Resort"] = "Last Resort",
+        ["Battuta"] = "Battuta",
+    },
+    maintainAftermath = true,
+    ws = "Dimidiation",
+    targetTp = 1000,
+    pullCommand = '/ma "Flash" '
 }

@@ -1,4 +1,4 @@
--- Ver 1.3.3
+-- Ver 1.3.4
 -------------------------------------------------------------------------------------------------------------------
 -- Global Variables!  Wheeeeeeeeee!
 -------------------------------------------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ function onCooldown(actionName)
 		end
 	end
 
-	add_to_chat(1, 'Didnt find a match for actionName: '..actionName..' in res.job_abilities or res.spells!')
+	writeLog('Didnt find a match for actionName: '..actionName..' in res.job_abilities or res.spells!', 1)
 	return true --return true to stop attempts to spam ability
 end
 
@@ -427,6 +427,26 @@ windower.register_event('action',function (action)
     -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
     local actionTargetId = action.targets[1] and action.targets[1].id or nil
     if actionTargetId and target and target.id and actionTargetId == target.id then
+        -- skillchains (3 = ws, 4 = spells, 11 = trust ws)
+        if category == 3 or category == 4 or category == 11 then
+            local skillchainId = action.targets[1].actions[1].add_effect_message or nil
+            local skillchainName = scTable[skillchainId] and scTable[skillchainId].name or nil
+            local reaction = afReact[skillchainName] or nil
+            if skillchainName and reaction then
+                burstWindowCloseTime = os.time() + 8
+                burstWindow = true
+                
+                -- for reactions other than 'preserveBurstWindow', insert them into actionQueue
+                if reaction.response ~= 'preserveBurstWindow' then
+                    table.insert(actionQueue.burst, reaction.response)
+                    if reaction.response2 then
+                        table.insert(actionQueue.burst, reaction.response2)
+                    end
+                end
+                return
+            end
+        end
+        
         -- weaponskills
         if category == 3 then
             -- if a WS lands on our target while window(s) are open, they be closed. (if it makes a chain it just reopens a new window right after)
@@ -436,23 +456,6 @@ windower.register_event('action',function (action)
                 skillchainWindowCloseTime = now
                 burstWindow = false
                 skillchainWindow = false
-            end
-
-            -- Check for skillchain; Check if skillchain in afReact table
-            local skillchainId = action.targets[1].actions[1].add_effect_message or nil
-            local skillchainName = scTable[skillchainId] and scTable[skillchainId].name or nil
-            local reaction = afReact[skillchainName] or nil
-            if skillchainName and reaction then
-                burstWindowCloseTime = os.time() + 8
-                burstWindow = true
-                -- for reactions other than 'preserveBurstWindow', insert them into actionQueue
-                if reaction ~= 'preserveBurstWindow' then
-                    table.insert(actionQueue.burst, reaction.response)
-                    if reaction.response2 then
-                        table.insert(actionQueue.burst, reaction.response2)
-                    end
-                end
-                return
             end
 
             -- Check if wsname in afReact table
@@ -474,7 +477,7 @@ windower.register_event('action',function (action)
         if category == 7 and param ~= 0 then
             local abilityName = actor and actor.targets and actor.targets[1] and actor.targets[1].actions and actor.targets[1].actions[1] and actor.targets[1].actions[1].param and res.monster_abilities[actor.targets[1].actions[1].param].en or nil
             if abilityName then
-                windower.add_to_chat(122, 'This asshole just used '..abilityName)
+                writeLog('This asshole just used '..abilityName, 1)
             end
 
             local reaction = afReact[abilityName] or nil
