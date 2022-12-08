@@ -736,10 +736,8 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	end
 	
 	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
-		add_to_chat(122, 'intensity: '..dayWeatherIntensity(spell.element))
 		if dayWeatherIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
-			add_to_chat(122, 'OBIIIIIIII')
 			equip(sets.obi)
 		elseif spell.target.distance < (7 - spell.target.model_size) and sets.oSash then
 			-- use orpheus if distance is more than 7 - target size
