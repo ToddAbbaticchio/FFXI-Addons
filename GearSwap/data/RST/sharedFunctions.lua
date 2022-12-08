@@ -79,16 +79,7 @@ function job_self_command(cmdParams, eventArgs)
 			extendedTMM(cmdParams, eventArgs)
 		end
 
-		local currModeSet = magicMode[magicMode.index].set or nil
-		if currModeSet == nil then
-			add_to_chat(122, 'Check magicMode table format')
-			return
-		end
-
-		for magicType,gearSet in pairs(currModeSet) do
-			sets.midcast[magicType] = gearSet
-		end
-
+		updateSetsFromModes('magic')
 		modeHud('update')
 		evalState_equipGear()
 	end
@@ -211,6 +202,17 @@ function updateSetsFromModes(mode)
 	if mode == 'weapon' then
 		sets.weapons = weaponMode[weaponMode.index].set
 		return
+	end
+	if mode == 'magic' then
+		local currModeSet = magicMode[magicMode.index].set or nil
+		if currModeSet == nil then
+			add_to_chat(122, 'Check magicMode table format')
+			return
+		end
+
+		for magicType,gearSet in pairs(currModeSet) do
+			sets.midcast[magicType] = gearSet
+		end
 	end
 
 	-- if not specified update all
@@ -734,12 +736,14 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	end
 	
 	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
+		add_to_chat(122, 'intensity: '..dayWeatherIntensity(spell.element))
 		if dayWeatherIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
-			equip { sets.obi }
+			add_to_chat(122, 'OBIIIIIIII')
+			equip(sets.obi)
 		elseif spell.target.distance < (7 - spell.target.model_size) and sets.oSash then
 			-- use orpheus if distance is more than 7 - target size
-			equip { sets.oSash }
+			equip(sets.oSash)
 		end
 	end
 end

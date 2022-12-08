@@ -23,6 +23,7 @@ function init_gear_sets()
 		head = "Pedagogy Mortarboard +3",   --4*
 		body = "Merlinic Jubbah",           --11
 		hands = "Amalric Gages +1",         --6*
+		--hands = "Arbatel Bracers +3",
 		legs = "Merlinic Shalwar",          --09
 		feet = "Agwu's Pigaches",           --06
 		neck = "Argute Stole +1",           --07
@@ -38,7 +39,8 @@ function init_gear_sets()
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",
 		body = "Agwu's Robe",
-		hands = "Amalric Gages +1",
+		--hands = "Amalric Gages +1",
+		hands = "Arbatel Bracers +3",
 		legs = "Agwu's Slops",
 		feet = "Agwu's Pigaches",
 		neck = "Argute Stole +1",
@@ -399,6 +401,9 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		local startAbIndex = auto.buff.index
 		auto.fite.index = 0
 		auto.buff.index = 0
+		magicMode.index = 0
+		updateSetsFromModes('magic')
+		
 		modeHud('update')
 
 		if cmdParams[1]:lower() == 'makefusionskillchain' then

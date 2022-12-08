@@ -180,6 +180,7 @@ function evalWindows(now)
     -- close burst window when time runs out
     if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
         burstWindow = false
+        actionQueue.burst = {}
     end
     
     -- open/close skillchainWindow
