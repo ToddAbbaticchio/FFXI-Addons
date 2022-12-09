@@ -478,7 +478,9 @@ function autoActions()
 			end
 
 			-- heal party members at 50% or lower health
-			partyLowHP(50, '/ma "Magic Fruit"')
+			if bluSpellSet('Magic Fruit') then
+				partyLowHP(50, '/ma "Magic Fruit"')
+			end
 
 			if buffCheck('Berserk') then
 				send_command('/berserk')
@@ -493,17 +495,17 @@ function autoActions()
 			end
 		end
 		
-		if buffCheck('Refresh', 'Battery Charge') then
+		if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then
 			send_command('input /ma "Battery Charge" <me>')
 			return
 		end
 
-		if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') then
+		if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
 
-		if buffCheck('Attack Boost', 'Nat. Meditation') then
+		if buffCheck('Attack Boost', 'Nat. Meditation') and bluSpellSet('Nat. Meditation') then
 			send_command('input /ma "Nat. Meditation" <me>')
 			return
 		end

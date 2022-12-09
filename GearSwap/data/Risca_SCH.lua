@@ -16,7 +16,7 @@ function init_gear_sets()
 	gear.nukeCape = {name="Lugh's Cape", augments={'"Regen"+5'}}
 	gear.fcCape = {name="Lugh's Cape", augments={'"Fast Cast"+10'}}
 
-	sets.burst = {                         --Total: 47/15 +13 from jp 
+	sets.burst = {                         --Total: 50/15 +13 from jp 
 		main = "Akademos",                  --10
 		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
@@ -26,7 +26,7 @@ function init_gear_sets()
 		--hands = "Arbatel Bracers +3",
 		legs = "Merlinic Shalwar",          --09
 		feet = "Agwu's Pigaches",           --06
-		neck = "Argute Stole +1",           --07
+		neck = "Argute Stole +2",           --10
 		waist = "Eschan Stone",
 		ear1 = "Malignance Earring",
 		ear2 = "Barkaro. Earring",
@@ -43,7 +43,7 @@ function init_gear_sets()
 		hands = "Arbatel Bracers +3",
 		legs = "Agwu's Slops",
 		feet = "Agwu's Pigaches",
-		neck = "Argute Stole +1",
+		neck = "Argute Stole +2",
 		waist = "Eschan Stone",
 		left_ear = "Malignance Earring",
 		right_ear = "Barkaro. Earring",
@@ -77,7 +77,7 @@ function init_gear_sets()
 		hands = "Arbatel Bracers +3",
 		legs = "Chironic Hose",
 		feet = "Arbatel Loafers +3",
-		neck = "Argute Stole +1",
+		neck = "Argute Stole +2",
 		waist = "Eschan Stone",
 		ear1 = "Malignance Earring",
 		ear2 = "Arbatel Earring +1",

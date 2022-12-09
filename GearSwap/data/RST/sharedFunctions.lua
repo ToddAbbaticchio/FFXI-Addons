@@ -127,8 +127,7 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		add_to_chat(1, 'test: '..tostring(test))
-		--isMonsterNear('Skeea')
+		add_to_chat(122, tostring(checkBluSpell(cmdParams[2])))
 	end
 
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
@@ -656,6 +655,31 @@ function tryCleanQueue(category, param)
     end
 end
 
+function bluSpellSet(spellName)
+	if player.main_job ~= 'BLU' and player.sub_job ~= 'BLU' then
+		add_to_chat(122, 'Job not set Blue mage!')
+		return nil
+	end
+
+	local checkSpellId = nil
+	local setSpells = nil
+	for k,v in pairs(res.spells) do
+		if v.en == spellName then
+			checkSpellId = k
+			setSpells = windower.ffxi.get_mjob_data().spells or nil
+		end
+	end
+
+	if checkSpellId and setSpells then
+		for k,v in pairs(setSpells) do
+			if v == checkSpellId then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 -------------------------------------------------------------------------------------------------------------------
 -- Cast Phases
 -------------------------------------------------------------------------------------------------------------------
@@ -830,6 +854,9 @@ function eleHud(action)
 		eleIconXpos = 1500
 		eleIconYpos = 75
 		iconPath = windower.addon_path..'\\data\\RST\\icons\\'
+		if extendedEleHud ~= nil then
+			extendedEleHud(action)
+		end
 		
 		-- create prim eleIcon
 		windower.prim.create('eleWheelIcon')

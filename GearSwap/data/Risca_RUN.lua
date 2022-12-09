@@ -578,7 +578,7 @@ function extendedModeHud(hudText)
 	--modeHud_yPos = 50
 
 	local autoRune = auto.rune[auto.rune.index]
-	hudText:append(white..'auto.Rune: '..getBoolColor(autoRune))
+	hudText:append(white..'auto.Rune: '..getModeColor(autoRune))
 	return hudText
 end
 
