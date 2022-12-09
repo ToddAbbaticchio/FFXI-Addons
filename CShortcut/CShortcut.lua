@@ -113,11 +113,15 @@ windower.register_event('addon command',function(csCmd)
 		sendCommand('input //sellnpc flame geode')
 		sendCommand('input //sellnpc soil geode')
 		sendCommand('input //sellnpc aqua geode')
+		sendCommand('input //sellnpc breeze geode')
+		sendCommand('input //sellnpc shadow geode')
 		sendCommand('input //sellnpc shivite')
 		sendCommand('input //sellnpc ramuite')
 		sendCommand('input //sellnpc leviatite')
 		sendCommand('input //sellnpc carbite')
 		sendCommand('input //sellnpc fenrite')
+		sendCommand('input //sellnpc garudite')
+		sendCommand('input //sellnpc ifritite')
 	end
 
 -------------------------------------------------------------------------------------------------------------------
