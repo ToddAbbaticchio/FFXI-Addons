@@ -42,6 +42,7 @@ vars.SCH = {
         --['Darkness'] = {actor='any', response='preserveBurstWindow'},
         ['Distortion'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
         --['Distortion'] = {actor='any', response='preserveBurstWindow'},
+        --['Mordant Rime'] = {actor='any', response='/ws "Myrkr" <me>'},
         ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
         ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
     },

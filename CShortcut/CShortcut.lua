@@ -105,16 +105,22 @@ windower.register_event('addon command',function(csCmd)
 	if csCmd == 'selljunk' then
 		sendCommand('input //lua l sellnpc')
 
+		local bags = require('resources').bags
+		
+
+		sendCommand('input //sellnpc wind crystal')
+		sendCommand('input //sellnpc water crystal')
 		sendCommand('input //sellnpc bat wing')
 		sendCommand('input //sellnpc bat fang')
 		sendCommand('input //sellnpc fiend blood')
 		sendCommand('input //sellnpc beastman blood')
-		sendCommand('input //sellnpc wind crystal')
+		
 		sendCommand('input //sellnpc flame geode')
 		sendCommand('input //sellnpc soil geode')
 		sendCommand('input //sellnpc aqua geode')
 		sendCommand('input //sellnpc breeze geode')
 		sendCommand('input //sellnpc shadow geode')
+		sendCommand('input //sellnpc snow geode')
 		sendCommand('input //sellnpc shivite')
 		sendCommand('input //sellnpc ramuite')
 		sendCommand('input //sellnpc leviatite')

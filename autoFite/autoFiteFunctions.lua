@@ -1,4 +1,4 @@
--- Ver 1.3.4
+-- Ver 1.3.5
 -------------------------------------------------------------------------------------------------------------------
 -- Global Variables!  Wheeeeeeeeee!
 -------------------------------------------------------------------------------------------------------------------
@@ -177,6 +177,8 @@ function isPullAction(category, param)
 end
 
 function evalWindows(now)
+    local now = os.time()
+    
     -- close burst window when time runs out
     if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
         burstWindow = false
@@ -184,9 +186,14 @@ function evalWindows(now)
     end
     
     -- open/close skillchainWindow
-    if not skillchainWindow and now >= skillchainWindowOpenTime and now <= skillchainWindowCloseTime then
+    if skillchainWindowOpenTime and not skillchainWindow and now >= skillchainWindowOpenTime then
         skillchainWindow = true
     end
+
+    if skillchaiinWindow and now <= skillchainWindowCloseTime then
+        skillchainWindow = false
+    end
+
 end
 
 function tryCleanQueue(category, param)
@@ -353,7 +360,7 @@ function wsHandler()
 end
 
 -- afReact handling
-function afReactHandler(player)
+function afReactHandler()
     if actionInProgress then
         return
     end
@@ -366,7 +373,7 @@ function afReactHandler(player)
     end
     -- if skillchain window open, close it before trying other reactions
     if skillchainWindow and #actionQueue.ws >= 1 then
-            local tp = windower.ffxi.get_player() and windower.ffxi.get_player().tp or nil
+            local tp = windower.ffxi.get_player().vitals.tp or nil
             if tp and tp >= 1000 then
                 windower.chat.input(actionQueue.ws[1])
             end
@@ -462,6 +469,7 @@ windower.register_event('action',function (action)
             -- Check if wsname in afReact table
             local damageDealt = action.targets[1].actions[1].param or nil
             local wsName = res.weapon_skills[param].en or nil
+
             local reaction = afReact[wsName] or nil
             if wsName and reaction and damageDealt then
                 skillchainWindowOpenTime = os.time() + 3
@@ -477,10 +485,6 @@ windower.register_event('action',function (action)
         --if category == 7 and param == 24931 then
         if category == 7 and param ~= 0 then
             local abilityName = actor and actor.targets and actor.targets[1] and actor.targets[1].actions and actor.targets[1].actions[1] and actor.targets[1].actions[1].param and res.monster_abilities[actor.targets[1].actions[1].param].en or nil
-            if abilityName then
-                writeLog('This asshole just used '..abilityName, 1)
-            end
-
             local reaction = afReact[abilityName] or nil
             if abilityName and reaction and reaction.actor == 'enemy' then
                 table.insert(actionQueue.other, reaction.response)
@@ -582,6 +586,7 @@ windower.register_event('target change', function()
     actionQueue.other = {}
     burstWindowCloseTime = now
     skillchainWindowCloseTime = now
+    skillchainWindowOpenTime = nil
     burstWindow = false
     skillchainWindow = false
 end)
