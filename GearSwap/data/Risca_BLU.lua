@@ -466,6 +466,10 @@ function autoActions()
 		return
 	end ]]
 
+	if player.equipment.main == 'empty' or player.equipment.sub == 'empty' then
+		equip(sets.weapons)
+	end
+
 	--tellXYZ("???") -- id of ring last run:17002672
 
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then

@@ -478,7 +478,7 @@ function autoActions()
 	end
 
     -- auto.buff mode on
-	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+	if auto.buff[auto.buff.index] == 'On' and not moving then
         -- Sublimation Handling
         if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and not onCooldown('Sublimation') then
             send_command('input /ja "Sublimation" <me>')
@@ -511,7 +511,7 @@ function autoActions()
     end
 
     -- auto.fite modes 
-	if auto.fite[auto.fite.index] == 'AutoBurst' and not actionInProgress and not moving then
+	if auto.fite[auto.fite.index] == 'AutoBurst' and not moving then
 		-- maintain addendum: black
 		if not buffactive['Addendum: Black'] then
 			send_command('/darkarts')
@@ -525,7 +525,26 @@ function autoActions()
 			return
 		end
 
-		-- AoE regen5 (3 strats because +1 to get addendum: black back on after)
+		local storm1 = ele.find.storm_of[eleMode[eleMode.index].element]
+		local storm2 = ele.find.storm2_of[eleMode[eleMode.index].element]
+		local desiredBuffs = {
+			[0] = {buff='Phalanx', action='/ma "Phalanx" <me>'},
+			[1] = {buff=storm1, action='/ma "'..storm2..'" <me>'},
+		}
+
+		if not buffactive[desiredBuffs[0].buff] or not buffactive[desiredBuffs[1].buff] then
+			if strategemCount() >= 4 then
+				table.insert(multiStepAction, '/ja "Light Arts" <me>')
+				table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+				table.insert(multiStepAction, '/ja "Accession" <me>')
+				table.insert(multiStepAction, desiredBuffs[0].action)
+				table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+				table.insert(multiStepAction, '/ja "Accession" <me>')
+				table.insert(multiStepAction, desiredBuffs[1].action)
+			end
+		end
+
+		--[[ -- AoE regen5 (3 strats because +1 to get addendum: black back on after)
 		if strategemCount() >= 3 and not buffactive['Regen'] then
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')
 			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
@@ -535,12 +554,12 @@ function autoActions()
 		end
 
 		-- AoE storm2 of eleMode
-		if strategemCount() >= 3 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
+		if strategemCount() >= 3 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element] then
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')
 			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
 			table.insert(multiStepAction, '/ja "Accession" <me>')
 			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
-		end
+		end ]]
 
 		--[[ if strategemCount() >= 3 and not buffactive['Protect'] then
 			table.insert(multiStepAction, '/ja "Light Arts" <me>')

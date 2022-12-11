@@ -94,32 +94,6 @@ function buffActive(currBuffs, buffName)
     return false
 end
 
--- feed an action name (spell or ja). Returns true if onCooldown, false if not
---[[ function onCooldown(actionName)
-    -- make sure the action is in our megaTable
-    if (spellAbilityTable[actionName] == nil) then
-        writeLog('The action: ' .. actionName .. ' is not in the spell_ability_table!', 1)
-        return true
-    end
-
-    -- determine correct recast function to check
-    local actionInfo = spellAbilityTable[actionName]
-    local actionRecastId = actionInfo.recastId
-    local recast = 0
-
-    if actionInfo.command == "/ma" then
-        recast = windower.ffxi.get_spell_recasts()[actionRecastId]
-    end
-    if actionInfo.command == "/ja" then
-        recast = windower.ffxi.get_ability_recasts()[actionRecastId]
-    end
-
-    if recast ~= nil and recast > 0 then
-        return true
-    end
-    return false
-end ]]
-
 function onCooldown(actionName)
 	for k,v in pairs(res.job_abilities) do
 		if v.en == actionName and v.recast_id ~= 0 then
@@ -186,14 +160,15 @@ function evalWindows(now)
     end
     
     -- open/close skillchainWindow
-    if skillchainWindowOpenTime and not skillchainWindow and now >= skillchainWindowOpenTime then
-        skillchainWindow = true
+    if not skillchainWindowOpenTime then
+        return
     end
 
-    if skillchaiinWindow and now <= skillchainWindowCloseTime then
+    if now >= skillchainWindowOpenTime and now < skillchainWindowCloseTime then
+        skillchainWindow = true
+    else
         skillchainWindow = false
     end
-
 end
 
 function tryCleanQueue(category, param)
@@ -472,7 +447,7 @@ windower.register_event('action',function (action)
 
             local reaction = afReact[wsName] or nil
             if wsName and reaction and damageDealt then
-                skillchainWindowOpenTime = os.time() + 3
+                skillchainWindowOpenTime = os.time() + 4
                 skillchainWindowCloseTime = os.time() + 8
                 table.insert(actionQueue.ws, reaction.response)
                 return
@@ -482,11 +457,12 @@ windower.register_event('action',function (action)
 
     -- Specific handling for actions started by enemy
     if target and target.id and target.id == actor.id then
-        --if category == 7 and param == 24931 then
-        if category == 7 and param ~= 0 then
-            local abilityName = actor and actor.targets and actor.targets[1] and actor.targets[1].actions and actor.targets[1].actions[1] and actor.targets[1].actions[1].param and res.monster_abilities[actor.targets[1].actions[1].param].en or nil
-            local reaction = afReact[abilityName] or nil
-            if abilityName and reaction and reaction.actor == 'enemy' then
+        if category == 7 and param == 24931 then
+        --if category == 7 and param ~= 0 then
+            local actionId = action.targets[1].actions[1].param or nil
+            local actionName = res.monster_abilities[actionId].en or nil
+            local reaction = actionName and afReact[actionName] or nil
+            if actionName and reaction and reaction.actor == 'enemy' then
                 table.insert(actionQueue.other, reaction.response)
                 return
             end

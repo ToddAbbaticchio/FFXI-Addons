@@ -24,6 +24,28 @@ eleWeaponSkills = S{
 	--[[staff]]         'Rock Crusher', 'Earth Crusher', 'Starburst', 'Sunburst', 'Cataclysm', 'Vidohunir', 'Garland of Bliss', 'Omniscience',
 	--[[ranged]]        'Flaming Arrow', 'Hot Shot', 'Wildfire', 'Trueflight', 'Leaden Salute'
 }
+
+ele = {}
+ele.find = {}
+ele.list = S{'Light','Dark','Fire','Ice','Wind','Earth','Lightning','Water'}
+ele.weak_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Ice', ['Ice']='Wind', ['Wind']='Earth', ['Earth']='Lightning', ['Lightning']='Water', ['Water']='Fire'}
+ele.strong_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Water', ['Ice']='Fire', ['Wind']='Ice', ['Earth']='Wind', ['Lightning']='Earth', ['Water']='Lightning'}
+ele.find.mainspell_of = {['Light']="Cure IV", ['Dark']="Impact", ['Fire']="Fire V", ['Earth']="Earth V",['Water']="Water V", ['Wind']="Aero V", ['Ice']="Blizzard V", ['Lightning']="Thunder V"}
+ele.find.skillchain_of = {['Light']="Fusion", ['Dark']="Gravitation", ['Fire']="Fusion", ['Earth']="Gravitation",['Water']="Distortion", ['Wind']="Fragmentation", ['Ice']="Distortion", ['Lightning']="Fragmentation"}
+ele.find.storm_of = {['Light']="Aurorastorm", ['Dark']="Voidstorm", ['Fire']="Firestorm", ['Earth']="Sandstorm",['Water']="Rainstorm", ['Wind']="Windstorm", ['Ice']="Hailstorm", ['Lightning']="Thunderstorm"}
+ele.find.storm2_of = {['Light']="Aurorastorm II",['Dark']="Voidstorm II", ['Fire']="Firestorm II", ['Earth']="Sandstorm II", ['Water']="Rainstorm II", ['Wind']="Windstorm II",['Ice']="Hailstorm II", ['Lightning']="Thunderstorm II"}
+ele.find.helix_of = {['Light']="Luminohelix", ['Dark']="Noctohelix", ['Fire']="Pyrohelix", ['Earth']="Geohelix",['Water']="Hydrohelix", ['Wind']="Anemohelix", ['Ice']="Cryohelix", ['Lightning']="Ionohelix"}
+ele.find.helix2_of = {['Light']="Luminohelix II", ['Dark']="Noctohelix II", ['Fire']="Pyrohelix II", ['Earth']="Geohelix II",['Water']="Hydrohelix II", ['Wind']="Anemohelix II", ['Ice']="Cryohelix II", ['Lightning']="Ionohelix II"}
+ele.spirit_of = {['Light']="Light Spirit", ['Dark']="Dark Spirit", ['Fire']="Fire Spirit", ['Earth']="Earth Spirit", ['Water']="Water Spirit", ['Wind']="Air Spirit", ['Ice']="Ice Spirit", ['Lightning']="Thunder Spirit"}
+ele.rune_of = {['Light']='Lux', ['Dark']='Tenebrae', ['Fire']='Ignis', ['Ice']='Gelus', ['Wind']='Flabra', ['Earth']='Tellus', ['Lightning']='Sulpor', ['Water']='Unda'}
+ele.find.JaSpell_of = {['Light']='', ['Dark']='Death', ['Fire']='Firaja', ['Ice']='Blizzaja', ['Wind']='Aeroja', ['Earth']='Stoneja', ['Lightning']='Thundaja', ['Water']='Waterja'}
+ele.find.Tier6_of = {['Light']='', ['Dark']='', ['Fire']='Fire6', ['Ice']='Blizzard6', ['Wind']='Aero6', ['Earth']='Stone6', ['Lightning']='Thunder6', ['Water']='Water6'}
+ele.find.Tier5_of = {['Light']='', ['Dark']='', ['Fire']='Fire5', ['Ice']='Blizzard5', ['Wind']='Aero5', ['Earth']='Stone5', ['Lightning']='Thunder5', ['Water']='Water5'}
+ele.find.Tier4_of = {['Light']='', ['Dark']='', ['Fire']='Fire4', ['Ice']='Blizzard4', ['Wind']='Aero4', ['Earth']='Stone4', ['Lightning']='Thunder4', ['Water']='Water4'}
+ele.find.Tier3_of = {['Light']='', ['Dark']='', ['Fire']='Fire3', ['Ice']='Blizzard3', ['Wind']='Aero3', ['Earth']='Stone3', ['Lightning']='Thunder3', ['Water']='Water3'}
+ele.find.Tier2_of = {['Light']='', ['Dark']='', ['Fire']='Fire2', ['Ice']='Blizzard2', ['Wind']='Aero2', ['Earth']='Stone2', ['Lightning']='Thunder2', ['Water']='Water2'}
+ele.find.Tier1_of = {['Light']='', ['Dark']='', ['Fire']='Fire', ['Ice']='Blizzard', ['Wind']='Aero', ['Earth']='Stone', ['Lightning']='Thunder', ['Water']='Water'}
+
 multiStepAction = {}
 
 -------------------------------------------------------------------------------------------------------------------
@@ -110,6 +132,7 @@ function job_self_command(cmdParams, eventArgs)
 			if eleMode.index > #eleMode then
 				eleMode.index = 0
 			end
+			auto.buff.index = 0
 			eleHud('update')
 		end
 		if cmdParams[1]:lower() == 'elewheeldown' then
@@ -117,6 +140,7 @@ function job_self_command(cmdParams, eventArgs)
 			if eleMode.index < 0 then
 				eleMode.index = #eleMode
 			end
+			auto.buff.index = 0
 			eleHud('update')
 		end
 	end
@@ -867,21 +891,6 @@ function eleHud(action)
 		windower.prim.set_position('eleWheelIcon', eleIconXpos, eleIconYpos)
 		windower.prim.set_size('eleWheelIcon', eleIconSize, eleIconSize)
 
-		-- setup ele table because life hacks
-		ele = {}
-		ele.find = {}
-		ele.list = S{'Light','Dark','Fire','Ice','Wind','Earth','Lightning','Water'}
-		ele.weak_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Ice', ['Ice']='Wind', ['Wind']='Earth', ['Earth']='Lightning', ['Lightning']='Water', ['Water']='Fire'}
-		ele.strong_to = {['Light']='Dark', ['Dark']='Light', ['Fire']='Water', ['Ice']='Fire', ['Wind']='Ice', ['Earth']='Wind', ['Lightning']='Earth', ['Water']='Lightning'}
-		ele.find.mainspell_of = {['Light']="Cure IV", ['Dark']="Impact", ['Fire']="Fire V", ['Earth']="Earth V",['Water']="Water V", ['Wind']="Aero V", ['Ice']="Blizzard V", ['Lightning']="Thunder V"}
-		ele.find.skillchain_of = {['Light']="Fusion", ['Dark']="Gravitation", ['Fire']="Fusion", ['Earth']="Gravitation",['Water']="Distortion", ['Wind']="Fragmentation", ['Ice']="Distortion", ['Lightning']="Fragmentation"}
-		ele.find.storm_of = {['Light']="Aurorastorm", ['Dark']="Voidstorm", ['Fire']="Firestorm", ['Earth']="Sandstorm",['Water']="Rainstorm", ['Wind']="Windstorm", ['Ice']="Hailstorm", ['Lightning']="Thunderstorm"}
-		ele.find.storm2_of = {['Light']="Aurorastorm II",['Dark']="Voidstorm II", ['Fire']="Firestorm II", ['Earth']="Sandstorm II", ['Water']="Rainstorm II", ['Wind']="Windstorm II",['Ice']="Hailstorm II", ['Lightning']="Thunderstorm II"}
-		ele.find.helix_of = {['Light']="Luminohelix", ['Dark']="Noctohelix", ['Fire']="Pyrohelix", ['Earth']="Geohelix",['Water']="Hydrohelix", ['Wind']="Anemohelix", ['Ice']="Cryohelix", ['Lightning']="Ionohelix"}
-		ele.find.helix2_of = {['Light']="Luminohelix II", ['Dark']="Noctohelix II", ['Fire']="Pyrohelix II", ['Earth']="Geohelix II",['Water']="Hydrohelix II", ['Wind']="Anemohelix II", ['Ice']="Cryohelix II", ['Lightning']="Ionohelix II"}
-		ele.spirit_of = {['Light']="Light Spirit", ['Dark']="Dark Spirit", ['Fire']="Fire Spirit", ['Earth']="Earth Spirit", ['Water']="Water Spirit", ['Wind']="Air Spirit", ['Ice']="Ice Spirit", ['Lightning']="Thunder Spirit"}
-		ele.rune_of = {['Light']='Lux', ['Dark']='Tenebrae', ['Fire']='Ignis', ['Ice']='Gelus', ['Wind']='Flabra', ['Earth']='Tellus', ['Lightning']='Sulpor', ['Water']='Unda'}
-
 		-- create texts eleText
 		texts = require('texts')
 		eleWheelText = texts.new('${element}\n${msg1}\n${msg2}')
@@ -1000,8 +1009,8 @@ end)
 -------------------------------------------------------------------------------------------------------------------
 windower.register_event('zone change', function()
 	-- Turn off autobuff and autofite modes when we zone
-	if auto.buff.index == 1 then auto.buff.index = 0 end
-	if auto.fite.index == 1 then auto.fite.index = 0 end
+	if auto.buff.index ~= 0 then auto.buff.index = 0 end
+	if auto.fite.index ~= 0 then auto.fite.index = 0 end
 	modeHud('update')
 	if extendedZoneChange ~= nil then
 		extendedZoneChange()
