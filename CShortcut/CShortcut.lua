@@ -105,11 +105,12 @@ windower.register_event('addon command',function(csCmd)
 	if csCmd == 'selljunk' then
 		sendCommand('input //lua l sellnpc')
 
-		local bags = require('resources').bags
-		
+		--local bags = require('resources').bags
+
 
 		sendCommand('input //sellnpc wind crystal')
 		sendCommand('input //sellnpc water crystal')
+		sendCommand('input //sellnpc land crab meat')
 		sendCommand('input //sellnpc bat wing')
 		sendCommand('input //sellnpc bat fang')
 		sendCommand('input //sellnpc fiend blood')
@@ -146,7 +147,7 @@ windower.register_event('addon command',function(csCmd)
 	end
 	
 	if csCmd == 'bluparty' then
-		summonTrusts({"Qultada","Sylvie (UC)","Ygnas","August","Ulmia",})
+		summonTrusts({"Sylvie (UC)","Qultada","Ygnas","Ulmia","Valain67eral"})
 	end
 	
 	if csCmd == 'stronkparty' then
