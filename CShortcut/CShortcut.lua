@@ -147,7 +147,7 @@ windower.register_event('addon command',function(csCmd)
 	end
 	
 	if csCmd == 'bluparty' then
-		summonTrusts({"Sylvie (UC)","Qultada","Ygnas","Ulmia","Valain67eral"})
+		summonTrusts({"Sylvie (UC)","Qultada","Ygnas","Ulmia","Valaineral"})
 	end
 	
 	if csCmd == 'stronkparty' then

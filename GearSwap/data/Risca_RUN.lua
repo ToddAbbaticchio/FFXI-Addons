@@ -38,7 +38,7 @@ function init_gear_sets()
 	sets.baseTank = {                     --Total: 50 | DT40 | PDT10
 		ammo="Staunch Tathlum +1",        --DT03
 		head="Nyame Helm",                --DT07
-		body="Runeist's Coat +3",
+		body="Runeist Coat +3",
 		hands="Turms Mittens +1",
 		legs="Erilaz Leg Guards +3",      --DT13
 		feet="Turms Leggings +1",
@@ -68,7 +68,7 @@ function init_gear_sets()
 	sets.magicEvaTank = {                 --DT--        --MEva/ResistAll--
 		ammo="Yamarang",                                --015/00
 		head="Nyame Helm",                --DT07        --123/00
-		body="Runeist's Coat +3",                       --094/39
+		body="Runeist Coat +3",                       --094/39
 		hands="Nyame Gauntlets",          --DT07        --112/00
 		legs="Nyame Flanchard",           --DT08        --150/00
 		feet="Erilaz Greaves +3",         --DT11        --157/35
@@ -83,7 +83,7 @@ function init_gear_sets()
 	sets.superTank = {
 		ammo="Staunch Tathlum +1",
 		head="Nyame Helm",                --DT07
-		body="Runeist's Coat +3",
+		body="Runeist Coat +3",
 		hands="Nyame Gauntlets",          --DT07
 		legs="Nyame Flanchard",           --DT08
 		feet="Nyame Sollerets",           --DT07
@@ -145,7 +145,7 @@ function init_gear_sets()
 		--ammo="",
 		--head="",            			  
 		--body="",
-		hands="Runeist's Mitons +3",      --15
+		hands="Runeist Mitons +3",      --15
 		legs="Carmine Cuisses +1",        --18
 		--feet="",
 		neck="Incanter's Torque",         --10
@@ -216,15 +216,15 @@ function init_gear_sets()
 	
 	-- JA Sets
 	sets.precast.JA['Odyllic Subgerfuge'] = sets.baseEnmity
-    sets.precast.JA['Vallation'] = set_combine(sets.baseEnmity, {body="Runeist's Coat +3",})-- legs="Futhark Trousers +3",})
-    sets.precast.JA['Valiance'] = set_combine(sets.baseEnmity, {body="Runeist's Coat +3",})-- legs="Futhark Trousers +3",})
+    sets.precast.JA['Vallation'] = set_combine(sets.baseEnmity, {body="Runeist Coat +3",})-- legs="Futhark Trousers +3",})
+    sets.precast.JA['Valiance'] = set_combine(sets.baseEnmity, {body="Runeist Coat +3",})-- legs="Futhark Trousers +3",})
 	sets.precast.JA['Pflug'] = sets.baseEnmity
     sets.precast.JA['Battuta'] = set_combine(sets.baseEnmity, {head="Fu. Bandeau +3"})
     sets.precast.JA['Liement'] = set_combine(sets.baseEnmity, {body="Futhark Coat +3"})
 	sets.precast.JA['One for All'] = sets.baseEnmity
     sets.precast.JA['Lunge'] = sets.MagicBurst
     sets.precast.JA['Swipe'] = sets.MagicBurst
-    sets.precast.JA['Gambit'] = {hands="Runeist's Mitons +3"}
+    sets.precast.JA['Gambit'] = {hands="Runeist Mitons +3"}
     sets.precast.JA['Rayke'] = {feet="Futhark Boots +2"}
     sets.precast.JA['Elemental Sforzo'] = set_combine(sets.baseEnmity, {body="Futhark Coat +3"})
     sets.precast.JA['Swordplay'] = set_combine(sets.baseEnmity, {hands="Futhark Mitons +3"})
@@ -254,6 +254,7 @@ function init_gear_sets()
     sets.midcast['Refresh'] = set_combine(sets.baseTank, sets.emDuration, {waist="Gishdubar Sash", head="Erilaz Galea +3",})
 	sets.midcast['Cocoon'] = sets.baseTank
 	sets.midcast['Stoneskin'] = set_combine(sets.baseTank, sets.emSkill, {waist="Siegel Sash",})
+	sets.midcast['Magic Fruit'] = set_combine(sets.baseTank, sets.interrupt, {neck='Sacro Gorget', waist='Sroda Belt', ear1="Mendicant's Earring"})
 
 	sets.absorbSpells = set_combine(sets.magicAcc, {neck="Erra Pendant", ring1="Evanescence Ring", ring2="Kishar Ring", waist="Fucho-no-Obi"})
 	sets.midcast['Drain'] = sets.absorbSpells
