@@ -147,7 +147,8 @@ function init_gear_sets()
     sets.precast.Waltz['Healing Waltz'] = {}
 
     -- Weaponskill sets
-	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
+	--sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
+	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
 	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
 	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})
     sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})
@@ -390,21 +391,23 @@ end
 -- Spell/Action phase functions
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobPrecast(spell, action, spellMap, eventArgs)
-	-- auto pop unbridled learning when we try to cast a spell that requires it (saves a button on macro bar)
 	if unbridled_spells:contains(spell.english) then
-		if not buffactive['Unbridled Learning'] then
+		if not buffactive['Unbridled Learning'] and not buffactive['Unbridled Wisdom'] then
+			-- cancel spell if we dont have one of the buffs up that would let us use it
 			eventArgs.cancel = true
+			
+			-- if unbridled learning is available, add it to command queue
 			if not onCooldown('Unbridled Learning') then
-				send_command('input /ja "Unbridled Learning" <me>')
+				multiStepAction:add('/ja "Unbridled Learning" <me>')
+				
+				-- MightyGuard specific handling
+				if spell.name == 'Mighty Guard'and not buffactive['Diffusion'] and not onCooldown('Diffusion') then
+					multiStepAction:add('/ja "Diffusion" <me>')
+				end
+
+				-- requeue original spell @ original target after unbridled learning & maybe diffusion
+				multiStepAction:add('/ma "'..spell.name..'" '..tostring(spell.target.raw))
 			end
-			return
-		end
-		if spell.name == 'Mighty Guard' and not buffactive['Diffusion'] then
-			eventArgs.cancel = true
-			if not onCooldown('Diffusion') then
-				send_command('input /ja "Diffusion" <me>')
-			end
-			return
 		end
 	end
 end
@@ -494,9 +497,9 @@ function autoActions()
 				send_command('/warcry')
 			end
 
-			if not buffactive['Food'] then
+			--[[ if not buffactive['Food'] then
 				send_command('/item "Dragon Steak"')
-			end
+			end ]]
 		end
 		
 		if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then

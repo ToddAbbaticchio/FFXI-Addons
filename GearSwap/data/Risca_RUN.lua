@@ -74,10 +74,10 @@ function init_gear_sets()
 		feet="Erilaz Greaves +3",         --DT11        --157/35
 		neck="Futhark Torque +2",         --DT07        --030/00
 		waist="Engraved Belt",							--000/20(+10)
-		ear1="Erilaz Earring +1",         --DT04		--011/00
-		ear2="Eabani Earring",							--008/00
+		ear2="Erilaz Earring +1",         --DT04		--011/00
+		ear1="Eabani Earring",							--008/00
 		ring1="Moonlight Ring",           --DT05		
-		ring2="Defending Ring",           --DT10
+		ring2="Moonlight Ring",           --DT05
 		back=gear.EnmityCape,							--030/00
 	}
 	sets.superTank = {
@@ -126,10 +126,9 @@ function init_gear_sets()
 		back=gear.EnmityCape,             --10                      P10
 	}
 	sets.interrupt = set_combine(sets.baseTank, {   --Total: 103
-		-- level 5 merits                           --10
 		ammo="Impatiens",                           --10
 		head="Erilaz Galea +3",                     --20
-		body="Herculean Vest",                      --10
+		--body="Herculean Vest",
 		hands="Rawhide Gloves",                     --15 
 		legs="Carmine Cuisses +1",                  --20
 		--feet
@@ -255,6 +254,7 @@ function init_gear_sets()
 	sets.midcast['Cocoon'] = sets.baseTank
 	sets.midcast['Stoneskin'] = set_combine(sets.baseTank, sets.emSkill, {waist="Siegel Sash",})
 	sets.midcast['Magic Fruit'] = set_combine(sets.baseTank, sets.interrupt, {neck='Sacro Gorget', waist='Sroda Belt', ear1="Mendicant's Earring"})
+	sets.midcast['Healing Breeze'] = set_combine(sets.baseTank, sets.interrupt, {neck='Sacro Gorget', waist='Sroda Belt', ear1="Mendicant's Earring"})
 
 	sets.absorbSpells = set_combine(sets.magicAcc, {neck="Erra Pendant", ring1="Evanescence Ring", ring2="Kishar Ring", waist="Fucho-no-Obi"})
 	sets.midcast['Drain'] = sets.absorbSpells
@@ -269,8 +269,8 @@ function init_modetables()
 	gearMode = {
 		["index"] = 0,
 		[0] = {name="Tank", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
-		[1] = {name="SuperTank", idle=(sets.superTank), engaged=(sets.baseTank)},
-		[2] = {name="MagicTank", idle=(sets.magicEvaTank), engaged=(sets.magicEvaTank)},
+		[1] = {name="SuperTank", idle=sets.superTank, engaged=sets.baseTank},
+		[2] = {name="MagicTank", idle=sets.magicEvaTank, engaged=sets.magicEvaTank},
 		[3] = {name="EvaTank", idle=sets.evaTank, engaged=sets.evaTank},
 		[4] = {name="DPS", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
 	}

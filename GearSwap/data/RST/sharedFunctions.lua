@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Some global vars (best idea everrrrrrrrrrr)
+-- Ver 1.0.0
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -46,7 +46,21 @@ ele.find.Tier3_of = {['Light']='', ['Dark']='', ['Fire']='Fire3', ['Ice']='Blizz
 ele.find.Tier2_of = {['Light']='', ['Dark']='', ['Fire']='Fire2', ['Ice']='Blizzard2', ['Wind']='Aero2', ['Earth']='Stone2', ['Lightning']='Thunder2', ['Water']='Water2'}
 ele.find.Tier1_of = {['Light']='', ['Dark']='', ['Fire']='Fire', ['Ice']='Blizzard', ['Wind']='Aero', ['Earth']='Stone', ['Lightning']='Thunder', ['Water']='Water'}
 
+-------------------------------------------------------------------------------------------------------------------
+-- Command queue and functions
+-------------------------------------------------------------------------------------------------------------------
 multiStepAction = {}
+function multiStepAction.add(self, action)
+	table.insert(self, action)
+end
+function multiStepAction.pause(self, count)
+	for i=count,1,-1 do
+		table.insert(self, 'pause')
+	end
+end
+function multiStepAction.remove(self)
+	table.remove(self, 1)
+end
 
 -------------------------------------------------------------------------------------------------------------------
 -- Job/User setup and keybinds
@@ -151,7 +165,6 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
-		add_to_chat(122, tostring(checkBluSpell(cmdParams[2])))
 	end
 
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
@@ -647,7 +660,7 @@ function tryCleanQueue(category, param)
     if category == 3 then
         actionName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
         if actionName and queueAction and queueAction:contains(actionName) then
-            table.remove(multiStepAction, 1)
+            multiStepAction:remove()
             return
         end
     end
@@ -656,13 +669,13 @@ function tryCleanQueue(category, param)
 		actionName = res.spells[param] and res.spells[param].en or nil
         if actionName and queueAction then
             if queueAction:contains(actionName) then
-                table.remove(multiStepAction, 1)
+                multiStepAction:remove()
                 return
             end
         end
         if actionName and queueAction then
             if queueAction:contains(actionName) then
-                table.remove(multiStepAction, 1)
+                multiStepAction:remove()
                 return
             end
         end
@@ -672,7 +685,7 @@ function tryCleanQueue(category, param)
         actionName = res.job_abilities[param] and res.job_abilities[param].en or nil
         if actionName and queueAction then
             if queueAction:contains(actionName) then
-                table.remove(multiStepAction, 1)
+                multiStepAction:remove()
                 return
             end
         end
@@ -996,6 +1009,11 @@ windower.raw_register_event('prerender',function()
 		
 		if autoActions and not midaction() then
 			if #multiStepAction >= 1 then
+				if multiStepAction[1] == 'pause' then
+					add_to_chat(122, '     [Action queue PAUSE]     ')
+					multiStepAction:remove()
+					return
+				end
 				send_command('input '..multiStepAction[1])
 				return
 			end

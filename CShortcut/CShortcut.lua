@@ -107,6 +107,7 @@ windower.register_event('addon command',function(csCmd)
 
 		--local bags = require('resources').bags
 
+		
 
 		sendCommand('input //sellnpc wind crystal')
 		sendCommand('input //sellnpc water crystal')
@@ -121,6 +122,7 @@ windower.register_event('addon command',function(csCmd)
 		sendCommand('input //sellnpc aqua geode')
 		sendCommand('input //sellnpc breeze geode')
 		sendCommand('input //sellnpc shadow geode')
+		sendCommand('input //sellnpc thunder geode')
 		sendCommand('input //sellnpc snow geode')
 		sendCommand('input //sellnpc shivite')
 		sendCommand('input //sellnpc ramuite')

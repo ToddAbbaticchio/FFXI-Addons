@@ -156,8 +156,8 @@ function init_gear_sets()
 	sets.obi = {waist="Hachirin-no-Obi"}
 	sets.oSash = {waist="Orpheus's Sash"}
     sets.sublimation = {waist="Embla Sash"}
-	sets.staffSet = {main="Akademos",sub="Enki Strap"}
-	sets.LightArtsWeapons = {main="Daybreak",sub="Genmei Shield"}
+	sets.staffSet = {main="Akademos", sub="Enki Strap"}
+	sets.LightArtsWeapons = {main="Daybreak", sub="Genmei Shield"}
 	
     -- JA Sets
 	sets.precast.JA['Tabula Rasa'] = {--[[ legs="Peda. Pants +3" ]]}
@@ -177,7 +177,7 @@ function init_gear_sets()
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
 	sets.midcast['Cure'] = {hands="Telchine Gloves",}
 	
-	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity",sub="Culminus",waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
+	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity", sub="Culminus", waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
 	sets.midcast['Aspir'] = sets.absorbSpells
 	sets.midcast['Drain'] = sets.absorbSpells
 
@@ -397,47 +397,42 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 
     -- skill chain commands
     if command:contains('skillchain') then
-		local startAfIndex = auto.fite.index
-		local startAbIndex = auto.buff.index
-		auto.fite.index = 0
-		auto.buff.index = 0
 		magicMode.index = 0
 		updateSetsFromModes('magic')
-		
 		modeHud('update')
 
 		if cmdParams[1]:lower() == 'makefusionskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xC1, 0xFD)..' ~~')
-			send_command('/immanence')
-            send_command:schedule(1, '/fire')
-            send_command:schedule(5, '/immanence')
-            send_command:schedule(6, '/thunder')
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Fire" <t>')
+			multiStepAction:pause(2)
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Ionohelix" <t>')
 		end
 		if cmdParams[1]:lower() == 'makedistortionskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xC0, 0xFD)..' ~~')
-			send_command('/immanence')
-            send_command:schedule(1, '/luminohelix')
-            send_command:schedule(8, '/immanence')
-            send_command:schedule(9, '/stone')
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Stone" <t>')
+			multiStepAction:pause(2)
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Luminohelix" <t>')
 		end
 		if cmdParams[1]:lower() == 'makefragmentationskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xBF, 0xFD)..' ~~')
-			send_command('/immanence')
-            send_command:schedule(1, '/blizzard')
-            send_command:schedule(5, '/immanence')
-            send_command:schedule(6, '/water')
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Blizzard" <t>')
+			multiStepAction:pause(2)
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Hydrohelix" <t>')
 		end
 		if cmdParams[1]:lower() == 'makegravitationskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xBE, 0xFD )..' ~~')
-			send_command('/immanence')
-            send_command:schedule(1, '/aero')
-            send_command:schedule(5, '/immanence')
-            send_command:schedule(6, '/noctohelix')
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Aero" <t>')
+			multiStepAction:pause(2)
+			multiStepAction:add('/ja "Immanence" <me>')
+			multiStepAction:add('/ma "Noctohelix" <t>')
 		end
-
-		auto.fite.index = startAfIndex
-		auto.buff.index = startAbIndex
-		modeHud('update')
 	end
 end
 
