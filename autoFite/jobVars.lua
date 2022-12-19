@@ -24,6 +24,7 @@ vars.RUN = {
         --["Valiance"] = "Valiance,One for All",
         --["One for All"] = "Valiance,One for All"
     },
+    afReact = {},
     maintainAftermath = false,
     ws = "Resolution",
     targetTp = 1000,

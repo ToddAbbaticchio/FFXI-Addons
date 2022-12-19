@@ -510,19 +510,6 @@ function extendedTWM(cmdParams, eventArgs)
 			weaponMode[4].hidden = true
 		end
 	end
-
-	--[[ if weaponMode[weaponMode.index].name == "Aettir" and gearMode[gearMode.index].name ~= "MagicTank" then
-		weaponMode.index = weaponMode.index + 1
-		if weaponMode.index > #weaponMode then
-			weaponMode.index = 0;
-		end
-	end ]]
-	--[[ if weaponMode[weaponMode.index].name == "DW-Swords" and (player.sub_job ~= "NIN" and player.sub_job ~= "DNC") then
-		weaponMode.index = weaponMode.index + 1
-		if weaponMode.index > #weaponMode then
-			weaponMode.index = 0;
-		end
-	end ]]
 end
 
 function extendedJobSelfCommand(cmdParams, eventArgs)
@@ -539,6 +526,7 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		--add_to_chat(122,'-- set rune to: '..cmdParams[2]..' --')
 		auto.rune.index = 0
 		currRune = cmdParams[2]
+		modeHud('update')
 	end
 
 	-- extended handling of mode changes
@@ -691,21 +679,6 @@ function autoActions()
 					return
 				end
 			end
-
-			--[[ -- TESTING TIMEDBUFFS
-			if timerBuffs ~= nil then
-				for k,v in timerBuffs do
-					if time.os() > v.lastCast + v.interval then
-						send_command('input /ma "'..v.buff..'" '..k)
-						timerBuffs[k].lastCast = time.os()
-					end
-				end
-			end
-
-			timerBuffs = {
-				['Ygnas'] = {buff="Refresh", interval=300, lastCast=0}
-			} ]]
-
 		end
 	end
 end

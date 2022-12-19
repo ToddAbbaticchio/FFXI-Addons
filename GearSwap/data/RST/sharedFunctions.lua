@@ -159,6 +159,12 @@ function job_self_command(cmdParams, eventArgs)
 		end
 	end
 
+	if cmdParams[1]:lower() == 'clearmultistepactionqueue' then
+		multiStepAction = {}
+		add_to_chat(122, '-- Cleared multiStepAction queue! --')
+	end
+
+
 	-- Forward self commands on to the job_SelfCommand function in the job specific .lua, if it exists
 	if extendedJobSelfCommand ~= nil then
 		extendedJobSelfCommand(cmdParams, eventArgs)
@@ -179,7 +185,8 @@ function user_setup()
 	send_command('bind !F9 gs c toggleMagicMode')
 	send_command('bind F11 gs c toggleAutoBuff')
 	send_command('bind !F11 gs c toggleautofite')
-	send_command('bind F12 gs reload')
+	send_command('bind F12 gs c clearmultistepactionqueue')
+	send_command('bind ^!F12 gs reload')
 
 	--if an extendedUserSetup() exists in the job lua, call it
 	if extendedUserSetup ~= nil then
@@ -201,6 +208,7 @@ function user_unload()
 	send_command('unbind ^F11')
 	send_command('unbind !F11')
 	send_command('unbind F12')
+	send_command('unbind ^!F12')
 
 	if extendedUserUnload ~= nil then
 		extendedUserUnload()
@@ -667,27 +675,17 @@ function tryCleanQueue(category, param)
     ---
     if category == 4 then
 		actionName = res.spells[param] and res.spells[param].en or nil
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                multiStepAction:remove()
-                return
-            end
-        end
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                multiStepAction:remove()
-                return
-            end
-        end
+        if actionName and queueAction and queueAction:contains(actionName) then
+			multiStepAction:remove()
+			return
+		end
     end
-
+	---
     if category == 6 then
         actionName = res.job_abilities[param] and res.job_abilities[param].en or nil
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                multiStepAction:remove()
-                return
-            end
+        if actionName and queueAction and queueAction:contains(actionName) then
+			multiStepAction:remove()
+			return
         end
     end
 end
@@ -937,8 +935,10 @@ end
 function job_buff_change(buff, active)
 	if state.Buff[buff] == nil and active then
 		state.Buff[buff] = true
+		--add_to_chat(122, 'Gained buff: '..buff)
 	else
 		state.Buff[buff] = nil
+		--add_to_chat(122, 'Lost buff: '..buff)
 	end
 
 	if extendedJobBuffChange ~= nil then
@@ -1030,6 +1030,7 @@ windower.register_event('zone change', function()
 	if auto.buff.index ~= 0 then auto.buff.index = 0 end
 	if auto.fite.index ~= 0 then auto.fite.index = 0 end
 	modeHud('update')
+	
 	if extendedZoneChange ~= nil then
 		extendedZoneChange()
 	end

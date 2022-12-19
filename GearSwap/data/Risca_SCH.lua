@@ -21,11 +21,14 @@ function init_gear_sets()
 		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",   --4*
-		body = "Merlinic Jubbah",           --11
-		hands = "Amalric Gages +1",         --6*
-		--hands = "Arbatel Bracers +3",
-		legs = "Merlinic Shalwar",          --09
-		feet = "Agwu's Pigaches",           --06
+		--body = "Merlinic Jubbah",           --11
+		body = "Arbatel Gown +3",
+		--hands = "Amalric Gages +1",         --6*
+		hands = "Arbatel Bracers +3",       --15
+		--legs = "Merlinic Shalwar",          --09
+		legs = "Arbatel Pants +3",          
+		--feet = "Agwu's Pigaches",           --06
+		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +2",           --10
 		waist = "Eschan Stone",
 		ear1 = "Malignance Earring",
@@ -38,17 +41,17 @@ function init_gear_sets()
 	sets.freeCast = {
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",
-		body = "Agwu's Robe",
+		body = "Arbatel Gown +3",
 		--hands = "Amalric Gages +1",
 		hands = "Arbatel Bracers +3",
-		legs = "Agwu's Slops",
-		feet = "Agwu's Pigaches",
+		legs = "Arbatel Pants +3",
+		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +2",
 		waist = "Eschan Stone",
 		left_ear = "Malignance Earring",
 		right_ear = "Barkaro. Earring",
 		left_ring = "Freke Ring",
-		right_ring = "Stikini Ring +1",
+		right_ring = "Stikini Ring +7148",
 		back=gear.nukeCape,
 	}
 
@@ -321,17 +324,6 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 		send_command('input /ja "Addendum: White" <me>')
 		return
 	end
-
-	--[[ if auto.fite[auto.fite.index] == 'On' then
-		if spell.english:contains(' V') and strategemCount() > 3 then
-			if not (buffactive['Ebullience']) then
-				eventArgs.cancel = true
-				send_command('/ebullience')
-				send_command:schedule(0.5, 'input /ma "'..spell.name..'" '..tostring(spell.target.raw))
-				return
-			end
-		end
-	end ]]
 end
 
 function job_post_precast(spell, action, spellMap, eventArgs)
@@ -412,10 +404,10 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		if cmdParams[1]:lower() == 'makedistortionskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xC0, 0xFD)..' ~~')
 			multiStepAction:add('/ja "Immanence" <me>')
-			multiStepAction:add('/ma "Stone" <t>')
+			multiStepAction:add('/ma "Luminohelix" <t>')
 			multiStepAction:pause(2)
 			multiStepAction:add('/ja "Immanence" <me>')
-			multiStepAction:add('/ma "Luminohelix" <t>')
+			multiStepAction:add('/ma "Geohelix" <t>')
 		end
 		if cmdParams[1]:lower() == 'makefragmentationskillchain' then
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xBF, 0xFD)..' ~~')
@@ -467,13 +459,28 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
+	local storm1 = ele.find.storm_of[eleMode[eleMode.index].element]
+	local storm2 = ele.find.storm2_of[eleMode[eleMode.index].element]
+	local afMode = auto.fite[auto.fite.index] or nil
+	local abMode = auto.buff[auto.buff.index] or nil
+
+	-- buff table for autoFite modes
+	local addendumBuffs = {
+		[0] = {mode='any', buffName='Regen', action='/ma "Regen V" <me>'},
+		[1] = {mode='AutoBurst', buffName=storm1, action='/ma "'..storm2..'" <me>'},
+		[2] = {mode='AutoHeal', buffName='Phalanx', action='/ma "Phalanx" <me>'},
+		[3] = {mode='AutoHeal', buffName='Regain', action='/ma "Adloquium" <me>'},
+		[4] = {mode='any', buffName='Protect', action='/ma "Protect V" <me>'},
+		[5] = {mode='any', buffName='Shell', action='/ma "Shell V" <me>'},
+	}
+	
 	--add_to_chat(122, 'autoActions heartbeat')
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
 	end
 
     -- auto.buff mode on
-	if auto.buff[auto.buff.index] == 'On' and not moving then
+	if abMode == 'On' and not moving then
         -- Sublimation Handling
         if not buffactive['sublimation: complete'] and not buffactive['sublimation: activated'] and not onCooldown('Sublimation') then
             send_command('input /ja "Sublimation" <me>')
@@ -491,22 +498,22 @@ function autoActions()
 
         -- Full time buffs
 		if buffCheck('Klimaform') then
-            send_command('/klimaform')
+            send_command('input /ma "Klimaform" <me>')
         end
 		if buffCheck('Haste') then
-			send_command('/haste')
+			send_command('input /ma "Haste" <me>')
 		end
 
 		-- Maintain storm if not in an auto.fite mode
-		if auto.fite[auto.fite.index] == 'Off' and not moving then
-			if not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
-				send_command('/'..ele.find.storm2_of[eleMode[eleMode.index].element])
+		if afMode == 'Off' and not moving then
+			if not buffactive[storm1] then
+				send_command('/'..storm2)
 			end
 		end
     end
 
     -- auto.fite modes 
-	if auto.fite[auto.fite.index] == 'AutoBurst' and not moving then
+	if afMode == 'AutoBurst' and not moving then
 		-- maintain addendum: black
 		if not buffactive['Addendum: Black'] then
 			send_command('/darkarts')
@@ -520,52 +527,24 @@ function autoActions()
 			return
 		end
 
-		local storm1 = ele.find.storm_of[eleMode[eleMode.index].element]
-		local storm2 = ele.find.storm2_of[eleMode[eleMode.index].element]
-		local desiredBuffs = {
-			[0] = {buff='Phalanx', action='/ma "Phalanx" <me>'},
-			[1] = {buff=storm1, action='/ma "'..storm2..'" <me>'},
-		}
-
-		if not buffactive[desiredBuffs[0].buff] or not buffactive[desiredBuffs[1].buff] then
-			if strategemCount() >= 4 then
-				table.insert(multiStepAction, '/ja "Light Arts" <me>')
-				table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-				table.insert(multiStepAction, '/ja "Accession" <me>')
-				table.insert(multiStepAction, desiredBuffs[0].action)
-				table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-				table.insert(multiStepAction, '/ja "Accession" <me>')
-				table.insert(multiStepAction, desiredBuffs[1].action)
+		-- Eval desiredBuffs table
+		if strategemCount() == 5 then
+			if not buffactive['Light Arts'] and not buffactive['Addendum: White'] then
+				multiStepAction:add('/ja "Light Arts" <me>')
 			end
-		end
-
-		--[[ -- AoE regen5 (3 strats because +1 to get addendum: black back on after)
-		if strategemCount() >= 3 and not buffactive['Regen'] then
-			table.insert(multiStepAction, '/ja "Light Arts" <me>')
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Regen V" <me>')
+			for _,v in ipairs(addendumBuffs) do
+				local buff = addendumBuffs[v]
+				if buff.mode == 'any' or buff.mode == afMode and not buffactive[buff.buffName] and strategemCount() >= 3 then
+					multiStepAction:add('/ja "Perpetuance" <me>')
+					multiStepAction:add('/ja "Accession" <me>')
+					multiStepAction:add(addendumBuffs[v].action)
+				end
+			end
 			return
 		end
-
-		-- AoE storm2 of eleMode
-		if strategemCount() >= 3 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element] then
-			table.insert(multiStepAction, '/ja "Light Arts" <me>')
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
-		end ]]
-
-		--[[ if strategemCount() >= 3 and not buffactive['Protect'] then
-			table.insert(multiStepAction, '/ja "Light Arts" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Protect V" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Shell V" <me>')
-		end ]]
 	end
 
-	if auto.fite[auto.fite.index] == 'AutoHeal' and not moving then
+	if afMode == 'AutoHeal' and not moving then
 		-- maintain addendum: white
 		if not buffactive['Addendum: White'] then
 			send_command('/lightarts')
@@ -574,50 +553,20 @@ function autoActions()
 
 		partyLowHP(50, '/ma "Cure IV"')
 
-		-- AoE regen5
-		if strategemCount() >= 2 and not buffactive['Regen'] then
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Regen V" <me>')
+		-- Eval desiredBuffs table
+		if strategemCount() == 5 then
+			if not buffactive['Light Arts'] and not buffactive['Addendum: White'] then
+				multiStepAction:add('/ja "Light Arts" <me>')
+			end
+			for _,v in ipairs(addendumBuffs) do
+				local buff = addendumBuffs[v]
+				if buff.mode == 'any' or buff.mode == afMode and not buffactive[buff.buffName] and strategemCount() >= 3 then
+					multiStepAction:add('/ja "Perpetuance" <me>')
+					multiStepAction:add('/ja "Accession" <me>')
+					multiStepAction:add(addendumBuffs[v].action)
+				end
+			end
 			return
-		end
-
-		-- AoE Phalanx
-		if strategemCount() >= 2 and not buffactive['Phalanx'] then
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Phalanx" <me>')
-			return
-		end
-
-		-- AoE Adloquium
-		if strategemCount() >= 2 and not buffactive['Regain'] then
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Adloquium" <me>')
-			return
-		end
-
-		-- AoE storm2 of eleMode
-		if strategemCount() >= 2 and not buffactive[ele.find.storm_of[eleMode[eleMode.index].element]] then
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "'..ele.find.storm2_of[eleMode[eleMode.index].element]..'" <me>')
-			return
-		end
-
-		-- AoE Prot5
-		if strategemCount() >= 2 and not buffactive['Protect'] then
-			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Protect V" <me>')
-			return
-		end
-
-		-- AoE Shell5
-		if strategemCount() >= 1 and not buffactive['Shell'] then
-			table.insert(multiStepAction, '/ja "Accession" <me>')
-			table.insert(multiStepAction, '/ma "Shell V" <me>')
 		end
 	end
 end

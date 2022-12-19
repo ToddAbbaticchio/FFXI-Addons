@@ -15,6 +15,8 @@ function init_gear_sets()
 	gear.IntCape = {name="Rosmerta's Cape", augments={'INT + 20'}}
 	gear.TpCape = {name="Rosmerta's Cape", augments={'DEX + 20'}}
 	gear.WsCape = {name="Rosmerta's Cape", augments={'STR + 20'}}
+	gear.hercWsBoots = {name="Herculean Boots", augments={'Weapon skill damage +4%'}}
+	gear.hercTpBoots = {name="Herculean Boots", augments={'"Triple Atk."+4'}}
 	
 	--Define Base Sets for use in other sets
 	sets.baseMelee = {
@@ -23,7 +25,7 @@ function init_gear_sets()
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wrist. +1",
 		legs="Samnuha Tights",
-		feet="Herculean Boots",
+		feet=gear.hercTpBoots,
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
 		left_ear="Suppanomimi",
@@ -55,7 +57,7 @@ function init_gear_sets()
 		head="Mirage Keffiyeh +1",
 		body="Assim. Jubbah +3",
 		--hands="",
-		legs="Hashishin Tayt +1",
+		legs="Hashishin Tayt +2",
 		--feet="",
 		neck="Mirage Stole +2",
 		--waist="",
@@ -115,13 +117,13 @@ function init_gear_sets()
 		body="Assim. Jubbah +3",
 		legs="Luhlaza Shalwar +3",
 		hands="Jhakri Cuffs +2",
-		feet="Hashishin Basmak +3",
+		feet=gear.hercWsBoots,
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
 		ear1="Odr Earring",
 		ear2="Moonshade Earring",
 		ring1="Karieyh Ring +1",
-		ring2="Illabrat Ring",
+		ring2="Epaminondas's Ring",
 		back=gear.WsCape,
 	}
 	
@@ -138,7 +140,7 @@ function init_gear_sets()
     sets.buff['Convergence'] = {} 													--Luhlaza Keffiyeh
     sets.buff['Diffusion'] = {feet="Luhlaza Charuqs +1"}
     sets.buff['Enchainment'] = {} 													--Luhlaza Jubbah
-    sets.buff['Efflux'] = {legs="Hashishin Tayt +1", gear.WsCape,}
+    sets.buff['Efflux'] = {legs="Hashishin Tayt +2", gear.WsCape,}
     sets.precast.JA['Azure Lore'] = {} 												--Mirage Bazubands +2
 	sets.precast.JA['Provoke'] = sets.TH
 
@@ -148,7 +150,7 @@ function init_gear_sets()
 
     -- Weaponskill sets
 	--sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
-	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
+	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
 	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
 	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})
     sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})
@@ -161,7 +163,7 @@ function init_gear_sets()
 	sets.midcast['Battery Charge'] = {waist="Gishdubar Sash"}
     
     -- Physical Spells --
-    sets.midcast['Blue Magic'].Physical = set_combine(sets.precast.WS, {body="Assim. Jubbah +3",neck="Mirage Stole",waist="Eschan Stone"})
+    sets.midcast['Blue Magic'].Physical = set_combine(sets.precast.WS, {body="Assim. Jubbah +3",neck="Mirage Stole +2",waist="Eschan Stone"})
     sets.midcast['Blue Magic'].PhysicalAcc = set_combine(sets.midcast['Blue Magic'].Physical, {})
     sets.midcast['Blue Magic'].PhysicalStr = set_combine(sets.midcast['Blue Magic'].Physical, {left_ring="Ifrit Ring",right_ear="Kuwunga Earring",left_ear="Corybant Pearl",})
     sets.midcast['Blue Magic'].PhysicalDex = set_combine(sets.midcast['Blue Magic'].Physical, {left_ring="Thundersoul Ring",left_ear="Ilabrat Ring",right_ear="Odr Earring",head="Malignance Chapeau",hands="Malignance Gloves"})
@@ -188,12 +190,12 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
     sets.midcast['Blue Magic']['White Wind'] = {}
     sets.midcast['Blue Magic'].Healing = set_combine(sets.baseMagic, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
-    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +1",head="Mirage Keffiyeh +1",neck="Mirage Stole",})
+    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +2",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
     sets.midcast['Blue Magic'].Buff = {}
 	sets.midcast['Blue Magic'].Enmity = {}
     
     -- Gear for learning spells: +skill and AF hands.
-    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +1",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
+    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +2",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -416,13 +418,6 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
 	if gearMode[gearMode.index].name == "SubTH" and spell.english == "Subduction" then
 		equip(sets.TH)
 	end
-
-	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet
-	for buff,active in pairs(state.Buff) do
-		if active and sets.buff[buff] then
-			equip(sets.buff[buff])
-        end
-	end
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
@@ -436,6 +431,13 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 
 	if spell.element == 'Dark' then
 		equip{head="Pixie Hairpin +1", body="Hashishin Mintan +3"}
+	end
+
+	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet
+	for buff,active in pairs(state.Buff) do
+		if active and sets.buff[buff] then
+			equip(sets.buff[buff])
+		end
 	end
 end
 
