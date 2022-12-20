@@ -28,10 +28,10 @@ function init_gear_sets()
 		feet=gear.hercTpBoots,
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
-		left_ear="Suppanomimi",
-		right_ear="Hashishin Earring",
-		left_ring="Epona's Ring",
-		right_ring="Ilabrat Ring",
+		ear1="Suppanomimi",
+		ear2="Dedition Earring",
+		ring1="Chirich Ring +1",
+		ring2="Ilabrat Ring",
 		back=gear.TpCape,
 	}
 	sets.baseMagic = {
@@ -43,10 +43,10 @@ function init_gear_sets()
 		feet="Hashishin Basmak +3",
 		neck="Sibyl Scarf",
 		waist="Yamabuki-no-obi",
-		left_ear="Friomisi Earring",
-		right_ear="Hecate's Earring",
-		left_ring="Shiva Ring +1",
-		right_ring="Shiva Ring +1",
+		ear1="Friomisi Earring",
+		ear2="Hecate's Earring",
+		ring1="Shiva Ring +1",
+		ring2="Shiva Ring +1",
 		back=gear.IntCape,
 	}
 
@@ -90,10 +90,10 @@ function init_gear_sets()
 		feet="Malignance Boots",           --07
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
-		left_ear="Suppanomimi",
-		right_ear="Hashishin Earring",
-		left_ring="Epona's Ring",
-		right_ring="Ilabrat Ring",
+		ear1="Suppanomimi",
+		ear2="Hashishin Earring",
+		ring1="Chirich Ring +1",
+		ring2="Ilabrat Ring",
 		back=gear.TpCape,                --05
 	}
 	sets.evaTank = {
@@ -107,8 +107,8 @@ function init_gear_sets()
 		waist="Kasiri Belt",
 		ear1="Eabani Earring",
 		ear2="Infused Earring",
-		left_ring="Ilabrat Ring",
-		right_ring="Vengeful Ring",
+		ring1="Vengeful Ring",
+		ring2="Ilabrat Ring",
 		back=gear.WsCape,
 	}
     sets.precast.WS = {
@@ -149,7 +149,6 @@ function init_gear_sets()
     sets.precast.Waltz['Healing Waltz'] = {}
 
     -- Weaponskill sets
-	--sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ring2="Rufescent Ring", ear1="Ishvara Earring"})
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
 	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
 	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})
@@ -430,7 +429,7 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 	end
 
 	if spell.element == 'Dark' then
-		equip{head="Pixie Hairpin +1", body="Hashishin Mintan +3"}
+		equip{head="Pixie Hairpin +1",ring2="Archon Ring", body="Hashishin Mintan +3"}
 	end
 
 	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet

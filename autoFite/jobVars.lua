@@ -76,6 +76,7 @@ vars.COR = {
     autoBuffs = {
         ["Haste Samba"] = "Haste Samba"
     },
+    afReact = {},
     ws = "Savage Blade",
     targetTp = 1000,
     pullCommand = '/ra '
@@ -117,6 +118,7 @@ vars.RDM = {
 
 vars.BRD = {
     autoBuffs = {},
+    afReact = {},
     maintainAftermath = true,
     ws = "Mordant Rime",
     targetTp = 1500,
@@ -125,12 +127,7 @@ vars.BRD = {
 }
 
 
-
-
-
-
-
-vars.DEMORUN = {
+vars.DEMO = {
     autoBuffs = {
         ["Swordplay"] = "Swordplay",
         ["Last Resort"] = "Last Resort",

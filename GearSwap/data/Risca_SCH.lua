@@ -56,8 +56,8 @@ function init_gear_sets()
 	}
 
 	sets.cure = {
-		--main = "Daybreak",
-		--sub = "Sors Shield",
+		main = "Daybreak",
+		sub = "Sors Shield",
 		ammo = "Pemphredo Tathlum",
 		head = "Pinga Crown",
 		body = "Jhakri Robe +2",
@@ -75,7 +75,7 @@ function init_gear_sets()
 
 	sets.magicAcc = {
 		ammo = "Pemphredo Tathlum",
-		head = "Arbatel Bonnet +2",
+		head = "Arbatel Bonnet +3",
 		body = "Agwu's Robe",
 		hands = "Arbatel Bracers +3",
 		legs = "Chironic Hose",
@@ -168,8 +168,8 @@ function init_gear_sets()
 	sets.grimoireEffect = {head="Pedagogy Mortarboard +3", --[[ feet="Acad. Loafers +3" ]]}
 	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +3"}
 	sets.buff['Klimaform'] = {feet="Arbatel Loafers +3"}
-	sets.buff['Ebullience'] = {head="Arbatel Bonnet +2"}
-	sets.buff['Rapture'] = {head="Arbatel Bonnet +2"}
+	sets.buff['Ebullience'] = {head="Arbatel Bonnet +3"}
+	sets.buff['Rapture'] = {head="Arbatel Bonnet +3"}
     
 	sets.precast.FC['Cure'] = set_combine(sets.precast.FC, {back="Pahtli Cape"})
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash",})
@@ -178,14 +178,14 @@ function init_gear_sets()
 	sets.midcast['Elemental Magic'] = sets.burst
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
-	sets.midcast['Cure'] = {hands="Telchine Gloves",}
+	sets.midcast['Cure'] = sets.cure
 	
-	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity", sub="Culminus", waist="Fucho-no-Obi", left_ring="Evanescence Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
+	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity", sub="Culminus", waist="Fucho-no-Obi", ring1="Evanescence Ring", ring2="Archon Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
 	sets.midcast['Aspir'] = sets.absorbSpells
 	sets.midcast['Drain'] = sets.absorbSpells
 
 	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
-    sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +2", main="Bolelabunga", sub="Genmei Shield"})
+    sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +3", main="Bolelabunga", sub="Genmei Shield"})
 	sets.midcast['Refresh'] = sets.midcast['Enhancing Magic']
 	sets.midcast['Haste'] = sets.midcast['Enhancing Magic']
 	sets.midcast['Sneak'] = set_combine(sets.midcast['Enhancing Magic'], {feet="Dream Boots +1"})

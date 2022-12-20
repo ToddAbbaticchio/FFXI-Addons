@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Ver 1.0.0
+-- Ver 1.0.1
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -160,7 +160,9 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'clearmultistepactionqueue' then
-		multiStepAction = {}
+		while #multiStepAction > 0 do
+			multiStepAction:remove()
+		end
 		add_to_chat(122, '-- Cleared multiStepAction queue! --')
 	end
 
