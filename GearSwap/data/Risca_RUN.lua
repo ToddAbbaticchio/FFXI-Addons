@@ -232,7 +232,7 @@ function init_gear_sets()
 
 	-- WS Sets
     sets.precast.WS = set_combine(sets.baseWS, {})
-    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Samnuha Tights", ring1="Epona's Ring", ammo="Seeth. Bomblet +1"})
+    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Samnuha Tights", ring1="Epona's Ring"})
     sets.precast.WS['Dimidiation'] = set_combine(sets.baseWS, {back=gear.DEXCape, body="Adhemar Jacket +1", ammo="Knobkierrie"})
 	sets.precast.WS['Shockwave'] = {sets.MagicBurst}
 	sets.precast.WS['Fell Cleave'] = set_combine(sets.baseWS, {back=gear.DEXCape,ammo="Knobkierrie"})
