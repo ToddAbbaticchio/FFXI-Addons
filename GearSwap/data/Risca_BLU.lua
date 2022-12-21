@@ -112,21 +112,21 @@ function init_gear_sets()
 		back=gear.WsCape,
 	}
     sets.precast.WS = {
-		ammo="Oshasha's Treatise",
-		head="Hashishin Kavuk +3",
-		body="Assim. Jubbah +3",
-		legs="Luhlaza Shalwar +3",
-		hands="Jhakri Cuffs +2",
-		feet=gear.hercWsBoots,
+		ammo="Oshasha's Treatise",     --WSD 3%
+		head="Hashishin Kavuk +3",     --WSD 12%
+		body="Assim. Jubbah +3",       --WSD 10%
+		legs="Luhlaza Shalwar +3",     --WSD 10%
+		hands="Jhakri Cuffs +2",       --WSD 7%
+		feet=gear.hercWsBoots,         --WSD 4%
 		neck="Fotia Gorget",
 		waist="Fotia Belt",
 		ear1="Odr Earring",
 		ear2="Moonshade Earring",
-		ring1="Karieyh Ring +1",
-		ring2="Epaminondas's Ring",
+		ring1="Karieyh Ring +1",       --WSD 4%
+		ring2="Epaminondas's Ring",    --WSD 5%
 		back=gear.WsCape,
 	}
-	
+
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
@@ -479,10 +479,39 @@ function autoActions()
 	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
 		-- auto.fite actions
 		if auto.fite[auto.fite.index] == 'On' then
-			-- auto mightyguard when diffusion is ready
-			if buffCheck('Mighty Guard') and (buffactive['Unbridled Learning'] or not onCooldown('Unbridled Learning')) and (buffactive['Diffusion'] or not onCooldown('Diffusion')) then
-				send_command('input /ma "Mighty Guard" <me>')
-				return
+			if player.status == 'Idle' then
+				-- auto mightyguard when diffusion is ready
+				if buffCheck('Mighty Guard') and (buffactive['Unbridled Learning'] or not onCooldown('Unbridled Learning')) and (buffactive['Diffusion'] or not onCooldown('Diffusion')) then
+					send_command('input /ma "Mighty Guard" <me>')
+					return
+				end
+
+				if buffCheck('Berserk') and not buffactive['Warcry'] then
+					send_command('/berserk')
+				end
+	
+				if buffCheck('Warcry') and not buffactive['Berserk'] then
+					send_command('/warcry')
+				end
+
+				if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') and player.status == 'Idle' then
+					send_command('input /ma "Battery Charge" <me>')
+					return
+				end
+		
+				if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') and player.status == 'Idle' then
+					send_command('input /ma "Erratic Flutter" <me>')
+					return
+				end
+		
+				if buffCheck('Attack Boost', 'Nat. Meditation') and bluSpellSet('Nat. Meditation') and player.status == 'Idle' then
+					send_command('input /ma "Nat. Meditation" <me>')
+					return
+				end
+		
+				--[[ if not buffactive['Food'] then
+					send_command('/item "Dragon Steak"')
+				end ]]
 			end
 
 			-- heal party members at 50% or lower health
@@ -490,17 +519,7 @@ function autoActions()
 				partyLowHP(50, '/ma "Magic Fruit"')
 			end
 
-			if buffCheck('Berserk') then
-				send_command('/berserk')
-			end
-
-			if buffCheck('Warcry') then
-				send_command('/warcry')
-			end
-
-			--[[ if not buffactive['Food'] then
-				send_command('/item "Dragon Steak"')
-			end ]]
+			return
 		end
 		
 		if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then
