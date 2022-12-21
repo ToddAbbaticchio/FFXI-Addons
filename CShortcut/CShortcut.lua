@@ -1,10 +1,13 @@
 _addon.name = 'CShortcut'
 _addon.author = 'Risca'
-_addon.version = '1.0.0'
+_addon.version = '1.0.2'
 _addon.commands = {'CShortcut','cs'}
 
+require('lists')
 require('logger')
 require('coroutine')
+packets = require('packets')
+
 addToChat = windower.add_to_chat
 sendCommand = windower.send_command
 
@@ -85,7 +88,20 @@ function summonTrusts(trustTeam)
 	end
 end
 
-windower.register_event('addon command',function(csCmd)
+function checkCurrency(name)
+	checkCurr = true
+	checkCurrName = name
+	
+	local currencyPacket1 = packets.new('outgoing', 0x10F)
+    packets.inject(currencyPacket1)
+    local currencyPacket2 = packets.new('outgoing', 0x115)
+    packets.inject(currencyPacket2)
+end
+
+windower.register_event('addon command',function(...)
+	local arg = {...}
+	local csCmd = arg[1]
+
 	if csCmd == 'reload' then
 		sendCommand('input //lua reload cshortcut')
 	end
@@ -131,6 +147,10 @@ windower.register_event('addon command',function(csCmd)
 		sendCommand('input //sellnpc fenrite')
 		sendCommand('input //sellnpc garudite')
 		sendCommand('input //sellnpc ifritite')
+	end
+
+	if csCmd == 'curr' and arg[2] ~= null then
+		checkCurrency(arg[2])
 	end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -218,5 +238,22 @@ windower.register_event('addon command',function(csCmd)
 		sendCommand('input //lua l TreasurePool')
 		sendCommand('input //lua l anchor')
 		sendCommand('input //lua l React')
+	end
+end)
+
+windower.register_event('incoming chunk', function(id,data,modified,injected,blocked)
+	if checkCurr and checkCurrName then
+		-- watch for currencies1 / currencies2 packets
+		if (id == 0x113 or id == 0x118) then
+			local responsePacket = packets.parse('incoming', data)
+			for k,v in pairs(responsePacket) do
+				if k:lower():contains(checkCurrName) and v then
+					addToChat(005, '-- [ '..k..': '..v..' ] --')
+					checkCurr = false
+					checkCurrName = nil
+					return
+				end
+			end
+		end
 	end
 end)

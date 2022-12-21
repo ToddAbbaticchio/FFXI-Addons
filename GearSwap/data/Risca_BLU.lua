@@ -29,7 +29,7 @@ function init_gear_sets()
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
 		ear1="Suppanomimi",
-		ear2="Dedition Earring",
+		ear2="Telos Earring",
 		ring1="Chirich Ring +1",
 		ring2="Ilabrat Ring",
 		back=gear.TpCape,
