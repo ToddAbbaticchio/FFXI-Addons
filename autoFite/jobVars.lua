@@ -1,11 +1,12 @@
 vars = {}
 vars.BLU = {
     autoBuffs = {
-        ["Warcry"] = "Warcry",
-        ["Berserk"] = "Berserk",
+        --["Warcry"] = "Warcry",
+        --["Berserk"] = "Berserk",
     },
     afReact = {},
-    ws = "Savage Blade",
+    ws = "Expiacion",
+    --maintainAftermath = true,
     --targetTp = 1750,
     targetTp = 1000,
     pullCommand = '/ma "Glutinous Dart" '
@@ -40,10 +41,7 @@ vars.SCH = {
     },
     afReact = {
         ['Darkness'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
-        --['Darkness'] = {actor='any', response='preserveBurstWindow'},
         ['Distortion'] = {actor='any', response='/ma "Blizzard V" <t>', response2='/ma "Blizzard V" <t>'},
-        --['Distortion'] = {actor='any', response='preserveBurstWindow'},
-        --['Mordant Rime'] = {actor='any', response='/ws "Myrkr" <me>'},
         ['Bubble Curtain'] = {actor='enemy', response='/ma "Dispel" <t>'},
         ['Scissor Guard'] = {actor='enemy', response='/ma "Dispel" <t>'},
     },

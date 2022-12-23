@@ -150,8 +150,8 @@ function init_gear_sets()
 
     -- Weaponskill sets
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
+	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
 	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
-	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {})
     sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})
     sets.precast.WS['Sanguine Blade'] = set_combine(sets.baseMagic, {waist="Fotia Belt",neck="Fotia Gorget",ring2="Jhakri Ring",})
 	sets.precast.WS['Flat Blade'] = equip(sets.baseMelee)
@@ -469,6 +469,19 @@ function autoActions()
 	--[[ if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
 	end ]]
+
+	--[[ if auto.buff[auto.buff.index] == 'On' then
+		if lastPicture == nil then lastPicture = 0 end
+		local now = os.time()
+		if now - lastPicture >= 33 then
+			add_to_chat(122, '-- Say cheeeeeeese! --')
+			send_command('input /item "Soultrapper 2000" <t>')
+			send_command('timers c Camera 33 down')
+			lastPicture = now
+		end
+		return
+	end ]]
+
 
 	if player.equipment.main == 'empty' or player.equipment.sub == 'empty' then
 		equip(sets.weapons)

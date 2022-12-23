@@ -389,6 +389,10 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 
     -- skill chain commands
     if command:contains('skillchain') then
+		if strategemCount() < 2 then
+			add_to_chat(144, "-- Not enough strats! --")
+			return
+		end
 		magicMode.index = 0
 		updateSetsFromModes('magic')
 		modeHud('update')
@@ -514,6 +518,41 @@ function autoActions()
 
     -- auto.fite modes 
 	if afMode == 'AutoBurst' and not moving then
+		if strategemCount() == 5 and not onCooldown('Light Arts') then
+			if not buffactive['Regain'] or not buffactive['Regen'] then
+				multiStepAction:add('/ja "Light Arts" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ja "Regen V" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ma "Adloquium" <me>')
+				return
+			end
+			
+			if not buffactive[storm1] or not buffactive['Phalanx'] then
+				multiStepAction:add('/ja "Light Arts" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ja "'..storm2..'" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ma "Phalanx" <me>')
+				return
+			end
+			
+			if not buffactive['Protect'] or not buffactive['Shell'] then
+				multiStepAction:add('/ja "Light Arts" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ja "Protect V" <me>')
+				multiStepAction:add('/ja "Perpetuance" <me>')
+				multiStepAction:add('/ja "Accession" <me>')
+				multiStepAction:add('/ma "Shell V" <me>')
+				return
+			end
+		end
+		
 		-- maintain addendum: black
 		if not buffactive['Addendum: Black'] then
 			send_command('/darkarts')
@@ -527,7 +566,7 @@ function autoActions()
 			return
 		end
 
-		-- Eval desiredBuffs table
+		--[[ -- Eval desiredBuffs table
 		if strategemCount() == 5 then
 			if not buffactive['Light Arts'] and not buffactive['Addendum: White'] then
 				multiStepAction:add('/ja "Light Arts" <me>')
@@ -541,7 +580,7 @@ function autoActions()
 				end
 			end
 			return
-		end
+		end ]]
 	end
 
 	if afMode == 'AutoHeal' and not moving then
