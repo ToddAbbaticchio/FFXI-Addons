@@ -60,16 +60,16 @@ function init_gear_sets()
 		sub = "Sors Shield",
 		ammo = "Pemphredo Tathlum",
 		head = "Pinga Crown",
-		body = "Jhakri Robe +2",
+		--body = "Jhakri Robe +2",
 		hands = "Telchine Gloves",
-		legs = "Jhakri Slops +2",
-		feet = "Jhakri Pigaches +2",
+		--legs = "Jhakri Slops +2",
+		--feet = "Jhakri Pigaches +2",
 		neck = "Sanctity Necklace",
-		waist = "Eschan Stone",
+		--waist = "Eschan Stone",
 		left_ear = "Malignance Earring",
 		right_ear = "Hecate's Earring",
-		left_ring = "Freke Ring",
-		right_ring = "Acumen Ring",
+		--left_ring = "Freke Ring",
+		--right_ring = "Acumen Ring",
 		back = "Pahtli Cape",
 	}
 
@@ -138,11 +138,11 @@ function init_gear_sets()
     }
 	
 	sets.baseIdle = {
-        --main = "Daybreak",
-		--sub = "Genmei Shield",
+        main = "Akademos",
+		sub = "Enki Strap",
 		ammo = "Homiliary",
         head = "Befouled Crown",
-        body = "Agwu's Robe",
+        body = "Arbatel Gown +3",
         hands= "Nyame Gauntlets",
         legs= "Assiduity Pants +1",
         feet= "Nyame Sollerets",
@@ -173,7 +173,7 @@ function init_gear_sets()
     
 	sets.precast.FC['Cure'] = set_combine(sets.precast.FC, {back="Pahtli Cape"})
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash",})
-	sets.emDuration = {waist="Embla Sash", legs="Telchine Braconi", body="Telchine Chas.", feet="Telchine Pigaches", hands="Telchine Gloves"}
+	sets.emDuration = {main="Musa", sub="Enki Strap", waist="Embla Sash", head="Telchine Cap", body="Telchine Chas.", hands="Telchine Gloves", legs="Telchine Braconi", feet="Telchine Pigaches"}
 
 	sets.midcast['Elemental Magic'] = sets.burst
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
@@ -185,7 +185,7 @@ function init_gear_sets()
 	sets.midcast['Drain'] = sets.absorbSpells
 
 	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
-    sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +3", main="Bolelabunga", sub="Genmei Shield"})
+    sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +3"})
 	sets.midcast['Refresh'] = sets.midcast['Enhancing Magic']
 	sets.midcast['Haste'] = sets.midcast['Enhancing Magic']
 	sets.midcast['Sneak'] = set_combine(sets.midcast['Enhancing Magic'], {feet="Dream Boots +1"})
@@ -409,7 +409,7 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 			send_command('input /p ~~ '..string.char(0xFD, 0x02, 0x02, 0x1E, 0xC0, 0xFD)..' ~~')
 			multiStepAction:add('/ja "Immanence" <me>')
 			multiStepAction:add('/ma "Luminohelix" <t>')
-			multiStepAction:pause(2)
+			multiStepAction:pause(3)
 			multiStepAction:add('/ja "Immanence" <me>')
 			multiStepAction:add('/ma "Geohelix" <t>')
 		end
