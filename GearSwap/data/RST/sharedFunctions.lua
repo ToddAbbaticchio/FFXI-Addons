@@ -968,7 +968,7 @@ windower.raw_register_event('prerender',function()
     -- determine if we're moving or not, handle movespeed gear swaps
 	mov.counter = mov.counter + 1;
     if mov.counter > 2 then
-        local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index) or nil
+        local playerInfo = windower.ffxi.get_player() and windower.ffxi.get_player().index and windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index) or nil
 		if playerInfo and playerInfo.x and mov.x then
             local movement = math.sqrt((playerInfo.x - mov.x) ^ 2 + (playerInfo.y - mov.y) ^ 2 + (playerInfo.z - mov.z) ^ 2) > 0.1
             if movement and not moving then

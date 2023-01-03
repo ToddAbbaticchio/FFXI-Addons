@@ -1,13 +1,12 @@
 vars = {}
 vars.BLU = {
-    autoBuffs = {
-        --["Warcry"] = "Warcry",
-        --["Berserk"] = "Berserk",
+    autoBuffs = {},
+    afReact = {
+        --['Impulse Drive'] = {actor='any', response='/ws "Expiacion" <t>'}
     },
-    afReact = {},
     ws = "Expiacion",
-    --maintainAftermath = true,
-    --targetTp = 1750,
+    maintainAftermath = true,
+    --ws = "Savage Blade",
     targetTp = 1000,
     pullCommand = '/ma "Glutinous Dart" '
 }

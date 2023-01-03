@@ -443,7 +443,7 @@ windower.register_event('action',function (action)
 
             -- Check if wsname in afReact table
             local damageDealt = action.targets[1].actions[1].param or nil
-            local wsName = res.weapon_skills[param].en or nil
+            local wsName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
 
             local reaction = afReact[wsName] or nil
             if wsName and reaction and damageDealt then

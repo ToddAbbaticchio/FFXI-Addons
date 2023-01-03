@@ -31,7 +31,7 @@ function init_gear_sets()
 		ear1="Suppanomimi",
 		ear2="Telos Earring",
 		ring1="Chirich Ring +1",
-		ring2="Ilabrat Ring",
+		ring2="Chirich Ring +1",
 		back=gear.TpCape,
 	}
 	sets.baseMagic = {
@@ -216,10 +216,11 @@ function init_modetables()
 	--Setup weaponMode
 	weaponMode = {
 		["index"] = 0,
-		[0] = {name="TPBonus", set={main="Naegling", sub="Thibron"}},
-		[1] = {name="FullAcc", set={main="Naegling", sub="Zantetsuken"}},
-		[2] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
-		[3] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
+		[0] = {name="Tizona", set={main="Tizona", sub="Thibron"}},
+		[1] = {name="TPBonus", set={main="Naegling", sub="Thibron"}},
+		[2] = {name="FullAcc", set={main="Naegling", sub="Zantetsuken"}},
+		[3] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
+		[4] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
 	}
 
 	--Setup autoBuff
@@ -243,7 +244,14 @@ function init_modetables()
 end
 
 function job_setup()
-    blue_magic_maps = {}
+    --[[ include('Mote-TreasureHunter')
+    -- For th_action_check():
+    -- JA IDs for actions that always have TH: Provoke, Animated Flourish.
+    info.default_ja_ids = S{35, 204}
+    -- Unblinkable JA IDs for actions that always have TH: Quick/Box/Stutter Step, Desperate/Violent Flourish.
+    info.default_u_ja_ids = S{201, 202, 203, 205, 207} ]]
+	
+	blue_magic_maps = {}
 	-- Physical spells with no particular (or known) stat mods
     blue_magic_maps.Physical = S{
         'Bilgestorm'
@@ -489,7 +497,7 @@ function autoActions()
 
 	--tellXYZ("???") -- id of ring last run:17002672
 
-	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
+	if auto.buff[auto.buff.index] == 'On' and not moving then
 		-- auto.fite actions
 		if auto.fite[auto.fite.index] == 'On' then
 			if player.status == 'Idle' then
@@ -507,21 +515,26 @@ function autoActions()
 					send_command('/warcry')
 				end
 
-				if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') and player.status == 'Idle' then
+				if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then
 					send_command('input /ma "Battery Charge" <me>')
 					return
 				end
 		
-				if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') and player.status == 'Idle' then
+				if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
 					send_command('input /ma "Erratic Flutter" <me>')
 					return
 				end
 		
-				if buffCheck('Attack Boost', 'Nat. Meditation') and bluSpellSet('Nat. Meditation') and player.status == 'Idle' then
+				if buffCheck('Attack Boost', 'Nat. Meditation') and bluSpellSet('Nat. Meditation') then
 					send_command('input /ma "Nat. Meditation" <me>')
 					return
 				end
 		
+				if bluSpellSet('White Wind') and partyLowHP(75) then
+					send_command('input /ma "White Wind" <me>')
+					return
+				end
+
 				--[[ if not buffactive['Food'] then
 					send_command('/item "Dragon Steak"')
 				end ]]
@@ -529,10 +542,14 @@ function autoActions()
 
 			-- heal party members at 50% or lower health
 			if bluSpellSet('Magic Fruit') then
-				partyLowHP(50, '/ma "Magic Fruit"')
+				partyLowHP(70, '/ma "Magic Fruit"')
+				return
 			end
 
-			return
+			if bluSpellSet('White Wind') and partyLowHP(50) then
+				send_command('input /ma "White Wind" <me>')
+				return
+			end
 		end
 		
 		if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then
@@ -540,7 +557,8 @@ function autoActions()
 			return
 		end
 
-		if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
+		--if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
+		if buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
