@@ -13,30 +13,15 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function init_gear_sets()
 
-	gear.petMagCape = {name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+10',}}
-	gear.petAtkCape = {name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Pet: Attack+10 Pet: Rng.Atk.+10',}}
+	--gear.petMagCape = {name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Pet: Magic Damage+10',}}
+	--gear.petAtkCape = {name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Pet: Attack+10 Pet: Rng.Atk.+10',}}
+	gear.merlinicBPHands = {name="Merlinic Dastanas", augments={'Pet: Accuracy+26 Pet: Rng. Acc.+26','Blood Pact Dmg.+10','Pet: STR+5','Pet: Mag. Acc.+6','Pet: "Mag.Atk.Bns."+10',}}
 
 	sets.precast.FC = {		
-		ammo="Incantor Stone",
-		head="Bunzi's Hat",
 		body="Inyanga Jubbah +2",
-		feet="Merlinic Crackows",
 		ear1="Etiolation Earring",
 		ear2="Malignance Earring",
 		ring1="Kishar Ring",
-		waist="Embla Sash",
-
-		--[[ ToDo:
-		main={ name="Grioavolr", augments={'"Fast Cast"+6','INT+2','"Mag.Atk.Bns."+17',}}, -- +10
-        neck="Orunmila's Torque", -- +5
-        ear2="Loquacious Earring", -- +2
-        hands={ name="Telchine Gloves", augments={'Mag. Evasion+25','"Fast Cast"+5','Enh. Mag. eff. dur. +10',}},
-        ring1="Lebeche Ring",
-        back={ name="Campestres's Cape", augments={'Pet: M.Acc.+20 Pet: M.Dmg.+20','Eva.+20 /Mag. Eva.+20','Pet: Mag. Acc.+10','"Fast Cast"+10',}},
-        waist="Witful Belt", -- +3
-        legs={ name="Merlinic Shalwar", augments={'"Fast Cast"+6','CHR+6','Mag. Acc.+14','"Mag.Atk.Bns."+14',}},
-        feet="Regal Pumps +1" -- +5~7
-		]]--
 	}
 
 	sets.midcast = {}
@@ -44,56 +29,55 @@ function init_gear_sets()
 	--[[ BP Timer Gear (BP Recast Reduction, Avatar's Favor) ]]--
     sets.midcast.BP = {
         main="Espiritus",
-        sub="Vox Grip",
-        ammo="Sancus Sachet +1",
-        head="Beckoner's Horn +2",
+        --ammo="Sancus Sachet +1",
+        --head="Beckoner's Horn +2",
         --neck="Incanter's Torque",
-        ear1="Cath Palug Earring",
-        ear2="Lodurr Earring",
-        body="Baayami Robe", -- +1
-        hands="Baayami Cuffs", -- +1
+        --ear1="Cath Palug Earring",
+        --ear2="Lodurr Earring",
+        --body="Baayami Robe", -- +1
+        --hands="Baayami Cuffs", -- +1
         ring1="Stikini Ring +1",
-        --ring2="Evoker's Ring",
-        back="Conveyance Cape", 
-        waist="Incarnation Sash", --waist="Kobo Obi",
-        legs="Beckoner's Spats +2", --legs="Baayami Slops +1",
-        feet="Baayami Sabots +1"
+        ring2="Stikini Ring +1",
+        --back="Conveyance Cape", 
+        --waist="Incarnation Sash", --waist="Kobo Obi",
+        --legs="Beckoner's Spats +2", --legs="Baayami Slops +1",
+        --feet="Baayami Sabots +1"
     }
 
 	sets.BPReduction = {
 		main="Espiritus",
-        sub="Vox Grip",
-        ammo="Sancus Sachet +1",
-        head="Beckoner's Horn +2",
+        --sub="Vox Grip",
+        --ammo="Sancus Sachet +1",
+        --head="Beckoner's Horn +2",
         --neck="Incanter's Torque",
-        ear1="Cath Palug Earring",
-        ear2="Lodurr Earring",
-        body="Baayami Robe", -- +1
+        --ear1="Cath Palug Earring",
+        --ear2="Lodurr Earring",
+        --body="Baayami Robe", -- +1
         hands="Baayami Cuffs +1", -- +1
         ring1="Stikini Ring +1",
-        --ring2="Evoker's Ring",
-        back="Conveyance Cape", 
-        waist="Incarnation Sash", --waist="Kobo Obi",
-        legs="Convoker's Spats +1", --legs="Baayami Slops +1",
-        feet="Baayami Sabots +1"
+		ring2="Stikini Ring +1",
+        --back="Conveyance Cape", 
+        --waist="Incarnation Sash", --waist="Kobo Obi",
+        --legs="Convoker's Spats +1", --legs="Baayami Slops +1",
+        --feet="Baayami Sabots +1"
 	}
 
 	sets.SmnSkill = {
 		main="Espiritus", 
 		sub="Vox Grip",
 		ammo="Sancus Sachet +1",
-		head="Baayami Hat", -- +1
+		--head="Baayami Hat", -- +1
 		--neck="Incanter's Torque",
-		ear1="Cath Palug Earring",
-		ear2="Lodurr Earring",
-		body="Baayami Robe", -- +1
-		hands="Baayami Cuffs",-- +1
+		--ear1="Cath Palug Earring",
+		--ear2="Lodurr Earring",
+		--body="Baayami Robe", -- +1
+		--hands="Baayami Cuffs",-- +1
 		ring1="Stikini Ring +1",
-		--ring2="Evoker's Ring",
-		back="Conveyance Cape",
-		waist="Incarnation Sash", ---waist="Kobo Obi",
-		legs="Convoker's Spats +1", --legs="Baayami Slops +1",
-		feet="Baayami Sabots +1"
+		ring2="Stikini Ring +1",
+		--back="Conveyance Cape",
+		--waist="Incarnation Sash", ---waist="Kobo Obi",
+		--legs="Convoker's Spats +1", --legs="Baayami Slops +1",
+		--feet="Baayami Sabots +1"
 	}
 
 	sets.precast.BloodPactWard = set_combine(sets.SmnSkill, sets.BPReduction, {})
@@ -102,33 +86,21 @@ function init_gear_sets()
 	-- Elemental Siphon sets. Zodiac Ring is affected by day, Chatoyant Staff by weather, and Twilight Cape by both.
 	sets.midcast.Siphon = {
 		main="Espiritus", 
-		sub="Vox Grip",
-		ammo="Esper Stone +1",
-		head="Baayami Hat", -- +1
-		--neck="Incanter's Torque",
-		ear1="Cath Palug Earring",
-		ear2="Lodurr Earring",
-		body="Baayami Robe", -- +1
-		hands="Baayami Cuffs", -- +1
 		ring1="Stikini Ring +1",
-		--ring2="Evoker's Ring",
-		back="Conveyance Cape",
-		--waist="Kobo Obi",
-		legs="Convoker's Spats +1", --legs="Baayami Slops +1",
-		feet="Baayami Sabots +1", --feet="Beck. Pigaches +1"
+		ring2="Stikini Ring +1",
 	}	
     sets.midcast.SiphonZodiac = set_combine(sets.midcast.Siphon, {})--{ ring1="Zodiac Ring" }) -- in Storage
-    sets.midcast.SiphonWeather = set_combine(sets.midcast.Siphon, { main="Chatoyant Staff" })    
-    sets.midcast.SiphonWeatherZodiac = set_combine(sets.midcast.SiphonZodiac, { main="Chatoyant Staff" })
+    sets.midcast.SiphonWeather = set_combine(sets.midcast.Siphon, {})    
+    sets.midcast.SiphonWeatherZodiac = set_combine(sets.midcast.SiphonZodiac, {})
 
 	--[[ Summoning Midcast (Spell Interruption (Baayami Robe +1 + 2 more), DT) ]]--
     sets.midcast.Summon = set_combine(sets.DT_Base, {
-        body="Baayami Robe", -- +1
+        --body="Baayami Robe", -- +1
         --waist="Rumination Sash"
     })
 
-	sets.midcast["Mana Cede"] = {hands="Beckoner's Bracers +2" } 
-    sets.midcast["Astral Flow"] = {} --{ head="Glyphic Horn +3" }
+	sets.midcast["Mana Cede"] = {}
+    sets.midcast["Astral Flow"] = {}
 
 	--[[ Blood Pacts ]]--
 		sets.pet_midcast = {}
@@ -138,211 +110,119 @@ function init_gear_sets()
 			main="Gridarvor",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Helios Band",
-			neck="Shulmanu Collar", --neck="Summoner's Collar +2",
-			ear1="Lugalbanda Earring",
-			ear2="Beckoner's Earring +1",
-			body="Glyphic Doublet +3", 
-			hands="Merlinic Dastanas", 
+			head="Apogee Crown +1",
+			neck="Deino Collar", --neck="Summoner's Collar +2",
+			--ear1="Lugalbanda Earring",
+			ear2="Beckoner's Earring",
+			body="Apogee Dalmatica +1", 
+			hands=gear.merlinicBPHands, 
 			ring1="Cath Palug Ring",
 			ring2="Varar Ring +1",
-			back=gear.petAtkCape,
-			waist="Incarnation Sash",
+			back="Scintillating Cape",
+			waist="Regal Belt",
 			legs="Apogee Slacks +1",
-			feet="Helios Boots",
+			feet="Apogee Pumps +1",
 		}
 
 		-- Physical pacts which benefit more from TP than Pet:DA (like Spinning Dive and other pacts you never use except that one time)
 		sets.pet_midcast.Physical_BP_TP = set_combine(sets.pet_midcast.Physical_BP, {
-			head="Apogee Crown +1",
-			--ear2="Gelos Earring",
-			--body="Convoker's Doublet +3",
 			ring1="Varar Ring +1",
-			waist="Regal Belt",
-			--legs="Enticer's Pants",
-			name="Apogee Pumps +1",
 		})
 		
 		-- Used for all physical pacts when AccMode is true
 		sets.pet_midcast.Physical_BP_Acc = set_combine(sets.pet_midcast.Physical_BP, {
-			name="Apogee Crown +1",
-			--body="Convoker's Doublet +3",
-			hands="Merlinic Dastanas",
-			--feet="Convoker's Pigaches +3"
 		})
 
 		-- Magic BPs (BP Damage, Pet:MAB)
 		sets.pet_midcast.Magic_BP_Base = {
-			main="Grioavolr",
+			main="Gridarvor",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Cath Palug Crown",
+			head="Apogee Crown +1",
 			neck="Adad Amulet", --neck="Summoner's Collar +2",
-			ear1="Lugalbanda Earring",
-			ear2="Beckoner's Earring +1",
+			ear1="Kyrene's Earring",
+			ear2="Beckoner's Earring",
 			body="Apo. Dalmatica +1",
-			hands="Merlinic Dastanas",
+			hands=gear.merlinicBPHands,
 			ring1="Varar Ring +1",
 			ring2="Varar Ring +1",
 			legs="Apogee Slacks +1",
-			back=gear.petMagCape,
+			back="Scintillating Cape",
 			waist="Regal Belt",
 			feet="Apogee Pumps +1",
 		}
 
-		-- Some magic pacts benefit more from TP than others.
-		-- Note: This set will only be used on merit pacts if you have less than 4 merits.
-		--       Make sure to update your merit values at the top of this Lua.
 		sets.pet_midcast.Magic_BP_TP = set_combine(sets.pet_midcast.Magic_BP_Base, {
-			--legs="Enticer's Pants"
 		})
 	
-		-- NoTP set used when you don't need Enticer's
 		sets.pet_midcast.Magic_BP_NoTP = set_combine(sets.pet_midcast.Magic_BP_Base, {
-			legs="Apogee Slacks +1",
 		})
 	
 		sets.pet_midcast.Magic_BP_TP_Acc = set_combine(sets.pet_midcast.Magic_BP_TP, {
-			--head={ name="Merlinic Hood", augments={'Pet: Mag. Acc.+21 Pet: "Mag.Atk.Bns."+21','Blood Pact Dmg.+7','Pet: INT+6','Pet: "Mag.Atk.Bns."+11',}},
-			--body="Convoker's Doublet +3",
-			--hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+29','Blood Pact Dmg.+10','Pet: INT+7','Pet: "Mag.Atk.Bns."+10',}}
 		})
 	
 		sets.pet_midcast.Magic_BP_NoTP_Acc = set_combine(sets.pet_midcast.Magic_BP_NoTP, {
-			--head={ name="Merlinic Hood", augments={'Pet: Mag. Acc.+21 Pet: "Mag.Atk.Bns."+21','Blood Pact Dmg.+7','Pet: INT+6','Pet: "Mag.Atk.Bns."+11',}},
-			--body="Convoker's Doublet +3",
-			--hands={ name="Merlinic Dastanas", augments={'Pet: Mag. Acc.+29','Blood Pact Dmg.+10','Pet: INT+7','Pet: "Mag.Atk.Bns."+10',}}
 		})
 
 		-- Hybrid BPs (BP Damage >> Pet:MAB > Pet:Acc/Atk/Macc)
 		sets.pet_midcast.FlamingCrush = {			
-			main="Grioavolr",
+			main="Gridarvor",
 			sub="Elan Strap +1",
 			ammo="Sancus Sachet +1",
-			head="Cath Palug Crown",
+			head="Apogee Crown +1",
 			neck="Adad Amulet", --neck="Summoner's Collar +2",
-			ear1="Lugalbanda Earring",
-			ear2="Beckoner's Earring +1",
-			body="Apogee Dalmatica +1", --body="Convoker's Doublet +3",
-			hands="Merlinic Dastanas",
+			ear1="Kyrene's Earring",
+			ear2="Beckoner's Earring",
+			body="Apo. Dalmatica +1",
+			hands=gear.merlinicBPHands,
 			ring1="Varar Ring +1",
 			ring2="Varar Ring +1",
-			back=gear.petMagCape,
+			legs="Apogee Slacks +1",
+			back="Scintillating Cape",
 			waist="Regal Belt",
-			legs="Apogee Slacks +1", -- This is Path D, could also be Path A
 			feet="Apogee Pumps +1",
 		}
 
 		-- Magic Acc (Debuffs: Shock Squall, etc.)
-		sets.pet_midcast.MagicAcc_BP = {
-			main="Espiritus",
-			sub="Vox Grip",
-			ammo="Sancus Sachet +1",
-			head="Beckoner's Horn +2", --head="Convoker's Horn +3",
-			neck="Adad Amulet",--neck="Summoner's Collar +2",
-			ear1="Lugalbanda Earring",
-			ear2="Beckoner's Earring +1",
-			body="Convoker's Doublet +1", --body="Convoker's Doublet +3",
-			hands="Convoker's Bracers +1", --hands="Lamassu Mitts +1",
-			ring1="Cath Palug Ring",
-			--ring2="Evoker's Ring",
-			back=gear.petMagCape,
-			waist="Regal Belt",
-			legs="Convoker's Spats +1", --legs="Convoker's Spats +3",
-			feet="Convoker's Pigaches +1",--feet="Bunzi's Sabots"
-		}
+		sets.pet_midcast.MagicAcc_BP = {}
 		sets.pet_midcast.Debuff_Rage = sets.pet_midcast.MagicAcc_BP
 
 		-- Summoning Magic (Buff Duration)
 		sets.pet_midcast.SummoningMagic = {
 			main="Espiritus", 
-			sub="Vox Grip",
-			ammo="Sancus Sachet +1",
-			head="Baayami Hat", -- +1
-			--neck="Incanter's Torque",
-			ear1="Cath Palug Earring",
-			ear2="Lodurr Earring",
-			body="Baayami Robe", -- +1
-			hands="Baayami Cuffs",-- +1
 			ring1="Stikini Ring +1",
-			--ring2="Evoker's Ring",
-			back="Conveyance Cape",
-			waist="Incarnation Sash", ---waist="Kobo Obi",
-			legs="Convoker's Spats +1", --legs="Baayami Slops +1",
-			feet="Baayami Sabots +1"
+			ring2="Stikini Ring +1",
 		}
 	
 		sets.pet_midcast.Buff = sets.pet_midcast.SummoningMagic
 
 		sets.pet_midcast.Buff_Healing = set_combine(sets.pet_midcast.Buff, {
-			--main="Nirvana",
-			--back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
-			--body={ name="Apo. Dalmatica +1", augments={'Summoning magic skill +20','Enmity-6','Pet: Damage taken -4%',}},
 			feet="Apogee Pumps +1",
 		})
 
 		-- Wind's Blessing (Pet:MND increases potency)
 		sets.pet_midcast.Buff_MND = set_combine(sets.pet_midcast.Buff, {
-			--main="Nirvana",
-			--neck="Summoner's Collar +2",
-			--hands="Lamassu Mitts +1",
-			--back={ name="Campestres's Cape", augments={'Pet: Acc.+20 Pet: R.Acc.+20 Pet: Atk.+20 Pet: R.Atk.+20','Eva.+20 /Mag. Eva.+20','Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Regen"+10','Pet: Damage taken -5%',}},
-			--legs="Assiduity Pants +1",
-			--feet="Bunzi's Sabots"
 		})
 
 	--[[ Sub-Job Related Sets ]]--
 		sets.midcast.Cure = {
-			--main="Nirvana",
-			--sub="Clerisy Strap +1",
 			sub="Enki Strap",
 			head="Inyanga Tiara +2", --head={ name="Vanya Hood", augments={'MP+50','"Cure" potency +7%','Enmity-6',}},
-			--neck="Orunmila's Torque",
-			--ear1="Meili Earring",
-			ear2="Novia Earring",
 			body="Inyanga Tiara +2", --body="Zendik Robe",
 			hands="Inyanga Dastanas +2", --hands={ name="Telchine Gloves", augments={'Mag. Evasion+25','"Fast Cast"+5','Enh. Mag. eff. dur. +10',}},
 			ring1="Stikini Ring +1", --ring1="Lebeche Ring",
-			ring2="Sirona's Ring", --ring2="Menelaus's Ring",
-			back="Perimede Cape",--back="Tempered Cape +1",
-			waist="Bishop's Sash", --waist="Luminary Sash",
-			legs="Doyen Pants", --legs="Convoker's Spats +3",
+			ring2="Stikini Ring +1", --ring2="Menelaus's Ring",			
 			feet="Inyanga Crackows +2", --feet={ name="Vanya Clogs", augments={'MP+50','"Cure" potency +7%','Enmity-6',}}
 		}
 
 		sets.midcast.Cursna = set_combine(sets.precast.FC, {
-			--neck="Debilis Medallion",
-			--ear1="Meili Earring",
-			--ear2="Beatific Earring",
-			--ring1="Menelaus's Ring",
-			--ring2="Haoma's Ring",
-			--back="Tempered Cape +1",
-			waist="Bishop's Sash",
-			--feet={ name="Vanya Clogs", augments={'Healing magic skill +20','"Cure" spellcasting time -7%','Magic dmg. taken -3',}}
 		})
 
 		-- Just a standard set for spells that have no set
 		sets.midcast.EnmityRecast = set_combine(sets.precast.FC, {
-			--main="Nirvana",
-			ear1="Novia Earring",
-			--body={ name="Apo. Dalmatica +1", augments={'Summoning magic skill +20','Enmity-6','Pet: Damage taken -4%',}}
 		})
 
 		sets.midcast.Enfeeble = {
-			--main="Contemplator +1", or Daybreak
-			sub="Enki Strap", -- Ammurapi with Daybreak
-			--head=empty,
-			--neck="Erra Pendant",
-			ear1="Malignance Earring",
-			--ear2="Dignitary's Earring",
-			--body="Cohort Cloak +1",
-			hands="Inyanga Dastanas +2",
-			ring1="Stikini Ring +1",
-			--ring2={name="Stikini Ring +1", bag="wardrobe4"},
-			--back="Aurist's Cape +1",
-			--waist="Luminary Sash",
-			legs="Inyanga Shalwar +2",
-			--feet="Skaoi Boots"
 		}
 
 		sets.midcast.Enfeeble.INT = set_combine(sets.midcast.Enfeeble, {
@@ -350,54 +230,21 @@ function init_gear_sets()
 		})
 
 		sets.midcast.Enhancing = {
-			--main={ name="Gada", augments={'Enh. Mag. eff. dur. +6','DEX+1','Mag. Acc.+5','"Mag.Atk.Bns."+18','DMG:+4',}},
-			--sub="Ammurapi Shield",
-			--head={ name="Telchine Cap", augments={'Mag. Evasion+24','"Conserve MP"+4','Enh. Mag. eff. dur. +10',}},
-			--neck="Incanter's Torque",
-			--ear1="Mimir Earring",
-			--ear2="Andoaa Earring",
-			--body={ name="Telchine Chas.", augments={'Mag. Evasion+25','"Conserve MP"+5','Enh. Mag. eff. dur. +10',}},
-			--hands={ name="Telchine Gloves", augments={'Mag. Evasion+25','"Fast Cast"+5','Enh. Mag. eff. dur. +10',}},
 			ring1="Stikini Ring +1",
-			--ring2={name="Stikini Ring +1", bag="wardrobe4"},
-			--back="Merciful Cape",
-			waist="Embla Sash",
-			--legs={ name="Telchine Braconi", augments={'Mag. Evasion+25','"Conserve MP"+4','Enh. Mag. eff. dur. +10',}},
-			--feet={ name="Telchine Pigaches", augments={'Mag. Evasion+24','"Conserve MP"+3','Enh. Mag. eff. dur. +10',}}
+			ring2="Stikini Ring +1",
 		}
 
 		sets.midcast.Stoneskin = set_combine(sets.midcast.Enhancing, {
-			--neck="Nodens Gorget",
-			--ear2="Earthcry Earring",
 			waist="Siegel Sash",
-			--legs="Shedir Seraweels"
 		})
 
 		sets.midcast.Nuke = {
-			--main={ name="Grioavolr", augments={'"Fast Cast"+6','INT+2','"Mag.Atk.Bns."+17',}},
-			--sub="Niobid Strap",
-			head="Cath Palug Crown",
-			--neck="Sanctity Necklace",
-			ear1="Malignance Earring",
-			ear2="Friomisi Earring",
-			--body={ name="Amalric Doublet +1", augments={'MP+80','Mag. Acc.+20','"Mag.Atk.Bns."+20',}},
-			--hands={ name="Amalric Gages +1", augments={'INT+12','Mag. Acc.+20','"Mag.Atk.Bns."+20',}},
-			--ring1="Freke Ring",
-			--ring2="Shiva Ring +1",
-			--back={ name="Campestres's Cape", augments={'MND+20','Mag. Acc+20 /Mag. Dmg.+20','Mag. Acc.+10','"Mag.Atk.Bns."+10','Phys. dmg. taken-10%',}},
-			waist="Eschan Stone",
-			--legs={ name="Amalric Slops +1", augments={'MP+80','Mag. Acc.+20','"Mag.Atk.Bns."+20',}},
-			--feet={ name="Amalric Nails +1", augments={'Mag. Acc.+20','"Mag.Atk.Bns."+20','"Conserve MP"+7',}}
 		}
 
 		sets.midcast["Refresh"] = set_combine(sets.midcast.Enhancing, {
-			--1head="Amalric Coif +1",
-			waist="Gishdubar Sash"
 		})
 	
 		sets.midcast["Aquaveil"] = set_combine(sets.midcast.Enhancing, {
-			--main="Vadose Rod",
-			--head="Amalric Coif +1"
 		})
 
 		sets.precast.JA['Sublimation'] = {waist="Embla Sash"}
@@ -430,12 +277,12 @@ function init_gear_sets()
 			neck="Sibyl Scarf", --neck="Loricate Torque +1",
 			ear1="Cath Palug Earring",
 			--ear2="Moonshade Earring",
-			body="Inyanga Jubbah +2", --body={ name="Apo. Dalmatica +1", augments={'MP+80','Pet: "Mag.Atk.Bns."+35','Blood Pact Dmg.+8',}},
+			body="Apo. Dalmatica +1",
 			hands="Inyanga Dastanas +2",
 			ring1="Stikini Ring +1",
-			ring2="Defending Ring",
+			ring2="Stikini Ring +1",
 			back="Archon Cape",
-			waist="Regal Belt",
+			--waist="Regal Belt",
 			legs="Inyanga Shalwar +2", --legs="Assiduity Pants +1",
 			feet="Herald's Gaiters"
 		}
@@ -449,57 +296,45 @@ function init_gear_sets()
 	
 		-- Main refresh set - Many idle sets inherit from this set.
 		sets.aftercast.Perp_Base = {
-			--main="Nirvana",
+			--main="Mpaca's Staff",
 			--sub="Oneiros Grip",
 			ammo="Sancus Sachet +1",
-			head="Convoker's Horn +1", --head="Convoker's Horn +3",
-			neck="Sibyl Scarf", --neck="Caller's Pendant",
+			head="Inyanga Tiara +2", --head="Convoker's Horn +3",
+			neck="Sibyl Scarf", --neck="Loricate Torque +1",
 			ear1="Cath Palug Earring",
 			--ear2="Moonshade Earring",
-			body="Inyanga Jubbah +2", --body={ name="Apo. Dalmatica +1", augments={'Summoning magic skill +20','Enmity-6','Pet: Damage taken -4%',}},
-			hands="Inyanga Dastanas +2", --hands={ name="Merlinic Dastanas", augments={'Pet: Crit.hit rate +2','"Mag.Atk.Bns."+25','"Refresh"+2','Mag. Acc.+10 "Mag.Atk.Bns."+10',}},
+			body="Apo. Dalmatica +1",
+			hands="Inyanga Dastanas +2",
 			ring1="Stikini Ring +1",
-			--ring2="Evoker's Ring",
-			back="Campestres's Cape",
-			--waist="Lucidity Sash",
+			ring2="Stikini Ring +1",
+			back="Scintillating Cape",
+			--waist="Regal Belt",
 			legs="Inyanga Shalwar +2", --legs="Assiduity Pants +1",
-			feet="Baayami Sabots +1"
+			feet="Herald's Gaiters"
 		}
 	
-		-- Refresh set with avatar out. Equipped when IdleMode is "Refresh".
 		sets.aftercast.Perp_Refresh = set_combine(sets.aftercast.Perp_Base, {
 		})
 	
-		-- Refresh set when MP is under 50%
 		sets.aftercast.Perp_RefreshSub50 = set_combine(sets.aftercast.Perp_Refresh, {
-			waist="Fucho-no-obi"
 		})
-		
-		-- Used when IdleMode is "Favor" to maximize avatar's favor effect.
-		-- Skill tiers are 512 / 575 / 670
+
 		sets.aftercast.Perp_Favor = set_combine(sets.aftercast.Perp_Refresh, {
-			head="Beckoner's Horn +2",
-			ear2="Lodurr Earring",
-			ring1="Stikini Ring +1",
-			--ring2="Evoker's Ring",
-			feet="Baayami Sabots +1"
 		})
 	
 		sets.aftercast.Perp_Zendik = set_combine(sets.aftercast.Perp_Favor, {
-			--body="Zendik Robe"
 		})
 	
 		-- TP set. Equipped when IdleMode is "DD" and MeleeMode is ON.
 		sets.engaged = set_combine(sets.aftercast.Perp_Refresh, {
-			head="Beckoner's Horn +2", --head="Convoker's Horn +3",
-			neck="Shulmanu Collar",
-			ear1="Telos Earring",
-			ear2="Brutal Earring", --ear2="Cessance Earring",
-			body="Tali'ah Manteel +2",
+			head="Nyame Helm",
+			neck="Deino Collar",
+			ear1="Mache Earring +1",
+			ear2="Cessance Earring", --ear2="Cessance Earring",
+			body="Nyame Mail",
 			hands="Nyame Gauntlets", --hands="Bunzi's Gloves",
-			ring1="Petrov Ring", --ring1={ name="Chirich Ring +1", bag="wardrobe2" },
-			--ring2={ name="Chirich Ring +1", bag="wardrobe4" },
-			--back={ name="Campestres's Cape", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Dbl.Atk."+10','Phys. dmg. taken-10%',}},
+			ring1="Chirich Ring +1",
+			ring2="Chirich Ring +1",
 			waist="Windbuffet Belt +1", --waist="Cetl Belt",
 			legs="Nyame Flanchard", --legs="Convoker's Spats +3",
 			feet="Nyame Sollerets", --feet="Convoker's Pigaches +3"
@@ -509,21 +344,6 @@ function init_gear_sets()
 
 		-- Idle set used when you have a spirit summoned. Glyphic Spats will make them cast more frequently.
 		sets.aftercast.Spirit = {
-			--main="Nirvana",
-			sub="Vox Grip",
-			ammo="Sancus Sachet +1",
-			--head="Convoker's Horn +3",
-			--neck="Incanter's Torque",
-			ear1="Cath Palug Earring",
-			--ear2="Evans Earring",
-			body="Baayami Robe", -- +1
-			hands="Baayami Cuffs", -- +1
-			ring1="Stikini Ring +1",
-			--ring2="Evoker's Ring",
-			back="Conveyance Cape",
-			--waist="Lucidity Sash",
-			--legs="Glyphic Spats +3",
-			feet="Baayami Sabots +1"
 		}
 
 	THSpells = S{"Dia","Dia II","Diaga"}
@@ -834,16 +654,30 @@ function autoActions()
 	local siphonRecast = abil_recasts[175]
 	local astralFlowRecast = abil_recasts[0]
 	local astralConduitRecast = abil_recasts[254]
+	local hassoRecast = abil_recasts[138]
+    local meditateRecast = abil_recasts[134]
 	local currAvatar = windower.ffxi.get_mob_by_target('pet')
 	local me = windower.ffxi.get_player()    
 
 	-- Autobuff (Siphon, Sublimation, Favor)
 	if (auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving) then
-		if player.mpp < 35 and siphonRecast == 0 then
+		--[[if player.mpp < 35 and siphonRecast == 0 then
 			add_to_chat(122,'-- MP below 35% - Elemental Siphon! --')
 			send_command('input //gs c elesiphon')
 			return
-		end
+		end]]--
+
+		if not buffactive['Hasso'] and hassoRecast == 0 then
+            add_to_chat(207, '[~ Hasso ~]')
+            send_command('/hasso')
+            return
+        end
+
+        if meditateRecast == 0 then
+            add_to_chat(207, '[~ Meditate ~]')
+            send_command('/meditate')
+            return
+        end
 
 		-- Sublimation Handling if we're /sch
 		if player.sub_job == 'SCH' then
@@ -899,11 +733,10 @@ function autoActions()
 				add_to_chat(122,'-- MP below 50% - Myrkr! --')
 				send_command('input /ws "Myrkr" <me>')
 				return
-				--[[
 			elseif player.tp > 1000 and me.status == 1 and enemy.hpp >= 80 then
 				add_to_chat(122,'-- MP is fine - Smash! --')
 				send_command('input /ws "Shell Crusher" <t>')
-				return]]--
+				return
 			end
 		end
 		
@@ -914,6 +747,8 @@ function autoActions()
 				requiredAvatar = 'Garuda'
 			elseif not buffactive['TP Bonus'] then
 				requiredAvatar = 'Shiva'
+			elseif not buffactive['Shining Ruby'] then
+				requiredAvatar = 'Carbuncle'
 			--[[elseif not buffactive['Phalanx'] then
 				requiredAvatar = 'Diabolos']]--
 			else

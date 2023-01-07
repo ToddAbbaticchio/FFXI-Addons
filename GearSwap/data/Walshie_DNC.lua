@@ -230,7 +230,7 @@ function init_gear_sets()
         legs="Samnuha Tights",
         feet="Herculean Boots",
         ear1="Sherida Earring",
-        --ear2="Mache Earring +1",
+        ear2="Macu. Earring +1",
         ring1="Gere Ring",
         ring2="Epona's Ring",
         --back=gear.DNC_WS2_Cape,
@@ -253,9 +253,10 @@ function init_gear_sets()
     })
 
     sets.precast.WS['Rudra\'s Storm'] = set_combine(sets.baseWS, {
-        --ammo="Charis Feather",
+        ammo="Charis Feather",
         neck="Etoile Gorget +2",
         ear1="Sherida Earring",
+        ear2="Macu. Earring +1",
         --waist="Kentarch Belt +1",
     })
 
@@ -600,21 +601,21 @@ function autoActions()
         end
                 
         -- Use currently selected Samba (if Fan Dance isn't in effect)
-        if (((player.tp >= 350 and player.tp < 1000) or player.tp>=1350) and not buffactive['Haste Samba'] and not buffactive['Fan Dance']) then                
+        if (((player.tp >= 350 and player.tp < 1000) or player.tp>=1350) and not buffactive['Haste Samba'] and not buffactive['Drain Samba'] and not buffactive['Aspir Samba'] and not buffactive['Fan Dance']) then                
             add_to_chat(122, '['..sambaMode[sambaMode.index].samba..']')
             send_command(sambaMode[sambaMode.index].command)
             return
         end
-
+        --[[
         -- Auto Presto when mob has high HP
-        if (enemy.hpp >= 85 and prestoRecast == 0) then
+        if (enemy.hpp >= 95 and prestoRecast == 0) then
             add_to_chat(122, '[Presto]')
             send_command('/presto')
             return
         end
 
         -- Auto Step when mob has high HP OR just use it if Presto is on
-        if (((player.tp >= 100 and player.tp < 1000) or player.tp>=1100) and (enemy.hpp >= 80 or buffactive['Presto']) and stepRecast == 0) then
+        if (((player.tp >= 100 and player.tp < 1000) or player.tp>=1100) and (enemy.hpp >= 90 or buffactive['Presto']) and stepRecast == 0) then
             add_to_chat(122, '['..stepMode[stepMode.index].step..']')
             send_command(stepMode[stepMode.index].command)
             return
@@ -633,6 +634,7 @@ function autoActions()
             send_command(flourish3Mode[flourish3Mode.index].command)
             return
         end     
+        ]]--
     end
 
     -- Autofite (Cure & 1-hr)

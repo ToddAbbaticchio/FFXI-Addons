@@ -8,30 +8,36 @@ end
 -- Define sets and vars used by this job file.
 function init_gear_sets()
 
-    gear.offenseCape = {name="Lugh's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+6','"Mag.Atk.Bns."+10',}}
+    gear.offenseCape = {name="Lugh's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',}}
 	gear.defenseCape = {name="Lugh's Cape", augments={'INT+20','Eva.+20 /Mag. Eva.+20','"Fast Cast"+10','Mag. Evasion+15',}}
     ------------------------------------------------------------------------------------------------
     ---------------------------------------- Precast Sets ------------------------------------------
     ------------------------------------------------------------------------------------------------
     -- Precast sets to enhance JAs
-    sets.precast.JA['Tabula Rasa'] = {} --Upgrade to {legs="Peda. Pants +3"}
-    sets.precast.JA['Enlightenment'] =  {} --Upgrade to {body="Peda. Gown +3"}
+    sets.precast.JA['Tabula Rasa'] = {legs="Pedagogy Pants +3"}
+    sets.precast.JA['Enlightenment'] =  {body="Pedagogy Gown +3"}
 
     -- Fast cast sets for spells
     sets.precast.FC = {
-        -- Caps at 80%
-        main="Musa",
-        ammo="Incantor Stone",
-        head="Pedagogy Mortarboard +2", -- +3
-        ear1="Malignance Earring",
-        ear2="Etiolation Earring",
-        hands="Academic's Bracers +2", -- +3
-        ring1="Kishar Ring",
-        waist="Embla Sash",
-        back=gear.defenseCape,
-        feet="Academic's Loafers +2", -- +3
+        main="Musa", -- 10%
+        sub="Enki Strap",
+        ammo="Incantor Stone", -- 2%
+        -- Head swaps in based on Grimoire (12% non-FC)
+        ear1="Malignance Earring", -- 4%
+        ear2="Etiolation Earring", -- 1%
+        body="Pinga Tunic", -- 13%
+        hands="Academic's Bracers +3", -- 9%
+        ring1="Kishar Ring", -- 4%
+        back=gear.defenseCape, -- 10%
+        waist="Embla Sash", -- 5%
+        legs="Agwu's Slops", -- 7%        
+        -- Feet swap in based on Grimoire (10% non-FC)
+
+        -- Current: 65% (+22%)
+        -- +20% when /RDM = 85%
         
         --[[ BiS ToDo:
+            Sub     Clarisy Strap +1 -- 3
             Body	Pinga Tunic +1 -- 15
             Ear2	Loquacious Earring -- 2
             Legs	Pinga Pants +1 -- 13
@@ -39,12 +45,12 @@ function init_gear_sets()
         ]]--
     }
 
-    sets.precast.FC.Grimoire = {head="Pedagogy Mortarboard +2", feet="Academic's Loafers +2"}
+    sets.precast.FC.Grimoire = {head="Pedagogy Mortarboard +3", feet="Academic's Loafers +3"}
     sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash"})
     sets.precast.FC['Elemental Magic'] = set_combine(sets.precast.FC, {})
 
     sets.precast.FC.Cure = set_combine(sets.precast.FC, {
-        --Upgrade to feet="Kaykaus Boots +1", --7
+        feet="Kaykaus Boots +1",
         --Upgrade to ear1="Mendi. Earring", --5
         --Upgrade to ring1="Lebeche Ring", --(2)
     })
@@ -52,7 +58,6 @@ function init_gear_sets()
     sets.precast.FC.Curaga = sets.precast.FC.Cure
     sets.precast.FC.Impact = set_combine(sets.precast.FC, {}) --{head=empty, body="Twilight Cloak"})--Upgrade to waist="Shinjutsu-no-Obi +1"})
     sets.precast.FC.Dispelga = set_combine(sets.precast.FC, {main="Daybreak"}) --Upgrade to sub="Ammurapi Shield"
-    sets.precast.Storm = set_combine(sets.precast.FC, {ring2="Stikini Ring +1"})
 
     ------------------------------------------------------------------------------------------------
     ---------------------------------------- Midcast Sets ------------------------------------------
@@ -63,17 +68,17 @@ function init_gear_sets()
         main="Daybreak",
         sub="Sors Shield",
         ammo="Esper Stone +1",
+        head="Kaykaus Mitra +1",
+        body="Kaykaus Bliaut +1",
+        hands="Pedagogy Bracers +3",
+        legs="Kaykaus Tights +1",
+        feet="Kaykaus Boots +1",
         waist="Bishop's Sash",
+        back="Fi Follet Cape +1",
 
         --[[ BiS ToDo:
-            Back	Fi Follet Cape +1
-            Body	Kaykaus Bliaut +1
             Ear1	Mendicant's Earring
             Ear2	Magnetic Earring
-            Feet	Kaykaus Boots +1
-            Hands	Pedagogy Bracers +3
-            Head	Kaykaus Mitra +1
-            Legs	Kaykaus Tights +1
             Neck	Incanter's Torque
             Ring1	Lebeche Ring
             Ring2	Janniston Ring +1
@@ -82,7 +87,7 @@ function init_gear_sets()
 
     sets.midcast.CureWeather = set_combine(sets.midcast.Cure, {
         main="Chatoyant Staff",
-        sub="Enki Strap", --Upgrade to sub="Khonsu",        
+        sub="Khonsu",        
         waist="Hachirin-no-Obi",
     })
 
@@ -95,53 +100,52 @@ function init_gear_sets()
 
     sets.midcast.StatusRemoval = {
         main="Musa",
-        --Upgrade to sub="Khonsu",
+        sub="Khonsu",
         --Upgrade to head="Vanya Hood",
         --Upgrade to body="Vanya Robe",
-        --Upgrade to hands="Peda. Bracers +3",
+        hands="Pedagogy Bracers +3",
         legs="Academic's Pants +2",
         --Upgrade to feet="Vanya Clogs",
         --Upgrade to neck="Incanter's Torque",
-        ear2="Meili Earring",
+        --ear2="Meili Earring",
         ring1="Haoma's Ring",
         ring2="Menelaus's Ring",
         waist="Bishop's Sash",
     }
 
     sets.midcast.Cursna = set_combine(sets.midcast.StatusRemoval, {
+        body="Pedagogy Gown +3",
+        neck="Debilis Medallion",
         --[[ BiS ToDo:
             Back	Oretania's Cape +1
-            Body	Pedagogy Gown +3
             Ear1	Beatific Earring
             Hands	Hieros Mittens
             Main	Gada
-            Neck	Debilis Medallion
         ]]--
     })
 
     sets.midcast['Enhancing Magic'] = {
         main="Musa",
         head="Telchine Cap",
+        body="Pedagogy Gown +3",
         legs="Telchine Braconi",
         feet="Telchine Pigaches",        
-        waist="Embla Sash",        
         ear1="Mimir Earring",
         ring1="Stikini Ring +1",
+        ring2="Stikini Ring +1",
+        waist="Embla Sash",        
+        back="Fi Follet Cape +1",
         
         --[[ BiS: 
-            Back	Fi Follet Cape +1
-            Body	Pedagogy Gown +3
             Ear2	Andoaa Earring
             Neck	Incanter's Torque
-            Ring2	Stikini Ring +1
         ]]--        
     }
 
     sets.midcast.EnhancingDuration = set_combine(sets.midcast['Enhancing Magic'], {
         main="Musa",
-        --Upgrade to sub="Khonsu",
         head="Telchine Cap",
-        --Upgrade to body="Peda. Gown +3",
+        body="Pedagogy Gown +3",
         legs="Telchine Braconi",
         feet="Telchine Pigaches",
         waist="Embla Sash",
@@ -149,11 +153,14 @@ function init_gear_sets()
 
     sets.midcast.Regen = set_combine(sets.midcast.EnhancingDuration, {
         main="Musa",
-        --sub="Giuoco Grip",
         ammo="Pemphredo Tathlum",
-        body="Telchine Chasuble",
-        waist="Embla Sash",
         head="Arbatel Bonnet +3",
+        body="Telchine Chasuble",
+        legs="Telchine Braconi",
+        feet="Telchine Pigaches",
+
+        waist="Embla Sash",
+        
 
         --[[ BiS Todo:
             Back	Bookworm's Cape (Regen)
@@ -192,8 +199,7 @@ function init_gear_sets()
     })
 
     sets.midcast.Storm = sets.midcast.EnhancingDuration
-
-    sets.midcast.Stormsurge = set_combine(sets.midcast.Storm, {})--Upgrade to {feet="Peda. Loafers +3"})
+    sets.midcast.Stormsurge = set_combine(sets.midcast.Storm, {feet="Peda. Loafers +3"})
 
     sets.midcast.Protect = set_combine(sets.midcast.EnhancingDuration, {}) --Upgrade to {ring2="Sheltered Ring"})
     sets.midcast.Protectra = sets.midcast.Protect
@@ -203,46 +209,47 @@ function init_gear_sets()
     -- Custom spell classes
     sets.midcast.MndEnfeebles = {
         main="Daybreak",
-        sub="Culminus",
+        sub="Ammurapi Shield",
         ammo="Pemphredo Tathlum",
         legs="Academic's Pants +2",
-        feet="Academic's Loafers +2",
+        feet="Academic's Loafers +3",
         neck="Argute Stole +2",
-        ear2="Malignance Earring",
+        ear1="Malignance Earring",             
+        ear2="Arbatel Earring",
+        ring1="Stikini Ring +1",
         ring2="Stikini Ring +1",
         back=gear.offenseCape,
         --[[ BiS: 
             Body	Cohort Cloak +1 (Macc/Matk/All)
             Ear1	Regal Earring
             Hands	Kaykaus Cuffs +1 (A)
-            Ring1	Stikini Ring +1
-            Sub	Ammurapi Shield
             Waist	Luminary Sash
         ]]--
     }
 
     sets.midcast.IntEnfeebles = set_combine(sets.midcast.MndEnfeebles, {
         main="Daybreak",
+        sub="Ammurapi Shield",
         ammo="Pemphredo Tathlum",
         head="Academic's Mortarboard +2",
         body="Academic's Gown +2",
         legs="Academic's Pants +2",
-        feet="Academic's Loafers +2",
+        feet="Academic's Loafers +3",
         ring1="Stikini Ring +1",
-        ear2="Malignance Earring",
+        ring2="Stikini Ring +1",
+        ear1="Malignance Earring",             
+        ear2="Arbatel Earring",
         neck="Argute Stole +2",
         back=gear.offenseCape,
         --[[ BiS:
             Ear1	Regal Earring
             Hands	Kaykaus Cuffs +1 (A)
-            Ring2	Stikini Ring +1
-            Sub	Ammurapi Shield
             Waist	Luminary Sash
         ]]--
     })
 
     sets.midcast.ElementalEnfeeble = sets.midcast.Enfeebles
-    sets.midcast.Dispelga = set_combine(sets.midcast.IntEnfeebles, {main="Daybreak", }) --Upgrade to sub="Ammurapi Shield", waist="Shinjutsu-no-Obi +1"})
+    sets.midcast.Dispelga = set_combine(sets.midcast.IntEnfeebles, {main="Daybreak", sub="Ammurapi Shield"}) --Upgrade to , waist="Shinjutsu-no-Obi +1"})
 
     sets.midcast['Dark Magic'] = {
         --Upgrade to main="Rubicundity",
@@ -250,25 +257,25 @@ function init_gear_sets()
         ammo="Pemphredo Tathlum",
         head="Academic's Mortarboard +2",
         body="Academic's Gown +2",
-        hands="Academic's Bracers +2",
-        --Upgrade to legs="Peda. Pants +3",
-        feet="Academic's Loafers +2",
+        hands="Academic's Bracers +3",
+        legs="Pedagogy Pants +3",
+        feet="Academic's Loafers +3",
         neck="Argute Stole +2",
         ear1="Malignance Earring",
-        --Upgrade to ear2="Mani Earring",
-        --Upgrade to ring1={name="Stikini Ring +1", bag="wardrobe3"},
+        ear2="Mani Earring",
+        ring1="Stikini Ring +1",
         ring2="Stikini Ring +1",
         --Upgrade to back="Aurist's Cape +1",
         --Upgrade to waist="Acuity Belt +1",
     }
 
     sets.midcast.Kaustra = {
-        main="Akademos",
-        sub="Enki Strap",
+        main="Bunzi's Rod",
+        sub="Ammurapi Shield",
         ammo="Pemphredo Tathlum",
         head="Pixie Hairpin +1",
         body="Agwu's robe",
-        --Upgrade to hands="Amalric Gages +1", --(5)
+        hands="Amalric Gages +1",
         --Upgrade to legs="Mallquis Trews +2", --6
         feet="Jhakri Pigaches +1", -- Upgrade to +2
         neck="Argute Stole +2",
@@ -281,10 +288,7 @@ function init_gear_sets()
 
         --[[ BiS ToDo:
             Ear1	Regal Earring
-            Hands	Amalric Gages +1
             Legs	Amalric Slops +1
-            Main	Bunzi's Rod
-            Sub	Ammurapi Shield
         ]]--
     }
 
@@ -292,17 +296,17 @@ function init_gear_sets()
         head="Pixie Hairpin +1",
         neck="Erra Pendant",
         waist="Fucho-no-obi",
+        legs="Pedagogy Pants +3",
         feet="Agwu's Pigaches",
         ring2="Archon Ring",
+        ear2="Mani Earring",
+        ammo="Staunch Tathlum +1",
 
         --[[ BiS: 
-            Ammo	Staunch Tathlum +1
             Back	Bookworm's Cape
             Body	Merlinic Jubbah
             Ear1	Hirudinea Earring
-            Ear2	Mani Earring
             Hands	Merlinic Dastanas
-            Legs	Pedagogy Pants +3
             Main	Rubicundity
             Ring1	Evanescence Ring
             Sub	Ammurapi Shield
@@ -324,29 +328,6 @@ function init_gear_sets()
         --Upgrade to waist="Shinjutsu-no-Obi +1",
     })
 
-    sets.midcast.Helix = {
-        sub="Enki Strap",
-        ammo="Ghastly Tathlum +1",
-        neck="Argute Stole +2",
-        head="Agwu's Cap",
-        body="Agwu's Robe",
-        ear2="Malignance Earring",
-        legs="Agwu's Slops",
-        ring1="Freke Ring",
-        ring2="Mujin Band",
-        back=gear.offenseCape,
-
-        --[[ BiS ToDo:
-            Ear1	Regal Earring
-            Feet	Amalric Nails +1
-            Hands	Amalric Gages +1
-            Main	Bunzi's Rod
-            Ring2	Mallquis Fing
-            Sub	Culminus
-            Waist	Acuity Belt +1
-        ]]--
-    }
-
     sets.midcast.DarkHelix = set_combine(sets.midcast.Helix, {
         head="Pixie Hairpin +1",
         ring2="Archon Ring",
@@ -354,34 +335,31 @@ function init_gear_sets()
 
     sets.midcast.LightHelix = set_combine(sets.midcast.Helix, {
         main="Daybreak",
-        --Upgrade to sub="Ammurapi Shield",
+        sub="Ammurapi Shield",
     })
     
     sets.FreeNuke = { 
-        main="Akademos", -- Bunzi's Rod
-        sub="Enki Strap", -- Ammurapi Shield
+        main="Bunzi's Rod",
+        sub="Ammurapi Shield",
         ammo="Ghastly Tathlum +1",
-        head="Agwu's Cap",
+        head="Arbatel Bonnet +3",
         neck="Argute Stole +2",
-        ear1="Arbatel Earring", -- Regal Earring,
-        ear2="Malignance Earring",             
-        body="Agwu's Robe", -- Amalric Doublet +1 
-        hands="Agwu's Gages", -- Amalric Gages +1,
+        ear1="Malignance Earring",             
+        ear2="Arbatel Earring", -- Regal Earring,        
+        body="Arbatel Gown +3",
+        hands="Arbatel Bracers +3",
         ring1="Freke Ring",
         ring2="Metamor. Ring +1",
         back=gear.offenseCape,
         waist="Eschan Stone",
-        legs="Agwu's Slops", -- Amalric Slops +1
-        feet="Agwu's Pigaches", -- Amalric Nails +1
-    }
-    sets.MagicBurst = set_combine(sets.FreeNuke, {
-        head="Peda. Mortarboard +1", -- Swaps to Arbatel in Ebullience        
-        body="Agwu's Robe",
-        hands="Agwu's Gages",
-        legs="Agwu's Slops",
+        legs="Arbatel Pants +3",
         feet="Arbatel Loafers +3",
+    }
+    sets.MagicBurst = set_combine(sets.FreeNuke, {    
         ring2="Mujin Band",
     })
+    
+    sets.midcast.Helix = {sets.MagicBurst, {}}
 
     -- Initializes trusts at iLvl 119
     sets.midcast.Trust = sets.precast.FC
@@ -391,29 +369,28 @@ function init_gear_sets()
     ------------------------------------------------------------------------------------------------
     sets.baseIdle = {
         main="Akademos",
-        sub="Alber Strap",
+        sub="Khonsu",
         ammo="Homiliary",
-        head="Agwu's Cap",
-        body="Agwu's Robe",
-        hands="Agwu's Gages",
-        legs="Agwu's Slops",
-        feet="Agwu's Pigaches",
+        head="Arbatel Bonnet +3",
+        body="Arbatel Gown +3",
+        hands="Arbatel Bracers +3",
+        legs="Arbatel Pants +3",
+        feet="Arbatel Loafers +3",
         neck="Sibyl Scarf", 
         waist="Embla Sash",
         back=gear.defenseCape,
-        ring1="Roller's Ring",
-        ring2="Defending Ring",
+        ring1="Stikini Ring +1",
+        ring2="Stikini Ring +1",
         ear1="Savant's Earring",
         ear2="Novia Earring",
     }
     
     sets.maxSublimation = set_combine(sets.baseIdle, {
-        --Upgrade to main="Siriti", --1
-        --Upgrade to sub="Genmei Shield", --10/0
-        head="Academic's Mortarboard +2", --4
-        --Upgrade to body="Peda. Gown +3", --5
-        ear1="Savant's Earring",
-        waist="Embla Sash",
+        head="Academic's Mortarboard +2", -- +3
+        body="Pedagogy Gown +3", -- +5
+        ear1="Savant's Earring", -- +1
+        waist="Embla Sash", -- +3
+        -- Total: +12 (+8 Base = +20)
      })
  
 
@@ -427,11 +404,11 @@ function init_gear_sets()
     ------------------------------------------------------------------------------------------------
 
     sets.engaged = {
-        head="Agwu's Cap", --Upgrade to head="Blistering Sallet +1",
-        body="Agwu's Robe", --Upgrade to body="Jhakri Robe +2",
-        hands="Agwu's Gages",--Upgrade to hands="Gazu Bracelet +1",
-        legs="Agwu's Slops", --Upgrade to legs="Peda. Pants +3",
-        feet="Agwu's Pigaches", --Upgrade to feet=gear.Telchine_STP_feet,
+        head="Arbatel Bonnet +3",
+        body="Arbatel Gown +3",
+        hands="Arbatel Bracers +3",
+        legs="Arbatel Pants +3",
+        feet="Arbatel Loafers +3",
         neck="Clotharius Torque", --Upgrade to neck="Combatant's Torque",
         ear1="Brutal Earring",--Upgrade to ear1="Cessance Earring",
         ear2="Telos Earring",
@@ -464,8 +441,8 @@ function init_gear_sets()
     sets.precast.WS['Omniscience'] = set_combine(sets.precast.WS, {
         ammo="Ghastly Tathlum +1",
         head="Pixie Hairpin +1",
-        --Upgrade to body="Peda. Gown +3",
-        --Upgrade to legs="Peda. Pants +3",
+        body="Pedagogy Gown +3",
+        legs="Pedagogy Pants +3",
         --Upgrade to feet="Merlinic Crackows",
         ear1="Malignance Earring",
         --Upgrade to ear2="Regal Earring",
@@ -481,13 +458,13 @@ function init_gear_sets()
         --Upgrade to body="Amalric Doublet +1",
         --Upgrade to hands="Kaykaus Cuffs +1",
         --Upgrade to legs="Amalric Slops +1",
-        --Upgrade to feet="Kaykaus Boots +1",
+        feet="Kaykaus Boots +1",
         --Upgrade to neck="Orunmila's Torque",
         --Upgrade to ear1="Loquacious Earring",
         ear2="Etiolation Earring",
         --Upgrade to ring1={name="Fenrir Ring +1", bag="wardrobe3"},
         ring2="Metamor. Ring +1",
-        --Upgrade to back="Fi Follet Cape +1",
+        back="Fi Follet Cape +1",
         --Upgrade to waist="Shinjutsu-no-Obi +1",
     }
 
@@ -499,17 +476,17 @@ function init_gear_sets()
     sets.buff['Rapture'] = {head="Arbatel Bonnet +3"}
     sets.buff['Perpetuance'] = {hands="Arbatel Bracers +3"}
     sets.buff['Immanence'] = {hands="Arbatel Bracers +3"}
-    sets.buff['Penury'] = {} --Upgrade to {legs="Arbatel Pants +1"}
-    sets.buff['Parsimony'] = {} --Upgrade to {legs="Arbatel Pants +1"}
-    sets.buff['Celerity'] = {} --Upgrade to {feet="Peda. Loafers +3"}
-    sets.buff['Alacrity'] = {} --Upgrade to {feet="Peda. Loafers +3"}
+    sets.buff['Penury'] = {legs="Arbatel Pants +3"}
+    sets.buff['Parsimony'] = {legs="Arbatel Pants +3"}
+    sets.buff['Celerity'] = {feet="Pedagogy Loafers +3"}
+    sets.buff['Alacrity'] = {feet="Pedagogy Loafers +3"}
     sets.buff['Klimaform'] = {feet="Arbatel Loafers +3"}
 
     sets.buff.Doom = {
-        --Upgrade to neck="Nicander's Necklace", --20
+        neck="Nicander's Necklace", --20
         --Upgrade to ring1={name="Eshmun's Ring", bag="wardrobe3"}, --20
         --Upgrade to ring2={name="Eshmun's Ring", bag="wardrobe4"}, --20
-        --Upgrade to waist="Gishdubar Sash", --10
+        waist="Gishdubar Sash", --10
     }
 
     sets.moveSpeed = {feet="Herald's Gaiters"}
@@ -522,6 +499,7 @@ function init_modetables()
     gearMode = {
 		["index"] = 0,
 		[0] = {name="Regular", idle=sets.baseIdle, engaged=sets.engaged},
+        [1] = {name="Sublimation", idle=sets.maxSublimation, engaged=sets.engaged},
 	}
 
     --Setup weaponMode
@@ -538,6 +516,11 @@ function init_modetables()
 			[1] = "On",
 		},
 		["fite"] = {
+			["index"] = 0,
+			[0] = "Off",
+			[1] = "On",
+		},
+        ["coop"] = {
 			["index"] = 0,
 			[0] = "Off",
 			[1] = "On",
@@ -574,10 +557,10 @@ function init_modetables()
     -- SC Mode allows for the four different Level 2 skillchains
     scMode = {
         ["index"] = 0,
-        [0] = {sc="Gravitation", msg="SC Mode: Gravitation (Aero->Noctohelix, Earth & Darkness)", partyChat="Starting Gravitation (Earth/Dark) Skillchain!", part1="Gravi", part2="tation", color1="\\cs(218,165,32)", color2="\\cs(148,0,211)"},
+        [0] = {sc="Gravitation", msg="SC Mode: Gravitation (Aero->Noctohelix, Earth & Darkness)", partyChat="Starting Gravitation (Earth/Dark) Skillchain! <call12>", part1="Gravi", part2="tation", color1="\\cs(218,165,32)", color2="\\cs(148,0,211)"},
         [1] = {sc="Distortion", msg="SC Mode: Distortion (Luminohelix->Stone, Water & Ice)", partyChat="Starting Distortion (Water/Ice) Skillchain!", part1="Disto", part2="rtion", color1="\\cs(0,191,255)", color2="\\cs(224,255,255)"},
         [2] = {sc="Fusion", msg="SC Mode: Fusion (Fire->Thunder, Fire & Light)", partyChat="Starting Fusion (Fire/Light) Skillchain!", part1="Fus", part2="ion", color1="\\cs(250,128,114)", color2="\\cs(255,255,240)"},
-        [3] = {sc="Fragmentation", msg="SC Mode: Fragmentation (Blizzard->Water, Wind & Lightning)", partyChat="Starting Fragmentation (Wind/Lightning) Skillchain!", part1="Fragmen", part2="tation", color1="\\cs(50,205,50)", color2="\\cs(238,130,238)"},
+        [3] = {sc="Fragmentation", msg="SC Mode: Fragmentation (Blizzard->Water, Wind & Lightning)", partyChat="Starting Fragmentation (Wind/Lightning) Skillchain! <call12>", part1="Fragmen", part2="tation", color1="\\cs(50,205,50)", color2="\\cs(238,130,238)"},
         [4] = {sc="4-Step", msg="SC Mode: 4-Step SC (Water->Blizzard->Thunder->Wind)", partyChat="Starting 4-Step SC! (Water -> Blizzard -> Thunder -> Wind)", part1="4-step", part2="", color1="\\cs(255,255,240)", color2="\\cs(255,255,240)"},
         [5] = {sc="6-Step", msg="SC Mode: 6-Step SC (Water->Blizzard->Thunder->Wind->Fire->Thunder)", partyChat="Starting 6-Step SC! (Water>Blizzard>Thunder>Aero>Fire>Thunder)", part1="6-step", part2="", color1="\\cs(255,255,240)", color2="\\cs(255,255,240)"},
     }
@@ -588,11 +571,26 @@ function init_modetables()
 	modeHud('update')
 end
 
+function job_setup()
+    spellSteps = {
+		['Stone'] = {[0]='Stone V', [1]='Stone IV', [2]='Stone III', [3]='Stone II', [4]='Stone'},
+		['Water'] = {[0]='Water V', [1]='Water IV', [2]='Water III', [3]='Water II', [4]='Water'},
+		['Aero'] = {[0]='Aero V', [1]='Aero IV', [2]='Aero III', [3]='Aero II', [4]='Aero'},
+		['Fire'] = {[0]='Fire V', [1]='Fire IV', [2]='Fire III', [3]='Fire II', [4]='Fire'},
+		['Blizzard'] = {[0]='Blizzard V', [1]='Blizzard IV', [2]='Blizzard III', [3]='Blizzard II', [4]='Blizzard'},
+		['Thunder'] = {[0]='Thunder V', [1]='Thunder IV', [2]='Thunder III', [3]='Thunder II', [4]='Thunder'},
+		['Aspir'] = {[0]='Aspir II', [1]='Aspir'},
+		['Sleep'] = {[0]='Sleep II', [1]='Sleep'},
+		['Cure'] = {[0]='Cure IV', [1]='Cure III', [2]='Cure II', [3]='Cure'}
+	}
+end
+
 function extendedUserSetup()
 	-- Setup my binds
     send_command('bind @q gs c cycleEle')	
     send_command('bind @w gs c cycleNuke')	
     send_command('bind @e gs c cycleSC')	
+    send_command('bind @c gs c cycleCOOP')
 
 	-- Set default macro book / page
     set_macro_page(1, 1)
@@ -607,6 +605,7 @@ function extendedUserUnload()
     send_command('unbind @q')
     send_command('unbind @w')
     send_command('unbind @e')
+    send_command('unbind @c')
 end
 
 function extendedJobSelfCommand(cmdParams, eventArgs)	
@@ -685,20 +684,20 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
             send_command('input /p '..scMode[scMode.index].partyChat)
             send_command:schedule(0.5, '/immanence')
             send_command:schedule(1.5, '/luminohelix')
-            send_command:schedule(8.5, '/immanence')
-            send_command:schedule(9.5, '/stone')
+            send_command:schedule(6.5, '/immanence')
+            send_command:schedule(7.5, '/geohelix')
         elseif scMode[scMode.index].sc == "Fusion" and strategemCount() >= 2 then
             send_command('input /p '..scMode[scMode.index].partyChat)
             send_command:schedule(0.5, '/immanence')
             send_command:schedule(1.5, '/fire')
             send_command:schedule(5.5, '/immanence')
-            send_command:schedule(6.5, '/thunder')
+            send_command:schedule(6.5, '/ionohelix')
         elseif scMode[scMode.index].sc == "Fragmentation" and strategemCount() >= 2 then
             send_command('input /p '..scMode[scMode.index].partyChat)
             send_command:schedule(0.5, '/immanence')
             send_command:schedule(1.5, '/blizzard')
             send_command:schedule(5.5, '/immanence')
-            send_command:schedule(6.5, '/water')
+            send_command:schedule(6.5, '/hydrohelix')
         elseif scMode[scMode.index].sc == "4-Step" and strategemCount() >= 5 then
             send_command('input /p '..scMode[scMode.index].partyChat)
             send_command:schedule(0.5, '/immanence')
@@ -804,6 +803,14 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
         end
     end
 
+    if cmdParams[1] == 'cycleCOOP' then
+        auto.coop.index = auto.coop.index + 1
+        if auto.coop.index > #auto.coop then
+            auto.coop.index = 0
+        end
+        windower.add_to_chat(013,'[Co-op: '..auto.coop[auto.coop.index]..']')
+    end
+
     modeHud('update')
 end
 
@@ -813,14 +820,29 @@ end
 
 function extendedModeHud(hudText)
 	--[[ Show SCH-Specific modes on HUD ]]--
+    skyblue = '\\cs(135,206,250)'
+    red = '\\cs(255,0,0)'
+	green = '\\cs(0,255,0)'
+    textColorCOOP = red
+    if auto.coop[auto.coop.index] == 'On' then
+        textColorCOOP = green
+    end
+
     hudText:append(white..'Ele Mode [Q]: '..eleMode[eleMode.index].color..eleMode[eleMode.index].ele..white)   
     hudText:append(white..'Nuke Mode [W]: '..nukeMode[nukeMode.index].color..nukeMode[nukeMode.index].name..white)  
     hudText:append(white..'SC Mode [E]: '..scMode[scMode.index].color1..scMode[scMode.index].part1..scMode[scMode.index].color2..scMode[scMode.index].part2..white)  
+    hudText:append(skyblue..'Co-op: '..textColorCOOP..auto.coop[auto.coop.index]..white)
 	return hudText
 end
 
 function extendedJobPrecast(spell, action, spellMap, eventArgs)
 
+end
+
+function job_post_precast(spell, action, spellMap, eventArgs)
+    if (spell.type == "WhiteMagic" and (buffactive["Light Arts"] or buffactive["Addendum: White"])) or (spell.type == "BlackMagic" and (buffactive["Dark Arts"] or buffactive["Addendum: Black"])) then
+        equip(sets.precast.FC.Grimoire)
+    end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)
@@ -847,10 +869,12 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
         end    
     -- Use Chatoyant Staff for cure if weather is appropriate
     elseif string.find(spell.english,'Cur') then 
-		equip(sets.midcast_Cure)
+		equip(sets.midcast.Cure)
 		if spell.element == world.weather_element or spell_element == world.day_element then
 			equip({main="Chatoyant Staff"},sets.Obi[spell.element])
 		end
+    elseif string.find(spell.english,'storm') then 
+		equip(sets.midcast.Stormsurge)
     end
 end
 
@@ -862,11 +886,11 @@ function job_buff_change(buff, active)
     end
 
     if buff == 'sublimation: activated' and active then
-        sets.gearmode.index = 37
+        sets.gearmode.index = 1
         modeHud('update')
     end
     if buff == 'sublimation: activated' and not active then
-        sets.gearmode.index = 39
+        sets.gearmode.index = 0
         modeHud('update')
     end
 end
@@ -882,21 +906,94 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
     if(dayWeatherIntensity(spell.element)) > 0 then
         equip({waist="Hachirin-no-Obi"})
     end
-    --[[
-    if buffactive['Perpetuance'] then
-        equip({hands="Arbatel Bracers +3"})
-    end
-    ]]--
 end
 
 function extendedJobAftercast(spell, action, spellMap, eventArgs)
 
 end
 
+mbReady = false
+mbTimer = 0
+mbSpell1 = "Blizzard V"
+mbSpell1cmd = "/blizzard5"
+mbSpell2 = "Blizzard IV"
+mbSpell2cmd = "/blizzard4"
+needsDispel = false
+
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()   
     local master = windower.ffxi.get_player()
     local subRecast = abilRecast[234]
+    local me = windower.ffxi.get_player()
+
+    if auto.coop[auto.coop.index] == 'On' then
+
+        -- AoE regen5
+		if strategemCount() >= 2 and not buffactive['Regen'] then
+            if not buffactive['Light Arts'] then
+                table.insert(multiStepAction, '/ja "Light Arts" <me>')
+            end
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Regen V" <me>')
+			return
+		end
+
+		--[[
+		if strategemCount() >= 2 and not buffactive['Hailstorm'] then
+            if not buffactive['Light Arts'] then
+                table.insert(multiStepAction, '/ja "Light Arts" <me>')
+            end
+            table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Hailstorm II" <me>')
+			return
+		end
+        ]]--
+		-- AoE Prot5
+		if strategemCount() >= 2 and not buffactive['Protect'] then
+            if not buffactive['Light Arts'] then
+                table.insert(multiStepAction, '/ja "Light Arts" <me>')
+            end
+            table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Protect V" <me>')
+			return
+		end
+
+        if not buffactive['Addendum: Black'] then
+            if buffactive['Dark Arts'] then
+                send_command('/addendumblack')
+                return
+            else
+                send_command('/darkarts')
+                return
+            end
+        end
+
+        if player.mp < 1000 and windower.ffxi.get_mob_by_target('t') and windower.ffxi.get_mob_by_target('t').name:contains('Crab') and (not onCooldown('Aspir II') or not onCooldown('Aspir')) then
+            send_command('/aspir2')
+            return
+        end
+
+        if not buffactive['Hailstorm'] then
+            send_command('/hailstorm2')
+            add_to_chat(207, '[~ Hailstorm ~]')                
+            return
+        end
+
+        if not buffactive['Klimaform'] then
+            send_command('/klimaform')
+            add_to_chat(207, '[~ Klimaform ~]')                
+            return
+        end
+
+        if buffCheck('Haste') then
+            send_command('/haste')
+            add_to_chat(207, '[~ Haste ~]')                
+            return
+        end
+    end
 
     -- Auto Buff (Sublimation)
     if auto.buff[auto.buff.index] == 'On' and not actionInProgress then
@@ -917,10 +1014,20 @@ function autoActions()
     -- AutoActions we only take when autoFite mode is on
     if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
 
-        if player.mpp < 15 and abil_recasts[49] == 0 and player.sub_job == 'RDM' then
-			send_command('input /ja Convert <me>')
-			return
-		end
+        -- Myrkr!
+        if player.mpp < 40 and player.tp > 2500 then
+            add_to_chat(122,'-- Myrkr! --')
+            send_command('input /ws "Myrkr" <me>')
+        end
+
+        if player.sub_job == 'RDM' and convertRecast == 0 and player.mpp < 25 then
+            if not buffactive['Stoneskin'] then
+                send_command('input /stoneskin')
+            else
+                send_command('input /convert')
+            end
+            return
+        end
 
         if not buffactive['Addendum: White'] then
             if buffactive['Light Arts'] then
@@ -931,53 +1038,100 @@ function autoActions()
                 return
             end
         end
-        
-        if not buffactive['Regen'] then
-            if strategemCount() > 1 then
-                send_command('/accession')
-                send_command:schedule(1, '/perpetuance')
-                send_command:schedule(2, '/regen5')
-                return
-            else
-                -- Prevent further commands until stratagems are up
-                return
+
+		-- AoE regen5
+		if strategemCount() >= 2 and not buffactive['Regen'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Regen V" <me>')
+			return
+		end
+
+		-- AoE Phalanx
+		if strategemCount() >= 2 and not buffactive['Phalanx'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Phalanx" <me>')
+			return
+		end
+
+		-- AoE Adloquium
+		if strategemCount() >= 2 and not buffactive['Regain'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Adloquium" <me>')
+			return
+		end
+
+		-- AoE storm2
+		if strategemCount() >= 2 and not buffactive['Firestorm'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Firestorm II" <me>')
+			return
+		end
+
+		-- AoE Prot5
+		if strategemCount() >= 2 and not buffactive['Protect'] then
+			table.insert(multiStepAction, '/ja "Perpetuance" <me>')
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Protect V" <me>')
+			return
+		end
+
+		-- AoE Shell5
+		if strategemCount() >= 1 and not buffactive['Shell'] then
+			table.insert(multiStepAction, '/ja "Accession" <me>')
+			table.insert(multiStepAction, '/ma "Shell V" <me>')
+            return
+		end
+    end
+end
+
+windower.register_event('action',function(act)
+
+    if auto.coop[auto.coop.index] == 'On' then
+        local actor = windower.ffxi.get_mob_by_id(act.actor_id)
+        local self = windower.ffxi.get_player()
+        local category = act.category
+        local param = act.param -- WS ID (from weapon_skills resource)
+        local targets = act.targets
+        local targetsParam = targets.param
+
+        -- 03: Finish Weapon Skill
+        if category == 3 then            
+            local wsName = res.weapon_skills[param].en or nil
+
+            if wsName == "Tachi: Goten" then
+                add_to_chat(013, '~ WS1 Detected ('..wsName..') ~')   
+                mbReady = false          
+            elseif wsName == "Tachi: Jinpu" then
+                add_to_chat(013, '~ WS2 Detected ('..wsName..') | Starting Timer (8) ~')
+                mbReady = true
+                mbTimer = 8
             end
         end
 
-        if not buffactive['Protect'] then
-            if strategemCount() > 1 then
-                send_command('/accession')
-                send_command:schedule(1, '/perpetuance')
-                send_command:schedule(2, '/protect5')
-                return
-            else
-                -- Prevent further commands until stratagems are up
-                return
+        -- 04: Finish spell casting 
+        if category == 4 and actor and self and actor.id == self.id then
+            local spellName = res.spells[param].en or nil
+
+            if spellName == mbSpell1 then
+                add_to_chat(013, '~ MB1 Complete ('..spellName..') ~')         
+            elseif spellName == mbSpell2 then
+                add_to_chat(013, '~ MB2 Complete ('..spellName..') ~') 
+                mbReady = false
             end
         end
 
-        if not buffactive['Shell'] then
-            if strategemCount() > 1 then
-                send_command('/accession')
-                send_command:schedule(1, '/perpetuance')
-                send_command:schedule(2, '/shell5')
-                return
-            else
-                -- Prevent further commands until stratagems are up
-                return
-            end
-        end
-
-        if not buffactive['Regain'] then
-            if strategemCount() > 1 then
-                send_command('/accession')
-                send_command:schedule(1, '/perpetuance')
-                send_command:schedule(2, '/adloquium')
-                return
-            else
-                -- Prevent further commands until stratagems are up
-                return
+        local target = windower.ffxi.get_mob_by_target('t') or nil
+        --if category == 7 and param == 24931 and target and target.Id and target.Id == actor.Id then -- 24931: initiation
+        if category == 7 and param == 24931 and target.id == act.actor_id then
+            local spellName = res.monster_abilities[act.targets[1].actions[1].param].en
+            add_to_chat(013, '~ Mob Ability Used ('..spellName..') ~')
+            if spellName == "Bubble Curtain" or spellName == "Scissor Guard" then
+                needsDispel = true
             end
         end
     end
-end
+end)

@@ -13,55 +13,52 @@ end
 -------------------------------------------------------------------------------------------------------------------
 function init_gear_sets()
 --[[ JSE Capes ]]--
-	gear.aMABCape = {name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','AGI+10','"Mag.Atk.Bns."+10',}}
-	gear.snapCape = {name="Camulus's Mantle", augments={'Eva.+20 /Mag. Eva.+20','"Snapshot"+10','Mag. Evasion+15',}}
-	gear.ratkCape = {name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','"Store TP"+10',}}
-	gear.mdpsCape = {name="Camulus's Mantle", augments={'DEX+20','Accuracy+20 Attack+20','Accuracy+10','"Dual Wield"+10','Damage taken-5%',}}
-	gear.aWSDCape = {name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','AGI+10','Weapon skill damage +10%',}}
+	--gear.aMABCape = {name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','AGI+10','"Mag.Atk.Bns."+10',}}
+	--gear.snapCape = {name="Camulus's Mantle", augments={'Eva.+20 /Mag. Eva.+20','"Snapshot"+10','Mag. Evasion+15',}}
+	--gear.ratkCape = {name="Camulus's Mantle", augments={'AGI+20','Rng.Acc.+20 Rng.Atk.+20','"Store TP"+10',}}
+	gear.mdpsCape = {name="Camulus's Mantle", augments={'DEX+20',}}
+	--gear.aWSDCape = {name="Camulus's Mantle", augments={'AGI+20','Mag. Acc+20 /Mag. Dmg.+20','AGI+10','Weapon skill damage +10%',}}
 	gear.sWSDCape = {name="Camulus's Mantle", augments={'STR+20','Accuracy+20 Attack+20','STR+10','Weapon skill damage +10%',}}
 
 --[[ Rostam ]]--
-	gear.rostamSTP = {name="Rostam", augments={'Path: A',}}
+	--gear.rostamSTP = {name="Rostam", augments={'Path: A',}}
 	gear.rostamRoll = {name="Rostam", augments={'Path: C',}}	
 
 --[[ Bullets ]]--
-	gear.RAbullet = "Devastating Bullet"
-	gear.RAccbullet = "Devastating Bullet"
-	gear.WSbullet = "Chrono Bullet"
-	gear.MAbullet = "Living Bullet"
-	gear.QDbullet = "Hauksbok Bullet"
+	gear.RAbullet = "Bronze Bullet"
+	gear.RAccbullet = "Bronze Bullet"
+	gear.WSbullet = "Eminent Bullet"
+	gear.MAbullet = "Bronze Bullet"
+	gear.QDbullet = "Bronze Bullet"
 
 --[[ Melee Sets ]]--
 	sets.baseMelee = {
-		ammo="Devastating Bullet",
+		ammo=gear.RAbullet,
 		head="Adhemar Bonnet +1",
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wristbands +1",
-		legs="Samnuha Tights",
+		legs="Malignance Tights", --legs="Samnuha Tights",
 		feet="Herculean Boots",
 		neck="Iskur Gorget",
-		ear1="Telos Earring",-- Upgrade to ear1="Cessance Earring",
-		ear2="Suppanomimi",
-		ring1="Petrov Ring",
+		ear1="Cessance Earring",
+		ear2="Mache Earring +1",
+		ring1="Chirich Ring +1",
 		ring2="Epona's Ring",
 		back=gear.mdpsCape,
 		waist="Windbuffet Belt +1", 
 	}
 	sets.meleeAcc = set_combine(sets.baseMelee, {
-		neck="Clotharius Torque",
-		ring2="Ilabrat Ring",
-		ear2="Odr Earring",
 	})
 	sets.meleeHybrid = set_combine(sets.baseMelee, {
 		head="Malignance Chapeau",
-		body="Nyame Mail", -- Upgrade to body="Malignance Tabard",
+		-- Upgrade to body="Malignance Tabard",
 		hands="Malignance Gloves",
 		legs="Malignance Tights",
 		feet="Malignance Boots",
 		ring1="Defending Ring",
 	})
 	sets.meleeSW = {
-		ammo="Devastating Bullet",
+		ammo=gear.RAbullet,
 		head="Adhemar Bonnet +1",
 		body="Adhemar Jacket +1",
 		hands="Adhemar Wristbands +1",
@@ -79,14 +76,14 @@ function init_gear_sets()
 --[[ Ranged Sets ]]--
 	sets.precast.RA = {
 		ammo=gear.RAbullet,
-		head="Chasseur's Tricorne +3",
-		neck="Comm. Charm +2",
-		body="Laksamana's Frac +3", --body="Oshosi Vest +1",         
-		hands="Lanun Gants +3",      
-		legs="Chasseur's Culottes +2", --legs=gear.Adhemar_D_legs, 
+		--head="Chasseur's Tricorne +3",
+		--neck="Comm. Charm +2",
+		--body="Laksamana's Frac +3", --body="Oshosi Vest +1",         
+		--hands="Lanun Gants +3",      
+		--legs="Chasseur's Culottes +2", --legs=gear.Adhemar_D_legs, 
 		feet="Meg. Jam. +2",            
-		back=gear.snapCape, 
-		waist="Yemaya Belt",
+		--back=gear.snapCape, 
+		-- waist="Yemaya Belt", -- Upgrade to Yemaya Belt
 	}
 	sets.midcast.RA = {
 		ammo=gear.RAbullet,
@@ -96,11 +93,11 @@ function init_gear_sets()
 		legs="Malignance Tights",
 		feet="Malignance Boots",
 		neck="Iskur Gorget",
-		ear1="Enervating Earring",
-		ear2="Telos Earring",
-		ring1="Dingir Ring",
-		ring2="Ilabrat Ring",
-		back=gear.ratkCape,
+		--ear1="Enervating Earring",
+		--ear2="Telos Earring",
+		--ring1="Dingir Ring",
+		--ring2="Ilabrat Ring",
+		--back=gear.ratkCape,
 		waist="Yemaya Belt",
 	}
 	sets.midcast.RA.Critical = set_combine(sets.midcast.RA, {
@@ -108,138 +105,83 @@ function init_gear_sets()
 		body="Mummu Jacket +2",
 		hands="Mummu Wrists +2",
 		legs="Mummu Kecks +2",
-		feet="Osh. Leggings +1",
+		-- Upgrade to feet="Osh. Leggings +1",
 		-- Upgrade to ring1="Begrudging Ring",
 		ring2="Mummu Ring",
-		waist="K. Kachina Belt +1",
+		-- Upgrade to waist="K. Kachina Belt +1",
 	})
 	sets.precast.RA.Flurry1 = set_combine(sets.precast.RA, {
-		body="Lanun Frac +3",
+		--body="Lanun Frac +3",
 	})
 	sets.precast.RA.Flurry2 = set_combine(sets.precast.RA.Flurry1, {
-		hands="Carmine Fin. Ga. +1",
-		feet="Pursuer's Gaiters", 
+		--hands="Carmine Fin. Ga. +1",
+		--feet="Pursuer's Gaiters", 
 	})
 	sets.TripleShot = set_combine(sets.midcast.RA, {
 		-- Upgrade to head="Oshosi Mask +1", --5
-		body="Chasseur's Frac +3",
-		hands="Lanun Gants +3",
+		--body="Chasseur's Frac +3",
+		--hands="Lanun Gants +3",
 		-- Upgrade to legs="Osh. Trousers +1", --6
-		feet="Osh. Leggings +1", --3
+		-- Upgrade to feet="Osh. Leggings +1", --3
 	})
 
 --[[ WS Sets ]]--
 	-- Base WS will be for any WS a set isn't defined for -- only very strange WSes
 	sets.baseWS = { 
 		ammo=gear.WSbullet,
-		head="Lanun Tricorne +3",
-		body="Laksa. Frac +3", 
-		hands="Chasseur's Gants +3",
+		head="Malignance Chapeau",
+		body="Meg. Cuirie +2", 
+		hands="Malignance Gloves",
 		legs="Meg. Chausses +2", 
-		feet="Lanun Bottes +3",
-		neck="Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Ishvara Earring",
-		ring1="Dingir Ring",
-		ring2="Rajas Ring",
-		back=gear.sWSDCape,
-		waist="Fotia Belt",
-	}
-	-- Wildfire (& Hot Shot) [Magical;AGI]
-	sets.precast.WS['Wildfire'] = {
-		ammo=gear.MAbullet,
-		head="Herculean Helm",
-		body="Lanun Frac +3",
-		hands="Chasseur's Gants +3",
-		legs="Herculean Trousers",
-		feet="Lanun Bottes +3", 
-		neck="Comm. Charm +2",
-		ear1="Novio Earring", -- Upgrade to "Crematio Earring",
-		ear2="Friomisi Earring", 
-		ring1="Dingir Ring",
-		ring2="Epaminondas's Ring",
-		back=gear.aWSDCape,
-		waist="Eschan Stone", -- Upgrade to "Skrymir Cord +1",
-	}
-	sets.precast.WS['Hot Shot'] = sets.precast.WS['Wildfire']
-	-- Leaden Salute [Magical;AGI]
-	sets.precast.WS['Leaden Salute'] = set_combine(sets.precast.WS['Wildfire'], {
-		ammo=gear.MAbullet,
-		head="Pixie Hairpin +1",
-		ear1="Moonshade Earring",            
-		ring1="Dingir Ring",
-		ring2="Archon Ring",
-		waist="Eschan Stone",
-	})
-	-- Last Stand [Physical;AGI]
-	sets.precast.WS['Last Stand'] = {
-		ammo=gear.WSbullet,
-		head="Lanun Tricorne +3",
-		neck="Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Ishvara Earring",
-		body="Laksa. Frac +3",
-		hands="Chasseur's Gants +3",
+		feet="Meg. Jam. +2",
+		neck="Iskur Gorget",
+
+		ear2="Moonshade Earring",
 		ring1="Apate Ring",
 		ring2="Epaminondas's Ring",
-		back=gear.aWSDCape,
-		waist="Fotia Belt",
-		legs="Meg. Chausses +2",
-		feet="Lanun Bottes +3",
+		back=gear.sWSDCape,
+		waist="Flame Belt",
 	}
+	sets.precast.WS['Detonator'] = sets.baseWS
+	sets.precast.WS['Split Shot'] = sets.baseWS
+	-- Wildfire (& Hot Shot) [Magical;AGI]
+	sets.precast.WS['Wildfire'] = {}
+	sets.precast.WS['Hot Shot'] = sets.precast.WS['Wildfire']
+	-- Leaden Salute [Magical;AGI]
+	sets.precast.WS['Leaden Salute'] = set_combine(sets.precast.WS['Wildfire'], {})
+	-- Last Stand [Physical;AGI]
+	sets.precast.WS['Last Stand'] = {}
 	-- Savage Blade [Physical;STR]
 	sets.precast.WS['Savage Blade'] = set_combine(sets.precast.WS, {		
-		head="Lanun Tricorne +3", -- Upgrade to Herculean STR/Att/Acc/WSD
-		hands="Chasseur's Gants +3",
-		neck="Rep. Plat. Medal",
-		body="Laksamana's Frac +3",
+		--head="Lanun Tricorne +3", -- Upgrade to Herculean STR/Att/Acc/WSD
+		--hands="Chasseur's Gants +3",
+		--neck="Rep. Plat. Medal",
+		--body="Laksamana's Frac +3",
 		ear1="Moonshade Earring",
-		ear2="Ishvara Earring",
+		--ear2="Ishvara Earring",
 		ring1="Sroda Ring",
 		ring2="Epaminondas's Ring",
 		back=gear.sWSDCape,
 		waist="Sailfi Belt +1",
-		legs="Herculean Trousers", -- Upgrade to Herculean STR/Att/Acc/WSD
-		feet="Lanun Bottes +3",
+		--legs="Herculean Trousers", -- Upgrade to Herculean STR/Att/Acc/WSD
+		--feet="Lanun Bottes +3",
 	})
 	-- Evisceration [Physical;DEX]
-	sets.precast.WS['Evisceration'] = {
-		head="Adhemar Bonnet +1",
-		body="Meg. Cuirie +2",-- Upgrade to body="Abnoba Kaftan",
-		hands="Chasseur's Gants +3",
-		legs="Samnuha Tights",-- Upgrade to legs="Zoar Subligar +1" or Herculean
-		feet="Mummu Gamash. +2",
-		neck="Fotia Gorget",
-		ear1="Moonshade Earring",
-		ear2="Odr Earring",
-		ring1="Ilabrat Ring", -- Upgrade to ring1="Regal Ring",
-		ring2="Mummu Ring",
-		back=gear.mdpsCape,
-		waist="Fotia Belt",
-	}
+	sets.precast.WS['Evisceration'] = {}
 	-- Aeolian Edge [Magical;DEX/INT]
-	sets.precast.WS['Aeolian Edge'] = set_combine(sets.precast.WS['Wildfire'], {
-		ammo=gear.QDbullet,
-		ear1="Moonshade Earring",
-		--waist="Hachirin-no-Obi",
-		waist="Orpheus's Sash",
-	})
+	sets.precast.WS['Aeolian Edge'] = set_combine(sets.precast.WS['Wildfire'], {})
 	-- Circle Blade (TH)
-	sets.precast.WS['Circle Blade'] = set_combine(sets.precast.WS['Savage Blade'], {
-		head="White Rarab Cap +1",
-		waist="Chaac Belt",
-	})
+	sets.precast.WS['Circle Blade'] = set_combine(sets.precast.WS['Savage Blade'], {})
 
 --[[ COR Sets ]]--
 	-- Phantom Roll
 	sets.precast.CorsairRoll = {
-		head="Lanun Tricorne +3",
+		--head="Lanun Tricorne +3",
 		neck="Regal Necklace",
-		hands="Chasseur's Gants +3",
-		ring1="Barataria Ring",
-		ring2="Luzaf's Ring",
-		back=gear.snapCape,
-		legs="Desultor Tassets",
+		--hands="Chasseur's Gants +3",
+		--ring1="Barataria Ring",
+		--ring2="Luzaf's Ring",
+		--back=gear.snapCape,
 	}
 
 	sets.precast.CorsairRoll.Full = set_combine(sets.precast.CorsairRoll, {
@@ -272,14 +214,14 @@ function init_gear_sets()
 		body="Meg. Cuirie +2", -- Upgrade to body="Malignance Tabard",
 		hands="Laksa. Gants +3", 
 		legs="Malignance Tights",
-		feet="Chasseur's Bottes +3", -- for ele buff
+		feet="Chasseur's Bottes +3", -- Upgrade to feet="Laksa. Bottes +3",
 		neck="Comm. Charm +2",
 		ear1="Novio Earring",  -- Upgrade to ear1="Enchntr. Earring +1",
 		ear2="Friomisi Earring", -- Upgrade to ear2="Digni. Earring",
 		ring1="Arvina Ringlet", -- Upgrade to ring1="Regal Ring",
 		ring2="Mummu Ring", -- Upgrade to ring2="Weather. Ring +1",
 		back=gear.aMABCape,
-		waist="K. Kachina Belt +1",
+		waist="Sveltesse Gouriz +1", -- Upgrade to waist="K. Kachina Belt +1",
 	}
 
 	-- QD (STP)
@@ -289,26 +231,26 @@ function init_gear_sets()
 		body="Ikenga's Vest",-- Upgrade to body="Malignance Tabard",
 		hands="Malignance Gloves",
 		legs="Chasseur's Culottes +2",
-		feet="Ikenga's Clogs", -- Upgrade to feet="Malignance Boots",
+		feet="Malignance Boots",
 		neck="Iskur Gorget",
 		ear1="Enervating Earring", -- Upgrade to ear1="Dedition Earring",
 		ear2="Telos Earring",
 		ring1="Ilabrat Ring", -- Upgrade to ring1={name="Chirich Ring +1", bag="wardrobe3"},
 		ring2="Petrov Ring", -- Upgrade to ring2={name="Chirich Ring +1", bag="wardrobe4"},
 		back=gear.ratkCape,
-		waist="Kentarch Belt +1",
+		waist="Kentarch Belt", -- Upgrade to waist="Kentarch Belt +1",
 	}
 
-	sets.precast.JA['Snake Eye'] = {legs="Lanun Trews +3"}
-	sets.precast.JA['Wild Card'] = {feet="Lanun Bottes +3"}
-	sets.precast.JA['Random Deal'] = {body="Lanun Frac +3"}
+	--sets.precast.JA['Snake Eye'] = {legs="Lanun Trews +3"}
+	--sets.precast.JA['Wild Card'] = {feet="Lanun Bottes +3"}
+	--sets.precast.JA['Random Deal'] = {body="Lanun Frac +3"}
 
-	sets.precast.CorsairRoll["Caster's Roll"] = set_combine(sets.precast.CorsairRoll, {legs="Chasseur's Culottes +2"})
-	sets.precast.CorsairRoll["Courser's Roll"] = set_combine(sets.precast.CorsairRoll, {feet="Chasseur's Bottes +3"})
-	sets.precast.CorsairRoll["Blitzer's Roll"] = set_combine(sets.precast.CorsairRoll, {head="Chasseur's Tricorne +3"})
-	sets.precast.CorsairRoll["Tactician's Roll"] = set_combine(sets.precast.CorsairRoll, {body="Chasseur's Frac +3"})
-	sets.precast.CorsairRoll["Allies' Roll"] = set_combine(sets.precast.CorsairRoll, {hands="Chasseur's Gants +3"})
-	sets.precast.FoldDoubleBust = {hands="Lanun Gants +3"} 
+	--sets.precast.CorsairRoll["Caster's Roll"] = set_combine(sets.precast.CorsairRoll, {legs="Chasseur's Culottes +2"})
+	--sets.precast.CorsairRoll["Courser's Roll"] = set_combine(sets.precast.CorsairRoll, {feet="Chasseur's Bottes +3"})
+	--sets.precast.CorsairRoll["Blitzer's Roll"] = set_combine(sets.precast.CorsairRoll, {head="Chasseur's Tricorne +3"})
+	--sets.precast.CorsairRoll["Tactician's Roll"] = set_combine(sets.precast.CorsairRoll, {body="Chasseur's Frac +3"})
+	--sets.precast.CorsairRoll["Allies' Roll"] = set_combine(sets.precast.CorsairRoll, {hands="Chasseur's Gants +3"})
+	--sets.precast.FoldDoubleBust = {hands="Lanun Gants +3"} 
 
 --[[ Utility Sets ]]--
 	-- Fast Cast
@@ -325,24 +267,24 @@ function init_gear_sets()
 		-- Upgrade to legs="Herculean Trousers" -- FC Aug
 		-- Upgrade to feet="Carmine Greaves +1"
 	}
-	sets.precast.FC.Utsusemi = set_combine(sets.precast.FC, {neck="Magoraga Beads",body="Passion Jacket"})
+	--sets.precast.FC.Utsusemi = set_combine(sets.precast.FC, {neck="Magoraga Beads",body="Passion Jacket"})
 
 	-- TH
-	sets.TreasureHunter = {head="White Rarab Cap +1", waist="Chaac Belt", "Herculean Vest",} -- Upgrade to whatever TH we can find
+	sets.TreasureHunter = {} -- Upgrade to whatever TH we can find
 	sets.precast.JA['Box Step'] = sets.TreasureHunter
 
 	-- Waltz
 	sets.Waltz = {
-		head="Laksamana's Tricorne +3",
-		body="Passion Jacket",
-		hands="Regal Gloves",
-		waist="Aristo Belt",
-		feet="Lanun Bottes +3",
+		--head="Laksamana's Tricorne +3",
+		--body="Passion Jacket",
+		--hands="Regal Gloves",
+		--waist="Aristo Belt",
+		--feet="Lanun Bottes +3",
 	}
 
 	-- Obi
-	sets.obi = {waist="Hachirin-no-Obi"}
-	sets.oSash = {waist="Orpheus's Sash"}
+	sets.obi = {}
+	--sets.oSash = {}
 
 	-- Ammo that should never be shot
 	no_shoot_ammo = S{"Animikii Bullet", "Hauksbok Bullet"}
@@ -351,19 +293,18 @@ function init_gear_sets()
 	sets.baseIdle = {
 		ammo=gear.RAbullet,
 		head="Malignance Chapeau",
-		body="Chasseur's Frac +3", -- Upgrade to body="Malignance Tabard",
+		--body="Chasseur's Frac +3", -- Upgrade to body="Malignance Tabard",
 		hands="Malignance Gloves",
 		legs="Carmine Cuisses +1",
 		feet="Malignance Boots",
-		neck="Twilight Torque",-- Upgrade to neck="Bathy Choker +1", 
+		--neck="Twilight Torque",-- Upgrade to neck="Bathy Choker +1", 
 		-- Upgrade to ear1="Sanare Earring",
-		ear1="Novia Earring",
+		--ear1="Novia Earring",
 		ear2="Eabani Earring",
-		ring1="Paguroidea Ring",
-		ring2="Defending Ring",
-		-- Upgrade to ring2={name="Chirich Ring +1", bag="wardrobe4"},
-		back=gear.snapCape,
-		waist="Flume Belt +1",
+		ring1="Chirich Ring +1",
+		ring2="Chirich Ring +1",
+		--back=gear.snapCape,
+		--waist="Flume Belt +1",
 	}
 
 	sets.moveSpeed = {legs="Carmine Cuisses +1",}
@@ -378,7 +319,7 @@ function init_modetables()
 		[0] = {name="DPS", idle=(sets.baseIdle), engaged=(sets.baseMelee), color="\\cs(250,128,114)"},
 		[1] = {name="DPS-Acc", idle=(sets.baseIdle), engaged=(sets.meleeAcc), color="\\cs(50,205,50)"},
 		[2] = {name="DPS-Hybrid", idle=(sets.baseIdle), engaged=(sets.meleeHybrid), color="\\cs(0,191,255)"},
-		[3] = {name="SingleWield", idle=(sets.baseIdle), engaged=(sets.meleeSW), color="\\cs(218,165,32)"},
+		[3] = {name="SingleWield", idle=(sets.baseIdle), engaged=(sets.SW), color="\\cs(218,165,32)"},
 	}
 	if not player.sub_job == 'NIN' and not player.sub_job == 'DNC' then
 		gearMode.index = 3
@@ -386,11 +327,7 @@ function init_modetables()
 
 	weaponMode = {
 		["index"] = 0,
-		[0] = {name="Naegling-Gleti", set={main="Naegling", sub="Gleti's Knife"}, color="\\cs(250,128,114)"},
-		[1] = {name="Rostam-Tauret",set={main=gear.rostamSTP, sub="Tauret"}, color="\\cs(238,130,238)"},
-		[2] = {name="Naegling-Shield", set={main="Naegling", sub="Nusku Shield"}, color="\\cs(218,165,32)"}, 		
-		[3] = {name="LowDMG-Dagger", set={main="Qutrub Knife", sub="Extinction"}, color="\\cs(218,165,32)"},
-		[4] = {name="LowDMG-Sword", set={main="Nihility", sub="Extinction"}, color="\\cs(218,165,32)"},       
+		[0] = {name="Naegling-Tauret", set={main="Naegling", sub="Tauret"}, color="\\cs(250,128,114)"},     
 	}
 	if not player.sub_job == 'NIN' and not player.sub_job == 'DNC' then
 		weaponMode.index = 3
@@ -399,11 +336,6 @@ function init_modetables()
 	gunMode = {
 		["index"] = 0,
 		[0] = {name="Ataktos", set={ranged="Ataktos"}, color="\\cs(218,165,32)"},
-        [1] = {name="Death Penalty", set={ranged="Death Penalty"}, color="\\cs(0,191,255)"},  
-		[2] = {name="Armageddon", set={ranged="Armageddon"}, color="\\cs(250,128,114)"}, 
-		[3] = {name="Fomalhaut", set={ranged="Fomalhaut"}, color="\\cs(135,206,250)"}, 
-		[4] = {name="Prime", set={ranged="Prime Gun"}, color="\\cs(240,230,140)"}, 
-		--TODO: Low Dmg Gun 
 	}	 
 
 	auto = {
@@ -518,7 +450,7 @@ function extendedUserSetup()
 	send_command('lua load autocor')
 
 	-- Set style lock
-	windower.send_command:schedule(4, 'input /lockstyleset 7')	
+	send_command:schedule(4, 'input /lockstyleset 7')	
 end
 
 function extendedUserUnload()
@@ -792,6 +724,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
+tick = 60
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()    
     local me = windower.ffxi.get_player()    
@@ -808,9 +741,9 @@ function autoActions()
 	local waltz3Recast = abilRecast[187]
 	local sambaRecast = abilRecast[216]
 
-	-- zMode
+	-- Autobuff (Samba)
 	if auto.zMode[auto.zMode.index] == 'On' then
-		if player.tp >= 1000 and me.status == 1 then
+		if not actionInProgress and not moving and player.tp >= 1000 then
 			add_to_chat(122, '[Savage Blade]')
 			send_command('/savageblade')
 			return
@@ -826,21 +759,50 @@ function autoActions()
 
     -- Autofite (Cure & 1-hr)
     if (auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving and me.status == 1) then
-		if player.sub_job == 'DNC' and player.tp >= 500 and partyLowHP(40) then
+        -- Auto Cure (with Contradance if available)
+        if (player.tp >= 200 and curingWaltzRecast == 0 and partyLowHP(50)) then
 			if contradanceRecast == 0 then
-				add_to_chat(122, '[~ Contradance ~]')
 				send_command('/contradance')
-				return
+				send_command:schedule(0.5, partyLowHP(30,'curingwaltz3'))
+            else
+				partyLowHP(30,'curingwaltz3')
 			end
-			add_to_chat(122, '[~ Curing Waltz ~]')
-			partyLowHP(40, '/ja "Curing Waltz III"')
-		end
+        end
 
-		-- Auto QD (?)
+		if (player.tp >= 200 and curingWaltzRecast == 0) then
+            for _, data in pairs(windower.ffxi.get_party()) do
+                if type(data) == 'table' and data.mob then
+                    local pInfo = data.mob
+                    if pInfo.hpp > 0 and pInfo.hpp < 40 then
+						if contradanceRecast == 0 then
+							send_command('/contradance')
+							send_command:schedule(0.5, '/curingwaltz3 '..pInfo.id)
+							add_to_chat(122, pInfo.name..' is under 40% - ContraWaltz!')
+						else
+							send_command('/curingwaltz3 '..pInfo.id)
+							add_to_chat(122, pInfo.name..' is under 40% - Waltz!')
+						end
+                        return
+                    end
+                end
+            end
+        end
+
+		tick = tick - 1
+
+		-- Auto QD
+		--[[
+		if quickDrawRecast == 0 and tick <= 0 then
+			add_to_chat(122, '[~ Quick Draw: Fire Shot ~]')
+            send_command('/fireshot')
+			tick = 65
+            return
+		end
+		]]--
 		-- Auto Triple shot (?)
 
 		-- Auto Random Deal (use if Wild Card is not up soon and was not just used)
-		if randomDealRecast == 0 and wildCardRecast > 120 and wildCardRecast < 2580 then
+		if randomDealRecast == 0 and wildCardRecast > 180 and wildCardRecast < 2600 then
 			add_to_chat(122, '[~ Random Deal ~]')
             send_command('/randomdeal')
             return
@@ -852,16 +814,15 @@ function autoActions()
             send_command('/wildcard')
             return
         end
-        if cuttingCardsRecast == 0 and wildCardRecast > 2400 and wildCardRecast < 2580 then
+        if cuttingCardsRecast == 0 and wildCardRecast > 2200 and wildCardRecast < 2600 then
             add_to_chat(122, '[! Cutting Cards !]')
             send_command('/cuttingcards <p3>')
             return
         end
-		--[[
+--[[
         if not buffactive['Food'] then
             send_command('input /item "Rolanberry Daifuku" <me>')
             return
-        end
-		]]--
+        end]]--
     end
 end

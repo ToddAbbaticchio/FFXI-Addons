@@ -373,6 +373,13 @@ function autoActions()
         send_command('input //gs equip sets.weapons')
     end
 
+    if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
+        if player.tp >= 1000 then
+            send_command('/bladeshun')
+            return
+        end
+    end
+
     if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving then
         if not buffactive['Food'] then
             send_command('input /item "Grape Daifuku" <me>')
