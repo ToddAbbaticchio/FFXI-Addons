@@ -1,4 +1,4 @@
--- Ver 1.3.5
+-- Ver 1.3.6
 -------------------------------------------------------------------------------------------------------------------
 -- Global Variables!  Wheeeeeeeeee!
 -------------------------------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ end
 
 function onCooldown(actionName)
 	for k,v in pairs(res.job_abilities) do
-		if v.en == actionName and v.recast_id ~= 0 then
+		if v.en == actionName and v.recast_id then
 			local recast = windower.ffxi.get_ability_recasts()[v.recast_id] or nil
 			if recast == nil then
 				break
@@ -111,7 +111,7 @@ function onCooldown(actionName)
 	end
 
 	for k,v in pairs(res.spells) do
-		if v.en == actionName and v.recast_id ~= 0 then
+		if v.en == actionName and v.recast_id then
 			local recast = windower.ffxi.get_spell_recasts()[v.recast_id] or nil
 			if recast == nil then
 				break
@@ -148,27 +148,6 @@ function isPullAction(category, param)
     end
     
     return false
-end
-
-function evalWindows(now)
-    local now = os.time()
-    
-    -- close burst window when time runs out
-    if burstWindow and burstWindowCloseTime and now >= burstWindowCloseTime then
-        burstWindow = false
-        actionQueue.burst = {}
-    end
-    
-    -- open/close skillchainWindow
-    if not skillchainWindowOpenTime then
-        return
-    end
-
-    if now >= skillchainWindowOpenTime and now < skillchainWindowCloseTime then
-        skillchainWindow = true
-    else
-        skillchainWindow = false
-    end
 end
 
 function tryCleanQueue(category, param)
@@ -312,10 +291,12 @@ end
 
 -- Weaponskillsssss
 function wsHandler()
-    if jobVars.respectBurstWindow and (burstWindow or skillchainWindow) then
+    -- if last openingWS wasn't more than 8 seconds ago, hold off. (this is reset every time target changes)
+    if mylastWeaponskillTime and mylastWeaponskillTime + 8 > time.os() then
+        writeLog('It hasnt been 8 seconds since my lastWS! --preserveBurstWindow-- ', 3)
         return
     end
-
+        
     local player = windower.ffxi.get_player()
     if jobVars.maintainAftermath == true then
         if buffActive(player.buffs, "Aftermath: Lv.3") == false then
@@ -342,16 +323,24 @@ function afReactHandler()
     local now = os.time()
 
     -- if burst window is open / we have burst commands queued, only try bursting
-    if burstWindow and #actionQueue.burst >= 1 then
-        windower.chat.input(actionQueue.burst[1])
-        return
+    if #actionQueue.burst >= 1 then
+        local burstWindow = lastSkillchainTime and (lastSkillchainTime + 8 > os.time()) or false
+        writeLog('burstWindow: '..tostring(burstWindow), 3)
+        if burstWindow then
+            windower.chat.input(actionQueue.burst[1])
+            return
+        end
+        -- if burst window is closed but commands remain, remove them
+        table.remove(actionQueue.burst, 1)
     end
     -- if skillchain window open, close it before trying other reactions
-    if skillchainWindow and #actionQueue.ws >= 1 then
-            local tp = windower.ffxi.get_player().vitals.tp or nil
-            if tp and tp >= 1000 then
-                windower.chat.input(actionQueue.ws[1])
-            end
+    if #actionQueue.ws >= 1 and lastWeaponskillTime and (lastWeaponskillTime + 3 <= os.time()) and (lastWeaponskillTime + 6 >= os.time()) then
+        local scWindow = lastWeaponskillTime and (lastWeaponskillTime + 3 <= os.time()) and (lastWeaponskillTime + 6 >= os.time()) or false
+        local tp = windower.ffxi.get_player().vitals.tp or nil
+        writeLog('scWindow: '..tostring(scWindow)..' tp: '..tostring(tp), 3)
+        if scWindow and tp and tp >= 1000 then
+            windower.chat.input(actionQueue.ws[1])
+        end
         return
     end
     -- Finally, process commands in actionQueue.other
@@ -367,7 +356,7 @@ windower.register_event('action',function (action)
     if not active or not action then
         return
     end
-    
+
     local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
     local target = windower.ffxi.get_mob_by_target('t') or nil
@@ -375,7 +364,6 @@ windower.register_event('action',function (action)
     if not actor or not player then
         return
     end
-
     local category = action.category
     local param = action.param
     
@@ -410,14 +398,14 @@ windower.register_event('action',function (action)
     -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
     local actionTargetId = action.targets[1] and action.targets[1].id or nil
     if actionTargetId and target and target.id and actionTargetId == target.id then
-        -- skillchains (3 = ws, 4 = spells, 11 = trust ws)
+        -- Detect skillchains (3 = ws, 4 = spells, 11 = trust ws)
         if category == 3 or category == 4 or category == 11 then
             local skillchainId = action.targets[1].actions[1].add_effect_message or nil
             local skillchainName = scTable[skillchainId] and scTable[skillchainId].name or nil
             local reaction = afReact[skillchainName] or nil
             if skillchainName and reaction then
-                burstWindowCloseTime = os.time() + 8
-                burstWindow = true
+                lastWeaponskillTime = os.time()
+                lastSkillchainTime = os.time()
                 
                 -- for reactions other than 'preserveBurstWindow', insert them into actionQueue
                 if reaction.response ~= 'preserveBurstWindow' then
@@ -430,25 +418,16 @@ windower.register_event('action',function (action)
             end
         end
         
-        -- weaponskills
+        -- Detect weaponskills
         if category == 3 then
-            -- if a WS lands on our target while window(s) are open, they be closed. (if it makes a chain it just reopens a new window right after)
-            if burstWindow or skillchainWindow then
-                local now = os.time()
-                burstWindowCloseTime = now
-                skillchainWindowCloseTime = now
-                burstWindow = false
-                skillchainWindow = false
-            end
-
-            -- Check if wsname in afReact table
-            local damageDealt = action.targets[1].actions[1].param or nil
+            -- Make sure the WS didn't miss (it dealt damage) and check afReact table
             local wsName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
-
+            local damageDealt = action.targets[1].actions[1].param or nil
             local reaction = afReact[wsName] or nil
             if wsName and reaction and damageDealt then
-                skillchainWindowOpenTime = os.time() + 4
-                skillchainWindowCloseTime = os.time() + 8
+                if actor.id == player.id and reaction.actor == 'self' and reaction.response == 'preserveBurstWindow' then
+                    mylastWeaponskillTime = os.time()
+                end
                 table.insert(actionQueue.ws, reaction.response)
                 return
             end
@@ -560,9 +539,8 @@ windower.register_event('target change', function()
     actionQueue.burst = {}
     actionQueue.ws = {}
     actionQueue.other = {}
-    burstWindowCloseTime = now
-    skillchainWindowCloseTime = now
-    skillchainWindowOpenTime = nil
-    burstWindow = false
-    skillchainWindow = false
+
+    lastWeaponskillTime = nil
+    mylastWeaponskillTime = nil
+    lastSkillchainTime = nil
 end)

@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.3.5'
+_addon.version = '1.3.6'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -85,12 +85,6 @@ function initializeSessionVars(job, ...)
     actionQueue.burst = {}
     actionQueue.ws = {}
     actionQueue.other = {}
-    burstWindow = false
-    burstWindowCloseTime = 0
-    skillchainWindow = false
-    skillchainWindowOpenTime = 0
-    skillchainWindowCloseTime = 0
-    
 
     writeLog(startMsg, 1)
 end
@@ -135,7 +129,8 @@ function autoFite()
                 windower.ffxi.follow(assistTarget.index)
                 assistTarget.distance = windower.ffxi.get_mob_by_name(jobVars.target.assist).distance
             end 
-            windower.ffxi.follow() -- follow with no target stops follow
+            -- follow with no target stops follow
+            windower.ffxi.follow()
             
             if assistTarget.status == engaged then
                 local monsterList = windower.ffxi.get_mob_array()
@@ -160,7 +155,7 @@ function autoFite()
     -- check buffs regardless of mode (but not if we're stopped)
     if player.status == engaged then
         if afReact then
-            afReactHandler(player)
+            afReactHandler()
         end
         autoBuffHandler()
     end
@@ -264,7 +259,6 @@ local tickDelay = 1
 windower.register_event('postrender', function()
     local now = os.time()
     if active and now >= loopTime then
-        evalWindows(now)
         autoFite()
         loopTime = os.time() + tickDelay
     end

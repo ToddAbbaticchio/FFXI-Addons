@@ -257,3 +257,28 @@ windower.register_event('incoming chunk', function(id,data,modified,injected,blo
 		end
 	end
 end)
+
+
+-------------------------------------------------------------------------------------------------------------------
+-- Maybe do stuff with this eventually
+-------------------------------------------------------------------------------------------------------------------
+--[[
+	
+if auto.buff[auto.buff.index] == 'On' then
+	if lastPicture == nil then lastPicture = 0 end
+	local now = os.time()
+	if now - lastPicture >= 33 then
+		add_to_chat(122, '-- Say cheeeeeeese! --')
+		send_command('input /item "Soultrapper 2000" <t>')
+		send_command('timers c Camera 33 down')
+		lastPicture = now
+	end
+	return
+end
+
+
+]]
+
+
+
+

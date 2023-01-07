@@ -57,7 +57,7 @@ function init_gear_sets()
 		head="Mirage Keffiyeh +1",
 		body="Assim. Jubbah +3",
 		--hands="",
-		legs="Hashishin Tayt +2",
+		legs="hashishin Tayt +3",
 		--feet="",
 		neck="Mirage Stole +2",
 		--waist="",
@@ -66,6 +66,28 @@ function init_gear_sets()
 		ring1="Stikini Ring +1",
 		ring2="Stikini Ring +1",
 		--back="Cornflower Cape",
+	}
+
+	sets.maxHp = {
+		--ammo="Ginsen",
+		head="Nyame Helm",        --06
+		body="Nyame Mail",
+		hands="Nyame Gauntlets",        --05
+		legs="Nyame Flanchard",         --07
+		feet="Nyame Sollerets",           --07
+		neck="Sanctity Necklace",
+		waist="Kasiri Belt",
+		ear1="Eabani Earring",
+		ear2="Etiolation Earring",
+		ring1="Chirich Ring +1",
+		ring2="Ilabrat Ring",
+		back=gear.TpCape,                --05
+	}
+
+	sets.curePotency = {
+		head="Pinga Crown",
+		body="Pinga Tunic",
+		hands="Telchine Gloves",
 	}
 
 	sets.precast.FC = {
@@ -91,7 +113,7 @@ function init_gear_sets()
 		neck="Mirage Stole +2",
 		waist="Sailfi Belt +1",
 		ear1="Suppanomimi",
-		ear2="Hashishin Earring",
+		ear2="Telos Earring",
 		ring1="Chirich Ring +1",
 		ring2="Ilabrat Ring",
 		back=gear.TpCape,                --05
@@ -140,7 +162,7 @@ function init_gear_sets()
     sets.buff['Convergence'] = {} 													--Luhlaza Keffiyeh
     sets.buff['Diffusion'] = {feet="Luhlaza Charuqs +1"}
     sets.buff['Enchainment'] = {} 													--Luhlaza Jubbah
-    sets.buff['Efflux'] = {legs="Hashishin Tayt +2", gear.WsCape,}
+    sets.buff['Efflux'] = {legs="Hashishin Tayt +3", gear.WsCape,}
     sets.precast.JA['Azure Lore'] = {} 												--Mirage Bazubands +2
 	sets.precast.JA['Provoke'] = sets.TH
 
@@ -187,14 +209,14 @@ function init_gear_sets()
 
     -- Other --
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
-    sets.midcast['Blue Magic']['White Wind'] = {}
+    sets.midcast['Blue Magic']['White Wind'] = set_combine(sets.maxHp, sets.curePotency)
     sets.midcast['Blue Magic'].Healing = set_combine(sets.baseMagic, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
-    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +2",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
+    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
     sets.midcast['Blue Magic'].Buff = {}
 	sets.midcast['Blue Magic'].Enmity = {}
     
     -- Gear for learning spells: +skill and AF hands.
-    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +2",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
+    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -439,13 +461,6 @@ function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 	if spell.element == 'Dark' then
 		equip{head="Pixie Hairpin +1",ring2="Archon Ring", body="Hashishin Mintan +3"}
 	end
-
-	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet
-	for buff,active in pairs(state.Buff) do
-		if active and sets.buff[buff] then
-			equip(sets.buff[buff])
-		end
-	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -474,22 +489,11 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
+	--add_to_chat(144, "autoActions heartbeat")
+	
 	--[[ if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
 	end ]]
-
-	--[[ if auto.buff[auto.buff.index] == 'On' then
-		if lastPicture == nil then lastPicture = 0 end
-		local now = os.time()
-		if now - lastPicture >= 33 then
-			add_to_chat(122, '-- Say cheeeeeeese! --')
-			send_command('input /item "Soultrapper 2000" <t>')
-			send_command('timers c Camera 33 down')
-			lastPicture = now
-		end
-		return
-	end ]]
-
 
 	if player.equipment.main == 'empty' or player.equipment.sub == 'empty' then
 		equip(sets.weapons)
@@ -509,10 +513,12 @@ function autoActions()
 
 				if buffCheck('Berserk') and not buffactive['Warcry'] then
 					send_command('/berserk')
+					return
 				end
 	
 				if buffCheck('Warcry') and not buffactive['Berserk'] then
 					send_command('/warcry')
+					return
 				end
 
 				if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then

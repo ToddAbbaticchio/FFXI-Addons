@@ -32,7 +32,7 @@ function init_gear_sets()
 		neck = "Argute Stole +2",           --10
 		waist = "Eschan Stone",
 		ear1 = "Malignance Earring",
-		ear2 = "Barkaro. Earring",
+		ear2 = "Regal Earring",
 		ring1 = "Freke Ring",
 		ring2 = "Mujin Band",               --5/5*
 		back=gear.nukeCape,					-- 13 from jp gifts?
@@ -48,10 +48,10 @@ function init_gear_sets()
 		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +2",
 		waist = "Eschan Stone",
-		left_ear = "Malignance Earring",
-		right_ear = "Barkaro. Earring",
-		left_ring = "Freke Ring",
-		right_ring = "Stikini Ring +7148",
+		ear1 = "Malignance Earring",
+		ear2 = "Regal Earring",
+		ring1 = "Freke Ring",
+		ring2 = "Shiva Ring +1",
 		back=gear.nukeCape,
 	}
 

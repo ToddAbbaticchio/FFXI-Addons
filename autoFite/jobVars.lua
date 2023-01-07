@@ -2,7 +2,9 @@ vars = {}
 vars.BLU = {
     autoBuffs = {},
     afReact = {
-        --['Impulse Drive'] = {actor='any', response='/ws "Expiacion" <t>'}
+        --['Impulse Drive'] = {actor='any', response='/ws "Expiacion" <t>'},
+        --['Darkness'] = {actor='any', response='preserveBurstWindow'}
+        --['Expiacion'] = {actor='self', response='preserveBurstWindow'}
     },
     ws = "Expiacion",
     maintainAftermath = true,
