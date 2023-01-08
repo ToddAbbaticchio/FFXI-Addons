@@ -292,7 +292,7 @@ end
 -- Weaponskillsssss
 function wsHandler()
     -- if last openingWS wasn't more than 8 seconds ago, hold off. (this is reset every time target changes)
-    if mylastWeaponskillTime and mylastWeaponskillTime + 8 > time.os() then
+    if mylastWeaponskillTime and mylastWeaponskillTime + 8 > os.time() then
         writeLog('It hasnt been 8 seconds since my lastWS! --preserveBurstWindow-- ', 3)
         return
     end

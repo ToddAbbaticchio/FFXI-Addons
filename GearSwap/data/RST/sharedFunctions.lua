@@ -173,6 +173,10 @@ function job_self_command(cmdParams, eventArgs)
 	end
 
 	if cmdParams[1]:lower() == 'test' then
+		for i=1,5,1 do
+			add_to_chat(122, 'i: '..i)
+		end
+		add_to_chat(122, 'done!')
 	end
 
 	if cmdParams[1]:lower() == 'ignorelastmatch' then
@@ -414,7 +418,7 @@ end
 
 function onCooldown(actionName)
 	for k,v in pairs(res.job_abilities) do
-		if v.en == actionName and v.recast_id ~= 0 then
+		if v.en == actionName and v.recast_id then
 			local recast = windower.ffxi.get_ability_recasts()[v.recast_id] or nil
 			if recast == nil then
 				break
