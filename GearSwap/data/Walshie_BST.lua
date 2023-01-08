@@ -22,7 +22,8 @@ function init_gear_sets()
         ear1 = "Eabani Earring", -- DW+4
         ear2 = "Sherida Earring", -- DA+5%
         body = "Tali'ah Manteel +2", -- Haste+4%, TA+6%
-        hands = "Nukumi Manoplas +2", -- Haste+4%
+        --hands = "Nukumi Manoplas +2", -- Haste+4%
+		hands = "Malignance Gloves",
         ring1 = "Epona's Ring", -- DA+3%; TA+3%
         ring2 = "Gere Ring", -- TA+5%
         back = gear.strWsCape, -- DA+10%
@@ -45,9 +46,9 @@ function init_gear_sets()
         ammo = "Coiste Bodhar",
         head = "Gleti's Mask",
         neck = "Fotia Gorget",
-        ear1 = "Nukumi Earring",
+        ear1 = "Sroda Earring",
         ear2 = "Sherida Earring",
-        body = "Gleti's Cuirass",
+        body = "Nukumi Gausape +2",
         hands = "Meg. Gloves +2",
         ring1 = "Epona's Ring",
         ring2 = "Gere Ring",
@@ -111,7 +112,22 @@ function init_gear_sets()
         legs = "Gleti's Breeches",
         feet = "Nukumi Ocreae +2"
 	})
-    sets.precast.WS['Ruinator'] = set_combine(sets.precast.WS, {})
+    sets.precast.WS['Ruinator'] = set_combine(sets.precast.WS, {
+		ammo = "Coiste Bodhar",
+		head = "Gleti's Mask",
+		body = "Nukumi Gausape +2",
+		hands = "Valor Gauntlets",
+		legs = "Gleti's Breeches",
+		feet = "Gleti's Boots",
+
+		neck = "Fotia Gorget",
+		waist = "Fotia Belt",
+		ear1 = "Sroda Earring",
+		ear2 = "Nukumi Earring",
+		ring1 = "Epaminondas's Ring",
+		ring2 = "Gere Ring",
+		back = gear.strWsCape,
+	})
     sets.precast.WS['Onslaught'] = set_combine(sets.precast.WS, {
 		ear1="Ishvara Earring",
 		ear2="Moonshade Earring",
@@ -618,7 +634,7 @@ function autoActions()
 				if (loyaltyRecast <= 295) and runWildRecast == 0 then
 				--if (loyaltyRecast <= 295 or callBeastRecast <= 295) and runWildRecast == 0 then
 					add_to_chat(122, '[Run Wild]')
-					windower.chat.input('/pet runwild <me>')
+					windower.chat.input('/pet "Run Wild" <me>')
 					return
 				end
 
@@ -686,6 +702,13 @@ function autoActions()
 					return
 				end
 
+				--[[ Blackbeard Randy (Tiger) ]]--
+				if pet.name == "BlackbeardRandy" and readyCharges() == 3 then
+					add_to_chat('[Razor Fang]')
+					windower.chat.input('/bstpet 2 <me>')
+					return
+				end
+
 				--[[ Sultry Patrice (Slime) ]]--
 				if pet.name == "SultryPatrice" and readyCharges() == 3 then
 					if pet.hpp <= 80 then
@@ -725,7 +748,8 @@ function autoActions()
 		if auto.fite[auto.fite.index] == 'On' then
 			if loyaltyRecast == 0 then
 				add_to_chat(122, '[Bestial Loyalty]')
-				windower.chat.input('/equip Ammo "Putrescent Broth"')
+				--windower.chat.input('/equip Ammo "Putrescent Broth"')
+				windower.chat.input('/equip Ammo "Meaty Broth"')
 				send_command:schedule(.5, '/bestial loyalty')
 				return
 			end

@@ -23,7 +23,7 @@ function init_gear_sets()
         body="Adhemar Jacket +1",
         hands="Adhemar Wristbands +1", 
         legs="Meghanada Chausses +2", --legs="Samnuha Tights",
-        feet="Herculean Boots",
+        feet="Plunderer's Poulaines +3",
         neck="Asn. Gorget +2",
         ear1="Sherida Earring",
         ear2="Skulker's Earring",
@@ -45,6 +45,7 @@ function init_gear_sets()
     }
 
     sets.meleeHybrid = {
+        head="Malignance Chapeau",
         -- Malignance or certain maxed AF/Relic/Empy here
     }
 
@@ -97,7 +98,7 @@ function init_gear_sets()
     sets.precast.WS['Evisceration'] = set_combine(sets.baseWS, {
         ammo="Yetshila +1",
         head="Adhemar Bonnet +1",
-        body="Meg. Cuirie +2",
+        body="Plunderer's Vest +3",
         hands="Mummu Wrists +2",
         legs="Meghanada Chausses +2",
         feet="Mummu Gamashes +2",
@@ -338,7 +339,7 @@ function extendedModeHud(hudText)
 	modeHud_xPos = 0
 	modeHud_yPos = 0
 
-    hudText:append(white..'Thief[Q]: '..getBoolColor(auto.thief[auto.thief.index]))
+    hudText:append(white..'Thief[Q]: '..getModeColor(auto.thief[auto.thief.index]))
 
 	return hudText
 end
@@ -387,14 +388,33 @@ function autoActions()
             return
         end
 
-        if player.tp > 1000 then
-            send_command('/evisceration')
-            add_to_chat(006, '[Evisceration]')
+        if sneakAttackRecast == 0 then
+            send_command('/sneakattack')
+            add_to_chat(122, '[Sneak Attack]')
             return
         end
+
+        if trickAttackRecast == 0 then
+            send_command('/trickattack')
+            add_to_chat(122, '[Trick Attack]')
+            return
+        end
+
+        if feintRecast == 0 then
+            send_command('/feint')
+            add_to_chat(122, '[Feint]')
+            return
+        end
+        --[[
+        if player.tp > 1000 then
+            send_command('/savageblade')
+            add_to_chat(006, '[Savage Blade]')
+            return
+        end
+        ]]--
     end
 
-	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1  then
+	if auto.buff[auto.buff.index] == 'On' and not actionInProgress and not moving and me.status == 1 then
 
         -- Feint
         if feintRecast == 0 then
@@ -436,4 +456,12 @@ function autoActions()
             end
 		end
 	end
+
+    if auto.fite[auto.fite.index] == 'On' and me.status == 1 then        
+        if player.tp >= 1000  then
+            add_to_chat(122, '[Evisceration]')
+            send_command('/evisceration')
+            return
+        end
+    end
 end
