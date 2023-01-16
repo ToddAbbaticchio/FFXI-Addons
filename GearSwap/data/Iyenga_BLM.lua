@@ -278,7 +278,7 @@ end
 function extendedUserSetup()
     -- Set Job-Specific Keybinds
     send_command('bind @w gs c toggleMagicMode')
-
+    send_command('bind !w gs c toggleMagicModeMod')
     -- Set Default Macro Book / Page
     --set_macro_page(1, 1)
 	
