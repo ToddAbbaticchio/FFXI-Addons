@@ -228,19 +228,13 @@ end
 
 function user_unload()
     -- Unbind alllllll the keys.  Anything you add anywhere should get unbound here
-	send_command('unbind ^=')
-	send_command('unbind !=')
-    send_command('unbind ^insert')
-    send_command('unbind ^delete')
-    send_command('unbind F9')
-	send_command('unbind ^F9')
-	send_command('unbind !F9')
-	send_command('unbind F10')
-	send_command('unbind F11')
-	send_command('unbind ^F11')
-	send_command('unbind !F11')
-	send_command('unbind F12')
-	send_command('unbind ^!F12')
+	local boundKeys = {"F9","F10","F11","F12","insert","delete"}
+	for k,v in pairs(boundKeys) do
+		send_command('unbind ^'..v)
+		send_command('unbind !'..v)
+		send_command('unbind ^!'..v)
+		send_command('unbind '..v)
+	end
 
 	if extendedUserUnload ~= nil then
 		extendedUserUnload()
