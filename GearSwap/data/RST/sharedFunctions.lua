@@ -198,12 +198,25 @@ end
 
 function user_setup()
 	--Setup common binds for ALL jobs
-	send_command('bind F9 gs c toggleGearMode')
-	send_command('bind ^F9 gs c toggleWeaponMode')
-	send_command('bind !F9 gs c toggleMagicMode')
-	send_command('bind !F10 gs c toggleMagicModeMod')
-	send_command('bind F11 gs c toggleAutoBuff')
-	send_command('bind !F11 gs c toggleautofite')
+	if gearMode then
+		send_command('bind F9 gs c toggleGearMode')
+	end
+	if weaponMode then
+		send_command('bind ^F9 gs c toggleWeaponMode')
+	end
+	if magicMode then
+		send_command('bind !F9 gs c toggleMagicMode')
+	end
+	if magicModeMod then
+		send_command('bind !F10 gs c toggleMagicModeMod')
+	end
+	if auto and auto.buff then
+		send_command('bind F11 gs c toggleAutoBuff')
+	end
+	if auto and auto.fite then
+		send_command('bind !F11 gs c toggleautofite')
+	end
+
 	send_command('bind F12 gs c clearmultistepactionqueue')
 	send_command('bind ^!F12 gs reload')
 

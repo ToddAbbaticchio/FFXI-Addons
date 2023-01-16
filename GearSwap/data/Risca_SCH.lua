@@ -235,11 +235,11 @@ function init_modetables()
 	}
 
 	--Setup magicModeMod
-	magicModeMod = {
+	--[[ magicModeMod = {
 		["index"] = 0,
 		[0] = {name='Normal', set=nil},
 		[1] = {name='Nyame', set={body='Nyame Mail', head='Nyame Helm'}},
-	}
+	} ]]
 
     --Setup eleMode for elemental wheel HUD
     eleMode = {
