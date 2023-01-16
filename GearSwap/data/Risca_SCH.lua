@@ -21,37 +21,34 @@ function init_gear_sets()
 		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",   --4*
-		--body = "Merlinic Jubbah",           --11
 		body = "Arbatel Gown +3",
-		--hands = "Amalric Gages +1",         --6*
 		hands = "Arbatel Bracers +3",       --15
-		--legs = "Merlinic Shalwar",          --09
 		legs = "Arbatel Pants +3",          
-		--feet = "Agwu's Pigaches",           --06
 		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +2",           --10
-		waist = "Eschan Stone",
+		waist = "Yamabuki-no-Obi",
 		ear1 = "Malignance Earring",
 		ear2 = "Regal Earring",
-		ring1 = "Freke Ring",
+		ring1 = "Metamorph Ring +1",
 		ring2 = "Mujin Band",               --5/5*
 		back=gear.nukeCape,					-- 13 from jp gifts?
 	}
 
 	sets.freeCast = {
+		main = "Akademos",                  --10
+		sub = "Enki Strap",
 		ammo = "Pemphredo Tathlum",
 		head = "Pedagogy Mortarboard +3",
 		body = "Arbatel Gown +3",
-		--hands = "Amalric Gages +1",
 		hands = "Arbatel Bracers +3",
 		legs = "Arbatel Pants +3",
 		feet = "Arbatel Loafers +3",
 		neck = "Argute Stole +2",
-		waist = "Eschan Stone",
+		waist = "Yamabuki-no-Obi",
 		ear1 = "Malignance Earring",
 		ear2 = "Regal Earring",
-		ring1 = "Freke Ring",
-		ring2 = "Shiva Ring +1",
+		ring1 = "Metamorph Ring +1",
+		ring2 = "Freke Ring",
 		back=gear.nukeCape,
 	}
 
@@ -237,6 +234,13 @@ function init_modetables()
 		},
 	}
 
+	--Setup magicModeMod
+	magicModeMod = {
+		["index"] = 0,
+		[0] = {name='Normal', set=nil},
+		[1] = {name='Nyame', set={body='Nyame Mail', head='Nyame Helm'}},
+	}
+
     --Setup eleMode for elemental wheel HUD
     eleMode = {
         ["index"] = 0,
@@ -339,11 +343,11 @@ end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
     -- check for / equip buff dependant midcast gear
-	for buff,active in pairs(state.Buff) do
+	--[[ for buff,active in pairs(state.Buff) do
 		if active and sets.buff[buff] then
 			equip(sets.buff[buff])
         end
-	end
+	end ]]
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -482,6 +486,7 @@ function autoActions()
 	if player.equipment.main == "empty" or player.equipment.sub == "empty" then
 		send_command('input //gs equip sets.weapons')
 	end
+
 
     -- auto.buff mode on
 	if abMode == 'On' and not moving then

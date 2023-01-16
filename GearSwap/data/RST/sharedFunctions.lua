@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Ver 1.0.1
+-- Ver 1.0.2
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -119,7 +119,19 @@ function job_self_command(cmdParams, eventArgs)
 		modeHud('update')
 		evalState_equipGear()
 	end
-	
+
+	-- Change current magicModeMod
+	if cmdParams[1]:lower() == 'togglemagicmodemod' then
+		magicModeMod.index = magicModeMod.index + 1
+		if magicModeMod.index > #magicModeMod then
+			magicModeMod.index = 0
+		end
+
+		updateSetsFromModes('magic')
+		modeHud('update')
+		evalState_equipGear()
+	end
+
 	-- Toggle autoBuff on / off
 	if cmdParams[1]:lower() == 'toggleautobuff' then
 		auto.buff.index = auto.buff.index + 1
@@ -189,6 +201,7 @@ function user_setup()
 	send_command('bind F9 gs c toggleGearMode')
 	send_command('bind ^F9 gs c toggleWeaponMode')
 	send_command('bind !F9 gs c toggleMagicMode')
+	send_command('bind !F10 gs c toggleMagicModeMod')
 	send_command('bind F11 gs c toggleAutoBuff')
 	send_command('bind !F11 gs c toggleautofite')
 	send_command('bind F12 gs c clearmultistepactionqueue')
@@ -255,13 +268,19 @@ function updateSetsFromModes(mode)
 	end
 	if mode == 'magic' then
 		local currModeSet = magicMode[magicMode.index].set or nil
+		local currModeMod = magicModeMod[magicModeMod.index] or nil
+		
 		if currModeSet == nil then
 			add_to_chat(122, 'Check magicMode table format')
 			return
 		end
 
 		for magicType,gearSet in pairs(currModeSet) do
-			sets.midcast[magicType] = gearSet
+			if currModeMod and currModeMod.set then
+				sets.midcast[magicType] = set_combine(gearSet, currModeMod.set)
+			else
+				sets.midcast[magicType] = gearSet
+			end
 		end
 	end
 
@@ -803,9 +822,11 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
 		if dayWeatherIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
+			--add_to_chat(122, '-- Equipping mega obi!!! --')
 			equip(sets.obi)
 		elseif spell.target.distance < (7 - spell.target.model_size) and sets.oSash then
 			-- use orpheus if distance is more than 7 - target size
+			--add_to_chat(122, '-- Equipping osash!! --')
 			equip(sets.oSash)
 		end
 	end
@@ -813,8 +834,9 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet
 	for buff,active in pairs(state.Buff) do
 		if active and sets.buff[buff] then
+			add_to_chat(122, '-- Equipping sets.buff['..buff..']')
 			equip(sets.buff[buff])
-		end
+        end
 	end
 end
 
@@ -854,6 +876,10 @@ function modeHud(action)
 		if magicMode then
 			local maColor = magicMode[magicMode.index].color or white
 			hudText:append('MagicMode: '..maColor..magicMode[magicMode.index].name..white)
+		end
+		if magicModeMod then
+			local mamodColor = magicModeMod[magicModeMod.index].color or white
+			hudText:append('MagicMod: '..mamodColor..magicModeMod[magicModeMod.index].name..white)
 		end
 		
 		-- if extendedModeHud function exists in main job .lua, call that

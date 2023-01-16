@@ -128,8 +128,8 @@ function init_gear_sets()
 	sets.interrupt = set_combine(sets.baseTank, {   --Total: 103
 		ammo="Impatiens",                           --10
 		head="Erilaz Galea +3",                     --20
-		--body="Herculean Vest",
-		hands="Rawhide Gloves",                     --15 
+		--body="Taeon Tabard",
+		hands="Rawhide Gloves",                     --15
 		legs="Carmine Cuisses +1",                  --20
 		--feet
 		--neck
@@ -232,8 +232,8 @@ function init_gear_sets()
 
 	-- WS Sets
     sets.precast.WS = set_combine(sets.baseWS, {})
-    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Samnuha Tights", ring1="Epona's Ring"})
-    sets.precast.WS['Dimidiation'] = set_combine(sets.baseWS, {back=gear.DEXCape, body="Adhemar Jacket +1", ammo="Knobkierrie"})
+    sets.precast.WS['Resolution'] = set_combine(sets.baseWS, {legs="Samnuha Tights", ring1="Regal Ring"})
+    sets.precast.WS['Dimidiation'] = set_combine(sets.baseWS, {back=gear.DEXCape, body="Adhemar Jacket +1", ammo="Knobkierrie", })
 	sets.precast.WS['Shockwave'] = {sets.MagicBurst}
 	sets.precast.WS['Fell Cleave'] = set_combine(sets.baseWS, {back=gear.DEXCape,ammo="Knobkierrie"})
 	sets.precast.WS['Ground Strike'] = set_combine(sets.baseWS, {})

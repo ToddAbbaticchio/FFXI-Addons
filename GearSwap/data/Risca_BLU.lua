@@ -34,38 +34,32 @@ function init_gear_sets()
 		ring2="Chirich Ring +1",
 		back=gear.TpCape,
 	}
-	sets.baseMagic = {
+	
+	sets.magic = {}
+	sets.magic.nuke = {}
+	sets.magic.acc = {
 		ammo="Pemphredo Tathlum",
 		head="Hashishin Kavuk +3",
 		body="Hashishin Mintan +3",
-		hands="Amalric Gages +1",  
+		hands="Hashishin Bazubands +3",
 		legs="Luhlaza Shalwar +3",
 		feet="Hashishin Basmak +3",
 		neck="Sibyl Scarf",
-		waist="Yamabuki-no-obi",
-		ear1="Friomisi Earring",
-		ear2="Hecate's Earring",
-		ring1="Shiva Ring +1",
+		waist="Yamabuki-no-Obi",
+		ear1="Regal Earring",
+		ear2="Friomisi Earring",
+		ring1="Metamorph Ring +1",
 		ring2="Shiva Ring +1",
 		back=gear.IntCape,
 	}
-
-	sets.magic = {}
-	sets.magic.nuke = {}
-	sets.magic.acc = {}
 	sets.magic.bluSkill = {
 		head="Mirage Keffiyeh +1",
 		body="Assim. Jubbah +3",
-		--hands="",
 		legs="hashishin Tayt +3",
-		--feet="",
 		neck="Mirage Stole +2",
-		--waist="",
-		--ear1="",
 		ear2="Hashishin Earring",
 		ring1="Stikini Ring +1",
 		ring2="Stikini Ring +1",
-		--back="Cornflower Cape",
 	}
 
 	sets.maxHp = {
@@ -148,7 +142,7 @@ function init_gear_sets()
 		ring2="Epaminondas's Ring",    --WSD 5%
 		back=gear.WsCape,
 	}
-
+	
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
@@ -175,12 +169,12 @@ function init_gear_sets()
 	sets.precast.WS['Expiacion'] = set_combine(sets.precast.WS, {ear1="Ishvara Earring", neck="Mirage Stole +2", waist="Sailfi Belt +1"})
 	sets.precast.WS['Chant du Cygne'] = set_combine(sets.precast.WS, {})
     sets.precast.WS['Requiescat'] = set_combine(sets.precast.WS, {})
-    sets.precast.WS['Sanguine Blade'] = set_combine(sets.baseMagic, {waist="Fotia Belt",neck="Fotia Gorget",ring2="Jhakri Ring",})
+    sets.precast.WS['Sanguine Blade'] = set_combine(sets.magic.acc, {waist="Fotia Belt",neck="Fotia Gorget",ring2="Jhakri Ring",})
 	sets.precast.WS['Flat Blade'] = equip(sets.baseMelee)
 
     -- Midcast Sets
     sets.midcast['Blue Magic'] = {}
-	sets.midcast['Elemental Magic'] = sets.baseMagic
+	sets.midcast['Elemental Magic'] = sets.magic.acc
 	sets.midcast['Battery Charge'] = {waist="Gishdubar Sash"}
     
     -- Physical Spells --
@@ -196,7 +190,7 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].PhysicalHP = set_combine(sets.midcast['Blue Magic'].Physical, {})
 
     -- Magical Spells --
-    sets.midcast['Blue Magic'].Magical = set_combine(sets.baseMagic, {})
+    sets.midcast['Blue Magic'].Magical = set_combine(sets.magic.acc, {})
     sets.midcast['Blue Magic'].Magical.Resistant = set_combine(sets.midcast['Blue Magic'].Magical, {})
     sets.midcast['Blue Magic'].MagicalMnd = set_combine(sets.midcast['Blue Magic'].Magical, {})
 	sets.midcast['Blue Magic'].MagicalChr = set_combine(sets.midcast['Blue Magic'].Magical, {})
@@ -210,13 +204,14 @@ function init_gear_sets()
     -- Other --
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
     sets.midcast['Blue Magic']['White Wind'] = set_combine(sets.maxHp, sets.curePotency)
-    sets.midcast['Blue Magic'].Healing = set_combine(sets.baseMagic, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
-    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.baseMagic, {body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
+	sets.midcast['Blue Magic']['Cruel Joke'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
+    sets.midcast['Blue Magic'].Healing = set_combine(sets.magic.acc, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
+    sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.magic.acc, {body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
     sets.midcast['Blue Magic'].Buff = {}
 	sets.midcast['Blue Magic'].Enmity = {}
     
     -- Gear for learning spells: +skill and AF hands.
-    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
+    sets.Learning = {hands="Assim. Bazu. +1",body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Luhlaza Keffiyeh +1",neck="Mirage Stole +2",ring1="Stikini Ring +1",ring2="Stikini Ring +1"}
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -226,23 +221,22 @@ function init_modetables()
 	--Setup gearMode
 	gearMode = {
 		["index"] = 0,
-		[0] = {name="Tank", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
+		[0] = {name="Hybrid", idle=(set_combine(sets.baseTank, sets.baseIdle)), engaged=(sets.baseTank)},
 		[1] = {name="DPS", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
-		[2] = {name="EvaTank", idle=sets.evaTank, engaged=sets.evaTank},
-		[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}},
-		[4] = {name="Learning", hidden=true, idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
-		[5] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
-		[6] = {name="DPS+ACC", idle=(set_combine(sets.melee, sets.baseIdle, {head="Hashishin Kavuk +3"})), engaged=(set_combine(sets.baseMelee, {head="Hashishin Kavuk +3"}))}
+		[2] = {name="DPS.ACC", idle=(set_combine(sets.melee, sets.baseIdle, {head="Hashishin Kavuk +3"})), engaged=(set_combine(sets.baseMelee, {head="Hashishin Kavuk +3"}))},
+		[3] = {name="Evasion", idle=sets.evaTank, engaged=sets.evaTank},
+		[4] = {name="SubTH", idle=(set_combine(sets.baseMelee, sets.baseIdle)), engaged=(sets.baseMelee)},
+		[5] = {name="Learning", hidden=true, idle=(set_combine(sets.Learning, sets.baseIdle)), engaged=(set_combine(sets.baseMelee, sets.Learning))},
+		--[3] = {name="NoDmg", idle={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}, engaged={head="Malignance Chapeau",body="Malignance Tabard",hands="Leyline Gloves",legs="Malignance Tights",feet="Malignance Boots",ring1="Shiva Ring +1",ring2="Shiva Ring +1",ammo="Pemphredo Tathlum",ear1="Suppanomimi",ear2="Friomisi Earring",waist="Penitent's Rope",back=gear.IntCape}},
 	}
 	
 	--Setup weaponMode
 	weaponMode = {
 		["index"] = 0,
 		[0] = {name="Tizona", set={main="Tizona", sub="Thibron"}},
-		[1] = {name="TPBonus", set={main="Naegling", sub="Thibron"}},
-		[2] = {name="FullAcc", set={main="Naegling", sub="Zantetsuken"}},
-		[3] = {name="MagicDW", set={main="Maxentius", sub="Bunzi's Rod"}},
-		[4] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
+		[1] = {name="Clubs", set={main="Maxentius", sub="Nehushtan"}},
+		[2] = {name="Magic", set={main="Maxentius", sub="Bunzi's Rod"}},
+		[3] = {name="1dmg", set={main="Twinned Blade", sub="Ibushi Shinai"}},
 	}
 
 	--Setup autoBuff
@@ -350,7 +344,7 @@ function job_setup()
 		'Blood Drain','Blood Saber','Chaotic Eye','Cimicine Discharge','Cold Wave','Digest','Corrosive Ooze','Demoralizing Roar',
 		'Dream Flower','Enervation','Feather Tickle','Filamented Hold','Frightful Roar','Geist Wall','Hecatomb Wave','Infrasonics',
 		'Light of Penance','Lowing','Mind Blast','Mortal Ray','MP Drainkiss','Osmosis','Reaving Wind','Sheep Song','Soporific',
-		'Sound Blast','Stinking Gas','Venom Shell','Voracious Trunk','Yawn'
+		'Sound Blast','Stinking Gas','Venom Shell','Voracious Trunk','Yawn',
     }
     -- Breath-based spells
     blue_magic_maps.Breath = S{
@@ -387,7 +381,7 @@ function job_setup()
     unbridled_spells = S{
         'Absolute Terror','Bilgestorm','Blistering Roar','Bloodrake','Carcharian Verve',
         'Crashing Thunder','Droning Whirlwind','Gates of Hades','Harden Shell','Polar Roar',
-        'Pyric Bulwark','Thunderbolt','Tourbillion','Uproot','Mighty Guard'
+        'Pyric Bulwark','Thunderbolt','Tourbillion','Uproot','Mighty Guard','Cruel Joke'
     }
 
 	-- Spells that use obi or O. Sash
@@ -428,47 +422,75 @@ function extendedJobPrecast(spell, action, spellMap, eventArgs)
 			eventArgs.cancel = true
 			
 			-- if unbridled learning is available, add it to command queue
-			if not onCooldown('Unbridled Learning') then
+			if buffCheck('Unbridled Learning') then
 				multiStepAction:add('/ja "Unbridled Learning" <me>')
 				
 				-- MightyGuard specific handling
-				if spell.name == 'Mighty Guard'and not buffactive['Diffusion'] and not onCooldown('Diffusion') then
+				if spell.name == 'Mighty Guard' and buffCheck('Diffusion') then
 					multiStepAction:add('/ja "Diffusion" <me>')
 				end
 
 				-- requeue original spell @ original target after unbridled learning & maybe diffusion
 				multiStepAction:add('/ma "'..spell.name..'" '..tostring(spell.target.raw))
+				return
 			end
 		end
+	end
+
+	-- Chain Affinity --> Efflux
+	if spell.english == 'Chain Affinity' and buffCheck('Chain Affinity') and buffCheck('Efflux') then
+		eventArgs.cancel = true
+		multiStepAction:add('/ja "Chain Affinity" <me>')
+		multiStepAction:add('/ja "Efflux" <me>')
+		return
 	end
 end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)
+	if spell.element == 'Dark' then
+		equip{head="Pixie Hairpin +1",ring2="Archon Ring", body="Hashishin Mintan +3"}
+	end
 	if gearMode[gearMode.index].name == "SubTH" and spell.english == "Subduction" then
 		equip(sets.TH)
 	end
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
-	if beltSpells:contains(spell.english) then
-		if dayWeatherIntensity(spell.element) >= 2 then
-			equip(sets.obi)
-		else
-			equip{waist="Orpheus's Sash"}
-		end	
-	end
-
-	if spell.element == 'Dark' then
-		equip{head="Pixie Hairpin +1",ring2="Archon Ring", body="Hashishin Mintan +3"}
-	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
 --  Self command handler
 -------------------------------------------------------------------------------------------------------------------
 function extendedJobSelfCommand(cmdParams, eventArgs)
-	if cmdParams[1]:lower() == 'learn' then
+	local cmd = cmdParams[1]:lower() or nil
+	if not cmd then
+		return
+	end
+
+	if cmd == 'learn' then
 		setModeIndex('gear', 4)
+		modeHud('update')
+	end
+
+	if cmd == 'mguard' then
+		if onCooldown('Diffusion') or onCooldown('Unbridled Learning') then
+			windower.add_to_chat(122, '-- JAs on Cooldown! --')
+			return
+		end
+
+		multiStepAction:add('/ja "Diffusion" <me>')
+		multiStepAction:add('/ja "Unbridled Learning" <me>')
+		multiStepAction:add('/ma "Mighty Guard" <me>')
+	end
+
+	if cmd == 'lockstyle' then
+		local weapMode = weaponMode[weaponMode.index].name or nil
+		if weapMode and weapMode == 'Tizona' or weapMode == '1dmg' then
+			windower.send_command('input /lockstyleset 3')
+		end
+		if weapMode and weapMode == 'Clubs' or weapMode == 'Magic' then
+			windower.send_command('input /lockstyleset 4')
+		end
 	end
 end
 
