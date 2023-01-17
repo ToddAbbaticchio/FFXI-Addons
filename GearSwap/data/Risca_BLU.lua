@@ -146,6 +146,7 @@ function init_gear_sets()
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
+	sets.holyWater = {neck="Nicander's Necklace", ring1="Purity Ring", ring2="Blenmot's Ring +1"}
 	sets.obi = {waist="Hachirin-no-Obi"}
 	sets.oSash = {waist="Orpheus's Sash"}
     sets.precast.FC['Blue Magic'] = set_combine(sets.precast.FC, {body="Hashishin Mintan +3"})
@@ -458,6 +459,22 @@ end
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 end
 
+function extendedJobBuffChange(buff, active)
+	if buff == 'doom' then
+		if active then
+			send_command('input /p Am doomed! Haaaaaalp!')
+			equip(sets.holyWater)
+			disable('neck','ring1','ring2')
+			--[[ equip({waist="Gishdubar Sash",ring1="Purity Ring"})
+			disable('ring1','waist') ]]
+		else
+			send_command('input /p Doom all better. (or Im dead? RIP)')
+			enable('neck','ring1','ring2')
+			evalState_equipGear()
+		end
+	end
+end
+
 -------------------------------------------------------------------------------------------------------------------
 --  Self command handler
 -------------------------------------------------------------------------------------------------------------------
@@ -491,6 +508,15 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		if weapMode and weapMode == 'Clubs' or weapMode == 'Magic' then
 			windower.send_command('input /lockstyleset 4')
 		end
+	end
+
+	if cmd == 'doomed' then
+		equip(sets.holyWater)
+		disable('neck','ring1','ring2')
+	end
+
+	if cmd == 'undoomed' then
+		enable('neck','ring1','ring2')
 	end
 end
 

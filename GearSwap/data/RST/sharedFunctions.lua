@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Ver 1.0.2
+-- Ver 1.0.3
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -967,6 +967,15 @@ end
 -- Buff table updating
 -------------------------------------------------------------------------------------------------------------------
 function job_buff_change(buff, active)
+	if sets.holyWater and buff == 'doom' then
+		if active then
+			equip(sets.holyWater)
+			disable('neck','ring1','ring2')
+		else
+			enable('neck','ring1','ring2')
+		end
+	end
+	
 	if state.Buff[buff] == nil and active then
 		state.Buff[buff] = true
 		--add_to_chat(122, 'Gained buff: '..buff)
