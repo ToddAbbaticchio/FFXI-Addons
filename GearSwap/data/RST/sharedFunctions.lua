@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Ver 1.0.3
+-- Ver 1.0.4
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -802,7 +802,6 @@ function job_precast(spell, action, spellMap, eventArgs)
 end
 
 function job_midcast(spell, action, spellMap, eventArgs)
-
 	-- if an extendedJobMidcast() exists in the job lua, call it
 	if extendedJobMidcast ~= nil then
 		extendedJobMidcast(spell, action, spellMap, eventArgs)
@@ -814,7 +813,13 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 		extendedJobPostMidcast(spell, action, spellMap, eventArgs)
 	end
 	
-	if eleWeaponSkills:contains(spell.name) or spell.type:contains('Magic') then
+	local isNuke = spell.skill == ('Elemental Magic' and spellMap ~= 'ElementalEnfeeble')
+		or (spell.skill == 'Blue Magic' and spellMap and spellMap:contains('Magical'))
+		or (spell.skill == 'Ninjutsu' and spellMap and spellMap:contains('ElementalNinjutsu'))
+		or spell.english == 'Comet' or spell.english == 'Meteor' or spell.english == 'Impact' or spell.english == 'Death' or spell.english:startswith('Banish')
+		or false
+
+	if eleWeaponSkills:contains(spell.name) or isNuke then
 		if dayWeatherIntensity(spell.element) >= 2 and sets.obi then
 			-- use hachi if bonus is 20% or better
 			--add_to_chat(122, '-- Equipping mega obi!!! --')

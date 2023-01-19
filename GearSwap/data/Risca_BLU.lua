@@ -449,7 +449,7 @@ end
 
 function extendedJobMidcast(spell, action, spellMap, eventArgs)
 	if spell.element == 'Dark' then
-		equip{head="Pixie Hairpin +1",ring2="Archon Ring", body="Hashishin Mintan +3"}
+		equip{head="Pixie Hairpin +1", ring2="Archon Ring", body="Hashishin Mintan +3"}
 	end
 	if gearMode[gearMode.index].name == "SubTH" and spell.english == "Subduction" then
 		equip(sets.TH)
@@ -457,22 +457,6 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)
-end
-
-function extendedJobBuffChange(buff, active)
-	if buff == 'doom' then
-		if active then
-			send_command('input /p Am doomed! Haaaaaalp!')
-			equip(sets.holyWater)
-			disable('neck','ring1','ring2')
-			--[[ equip({waist="Gishdubar Sash",ring1="Purity Ring"})
-			disable('ring1','waist') ]]
-		else
-			send_command('input /p Doom all better. (or Im dead? RIP)')
-			enable('neck','ring1','ring2')
-			evalState_equipGear()
-		end
-	end
 end
 
 -------------------------------------------------------------------------------------------------------------------

@@ -470,21 +470,7 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- Special buff/debuff handling
 -------------------------------------------------------------------------------------------------------------------
-function job_buff_change(buff, gain)
-	if buff == 'Doom' then
-		if gain then
-			send_command('input /p Doomed! Haaaaaalp!')
-			equip(sets.holyWater)
-			disable('neck','ring1','ring2')
-			--[[ equip({waist="Gishdubar Sash",ring1="Purity Ring"})
-			disable('ring1','waist') ]]
-		else
-			send_command('input /p Doom all better. (or Im dead? RIP)')
-			enable('neck','ring1','ring2')
-			evalState_equipGear()
-		end
-	end
-end
+
 
 -------------------------------------------------------------------------------------------------------------------
 -- Job specific function extensions
@@ -569,6 +555,12 @@ function extendedModeHud(hudText)
 	local autoRune = auto.rune[auto.rune.index]
 	hudText:append(white..'auto.Rune: '..getModeColor(autoRune))
 	return hudText
+end
+
+function extendedActionEvent(action, actor, category, param)
+
+
+
 end
 
 -------------------------------------------------------------------------------------------------------------------
