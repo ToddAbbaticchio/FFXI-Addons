@@ -834,7 +834,7 @@ function job_post_midcast(spell, action, spellMap, eventArgs)
 	-- if a sets.buff[xxx] exists, and the buff 'xxx' is active, use that gearSet
 	for buff,active in pairs(state.Buff) do
 		if active and sets.buff[buff] then
-			add_to_chat(122, '-- Equipping sets.buff['..buff..']')
+			--add_to_chat(122, '-- Equipping sets.buff['..buff..']')
 			equip(sets.buff[buff])
         end
 	end

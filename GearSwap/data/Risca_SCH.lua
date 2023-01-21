@@ -525,7 +525,9 @@ function autoActions()
 	if afMode == 'AutoBurst' and not moving then
 		if strategemCount() == 5 and not onCooldown('Light Arts') then
 			if not buffactive['Regain'] or not buffactive['Regen'] then
-				multiStepAction:add('/ja "Light Arts" <me>')
+				if not buffactive['Light Arts'] then
+					multiStepAction:add('/ja "Light Arts" <me>')
+				end
 				multiStepAction:add('/ja "Perpetuance" <me>')
 				multiStepAction:add('/ja "Accession" <me>')
 				multiStepAction:add('/ja "Regen V" <me>')
@@ -536,7 +538,9 @@ function autoActions()
 			end
 			
 			if not buffactive[storm1] or not buffactive['Phalanx'] then
-				multiStepAction:add('/ja "Light Arts" <me>')
+				if not buffactive['Light Arts'] then
+					multiStepAction:add('/ja "Light Arts" <me>')
+				end
 				multiStepAction:add('/ja "Perpetuance" <me>')
 				multiStepAction:add('/ja "Accession" <me>')
 				multiStepAction:add('/ja "'..storm2..'" <me>')
@@ -547,7 +551,9 @@ function autoActions()
 			end
 			
 			if not buffactive['Protect'] or not buffactive['Shell'] then
-				multiStepAction:add('/ja "Light Arts" <me>')
+				if not buffactive['Light Arts'] then
+					multiStepAction:add('/ja "Light Arts" <me>')
+				end
 				multiStepAction:add('/ja "Perpetuance" <me>')
 				multiStepAction:add('/ja "Accession" <me>')
 				multiStepAction:add('/ja "Protect V" <me>')

@@ -1,4 +1,4 @@
--- Ver 1.3.6
+-- afVer 1.3.7
 -------------------------------------------------------------------------------------------------------------------
 -- Global Variables!  Wheeeeeeeeee!
 -------------------------------------------------------------------------------------------------------------------
@@ -150,45 +150,121 @@ function isPullAction(category, param)
     return false
 end
 
+function initializeQueues()
+    afReact = jobVars.afReact or nil
+    if not afReact then
+        return
+    end
+
+    -- burstWindow / chainWindow initialization and functions
+    burstWindow = {open=0, close=0}
+    function burstWindow.set(self, scTime)
+        self['open'] = scTime
+        self['close'] = scTime + 8
+        writeLog('set burstWindow with open:'..self.open..' and close: '..self.close, 3)
+    end
+    chainWindow = {open=0, close=0}
+    function chainWindow.set(self, wsTime)
+        self['open'] = wsTime + 3
+        self['close'] = wsTime + 7
+        writeLog('set chainWindow with open:'..self.open..' and close: '..self.close, 3)
+    end
+
+    -- queue initialization and functions
+    burstQueue = {}
+    wsQueue = {}
+    generalQueue = {}
+    function burstQueue.add(self, action)
+        writeLog('burstQueue:add - '..action, 3)
+        table.insert(self, action)
+    end
+    function burstQueue.remove(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('burstQueue:remove '..action, 3)
+        end
+        table.remove(self, 1)
+    end
+    function burstQueue.execute(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('burstQueue:execute '..action, 3)
+        end
+        windower.chat.input(action)
+    end
+
+    function wsQueue.add(self, action)
+        writeLog('wsQueue:add - '..action, 3)
+        table.insert(self, action)
+    end
+    function wsQueue.remove(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('wsQueue:remove '..action, 3)
+        end
+        table.remove(self, 1)
+    end
+    function wsQueue.execute(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('wsQueue:execute '..action, 3)
+        end
+        windower.chat.input(self[1])
+    end
+
+    function generalQueue.add(self, action)
+        writeLog('generalQueue:add - '..action, 3)
+        table.insert(self, action)
+    end
+    function generalQueue.remove(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('generalQueue:remove '..action, 3)
+        end
+        table.remove(self, 1)
+    end
+    function generalQueue.execute(self)
+        local action = self[1] or nil
+        if action then
+            writeLog('generalQueue:execute '..action, 3)
+        end
+        windower.chat.input(self[1])
+    end
+end
+
 function tryCleanQueue(category, param)
     local actionName = nil
     local queueAction = nil
     ---
     if category == 3 then
         actionName = res.weapon_skills[param].en or nil
-        queueAction = actionQueue.ws[1] or nil
+        queueAction = wsQueue[1] or nil
         if actionName and queueAction and queueAction:contains(actionName) then
-            table.remove(actionQueue.ws, 1)
+            wsQueue:remove()
             return
         end
     end
     ---
     if category == 4 then
         actionName = res.spells[param].en or nil
-        queueAction = actionQueue.burst[1] or nil
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                table.remove(actionQueue.burst, 1)
-                return
-            end
+        queueAction = burstQueue[1] or nil
+        if actionName and queueAction and queueAction:contains(actionName) then
+            burstQueue:remove()
+            return
         end
-        queueAction = actionQueue.other[1] or nil
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                table.remove(actionQueue.other, 1)
-                return
-            end
+        queueAction = generalQueue[1] or nil
+        if actionName and queueAction and queueAction:contains(actionName) then
+            generalQueue:remove()
+            return
         end
     end
 
     if category == 6 then
         actionName = res.job_abilities[param].en or nil
-        queueAction = actionQueue.other[1] or nil
-        if actionName and queueAction then
-            if queueAction:contains(actionName) then
-                table.remove(actionQueue.other, 1)
-                return
-            end
+        queueAction = generalQueue[1] or nil
+        if actionName and queueAction and queueAction:contains(actionName) then
+            generalQueue:remove()
+            return
         end
     end
 end
@@ -250,10 +326,10 @@ end
 -- perform the pull action!
 function tryPull(monster)
     local now = os.time()
-    if pulledMonster or not isAutofiteTarget(monster) or now < pullRateTimer then
+    local stopPullAttempt = pulledMonster or not isAutofiteTarget(monster) or now < pullRateTimer or false
+    if stopPullAttempt then
         return
     end
-
     writeLog('Trying to pull: '..monster.name..' validTarget: '..tostring(monster.valid_target)..' at distance: '..monster.distance..' (pull distance set to: '..jobVars.pullDistance, 3)
     windower.chat.input(jobVars.pullCommand..monster.id)
 end
@@ -292,8 +368,8 @@ end
 -- Weaponskillsssss
 function wsHandler()
     -- if last openingWS wasn't more than 8 seconds ago, hold off. (this is reset every time target changes)
-    if mylastWeaponskillTime and mylastWeaponskillTime + 8 > os.time() then
-        writeLog('It hasnt been 8 seconds since my lastWS! --preserveBurstWindow-- ', 3)
+    if myLastWsTime and myLastWsTime + 10 > os.time() then
+        writeLog('It hasnt been 10 seconds since my lastWS! --preserveBurstWindow-- ', 3)
         return
     end
         
@@ -317,35 +393,42 @@ end
 
 -- afReact handling
 function afReactHandler()
+    local now = os.time()
+    local inBurstWindow = now >= burstWindow.open and now < burstWindow.close or false
+    local inChainWindow = now >= chainWindow.open and now < chainWindow.close or false
+
     if actionInProgress then
+        writeLog('inChainWindow: '..tostring(inChainWindow)..' inBurstWindow: '..tostring(inBurstWindow)..' BUT actionInProgress: '..tostring(actionInProgress)..' skipping this cycle!', 3)
         return
     end
-    local now = os.time()
+    writeLog('inChainWindow: '..tostring(inChainWindow)..' inBurstWindow: '..tostring(inBurstWindow), 3)
 
-    -- if burst window is open / we have burst commands queued, only try bursting
-    if #actionQueue.burst >= 1 then
-        local burstWindow = lastSkillchainTime and (lastSkillchainTime + 8 > os.time()) or false
-        writeLog('burstWindow: '..tostring(burstWindow), 3)
-        if burstWindow then
-            windower.chat.input(actionQueue.burst[1])
+    -- if burst window is open and we have burst commands queued...
+    if #burstQueue >= 1 then
+        if inBurstWindow then
+            burstQueue:execute()
             return
         end
-        -- if burst window is closed but commands remain, remove them
-        table.remove(actionQueue.burst, 1)
+        -- if burst window is closed remove command from queue
+        burstQueue:remove()
     end
+    
     -- if skillchain window open, close it before trying other reactions
-    if #actionQueue.ws >= 1 and lastWeaponskillTime and (lastWeaponskillTime + 3 <= os.time()) and (lastWeaponskillTime + 6 >= os.time()) then
-        local scWindow = lastWeaponskillTime and (lastWeaponskillTime + 3 <= os.time()) and (lastWeaponskillTime + 6 >= os.time()) or false
-        local tp = windower.ffxi.get_player().vitals.tp or nil
-        writeLog('scWindow: '..tostring(scWindow)..' tp: '..tostring(tp), 3)
-        if scWindow and tp and tp >= 1000 then
-            windower.chat.input(actionQueue.ws[1])
+    if #wsQueue >= 1 then
+        if inChainWindow then
+            local tp = windower.ffxi.get_player().vitals.tp or nil
+            if tp and tp >= 1000 then
+                wsQueue:execute()
+                return
+            end
         end
-        return
+        -- if skillchain window is closed remove command from queue
+        wsQueue:remove()
     end
-    -- Finally, process commands in actionQueue.other
-    if #actionQueue.other >= 1 then
-        windower.chat.input(actionQueue.other[1])
+    
+    -- Finally, process commands in generalQueue
+    if #generalQueue >= 1 then
+        generalQueue:execute()
     end
 end
 
@@ -356,34 +439,27 @@ windower.register_event('action',function (action)
     if not active or not action then
         return
     end
-
     local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
     local player = windower.ffxi.get_player() or nil
-    local target = windower.ffxi.get_mob_by_target('t') or nil
-
     if not actor or not player then
         return
     end
     local category = action.category
     local param = action.param
     
-    -- Specific handling for actions we initiated
+    -- ACTIONS WE INITIATED -----
     if actor.id == player.id then
-        -- a ws/spell/ja completes
-		if category == 3 or category == 4 or category == 6 then
-            actionInProgress = true
-            coroutine.schedule(handleActionInProgress:prepare(), 0.5)
-            tryCleanQueue(category, param)
-        
-            -- if it was our pull action and completed, set pulledMonster var
-            if isPullAction(category, param) then
-                pulledMonster = action.targets[1].id or nil
-                pullRateTimer = os.time() + 10
-                return
+        -- we use a weaponskill - checking for preserveBurstWindow
+        if category == 3 then
+            local wsName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
+            local damageDealt = action.targets[1].actions[1].param or nil
+            local reaction = afReact[wsName] or nil
+            if wsName and damageDealt and reaction and reaction.actor == 'self' and reaction.response == 'preserveBurstWindow' then
+                myLastWsTime = os.time()
+                writeLog('I used '..wsName..' and Im set to preserveBurstWindow! myLastWsTime set to: '..myLastWsTime, 3)
             end
         end
-
-        -- a spell starts or is interrupted
+        -- we start a spell or one is interrupted
         if category == 8 then
             if param == 28787 then
                 actionInProgress = true
@@ -393,58 +469,65 @@ windower.register_event('action',function (action)
             actionInProgress = true
             return
         end
-    end
-
-    -- Specific handling for actions on our target (check for weaponskills and skillchains in afReact table)
-    local actionTargetId = action.targets[1] and action.targets[1].id or nil
-    if actionTargetId and target and target.id and actionTargetId == target.id then
-        -- Detect skillchains (3 = ws, 4 = spells, 11 = trust ws)
-        if category == 3 or category == 4 or category == 11 then
-            local skillchainId = action.targets[1].actions[1].add_effect_message or nil
-            local skillchainName = scTable[skillchainId] and scTable[skillchainId].name or nil
-            local reaction = afReact[skillchainName] or nil
-            if skillchainName and reaction then
-                lastWeaponskillTime = os.time()
-                lastSkillchainTime = os.time()
-                
-                -- for reactions other than 'preserveBurstWindow', insert them into actionQueue
-                if reaction.response ~= 'preserveBurstWindow' then
-                    table.insert(actionQueue.burst, reaction.response)
-                    if reaction.response2 then
-                        table.insert(actionQueue.burst, reaction.response2)
-                    end
-                end
-                return
-            end
-        end
-        
-        -- Detect weaponskills
-        if category == 3 then
-            -- Make sure the WS didn't miss (it dealt damage) and check afReact table
-            local wsName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
-            local damageDealt = action.targets[1].actions[1].param or nil
-            local reaction = afReact[wsName] or nil
-            if wsName and reaction and damageDealt then
-                if actor.id == player.id and reaction.actor == 'self' and reaction.response == 'preserveBurstWindow' then
-                    mylastWeaponskillTime = os.time()
-                end
-                table.insert(actionQueue.ws, reaction.response)
+        -- we complete a ws/spell/ja
+		if category == 3 or category == 4 or category == 6 then
+            actionInProgress = true
+            coroutine.schedule(handleActionInProgress:prepare(), 0.5)
+            tryCleanQueue(category, param)
+            -- if it was our pull action and completed, set pulledMonster var
+            if isPullAction(category, param) then
+                pulledMonster = action.targets[1].id or nil
+                pullRateTimer = os.time() + 10
                 return
             end
         end
     end
 
-    -- Specific handling for actions started by enemy
-    if target and target.id and target.id == actor.id then
-        if category == 7 and param == 24931 then
-        --if category == 7 and param ~= 0 then
-            local actionId = action.targets[1].actions[1].param or nil
-            local actionName = res.monster_abilities[actionId].en or nil
-            local reaction = actionName and afReact[actionName] or nil
-            if actionName and reaction and reaction.actor == 'enemy' then
-                table.insert(actionQueue.other, reaction.response)
+    -- from here on having a target is required
+    local target = windower.ffxi.get_mob_by_target('t') or nil
+    if not target then
+        return
+    end
+
+    -- ACTIONS ON OUR TARGET (initiated by us or others) -----
+    local actionOnTarget = action.targets[1] and action.targets[1].id and target.id and target.id == action.targets[1].id or false
+    if actionOnTarget and category == 3 or category == 4 or category == 11 then --(3 = ws, 4 = spells, 11 = trust ws)
+        -- did it hit, and should we react to it?
+        local wsName = res.weapon_skills[param] and res.weapon_skills[param].en or nil
+        local damageDealt = action.targets[1].actions[1].param or nil
+        local wsReaction = afReact[wsName] or nil
+        if wsName and damageDealt then
+            chainWindow:set(os.time())
+            if wsReaction then
+                wsQueue:add(reaction.response)
                 return
             end
+        end
+            
+        -- did it create a skillchain, and should we react to that?
+        local scId = action.targets[1].actions[1].add_effect_message or nil
+        local scName = scTable[scId] and scTable[scId].name or nil
+        local reaction = afReact[scName] or nil
+        if scName and reaction then
+            chainWindow:set(os.time())
+            burstWindow:set(os.time())
+            burstQueue:add(reaction.response)
+            if reaction.response2 then
+                burstQueue:add(reaction.response2)
+                return
+            end
+        end
+    end
+
+    -- ACTIONS BY OUR TARGET -----
+    local enemyAction = target.id and target.id == actor.id or false
+    if enemyAction and category == 7 and param == 24931 then
+        local actionId = action.targets[1].actions[1].param or nil
+        local actionName = res.monster_abilities[actionId].en or nil
+        local reaction = actionName and afReact[actionName] or nil
+        if actionName and reaction and reaction.actor == 'enemy' then
+            generalQueue:add(reaction.response)
+            return
         end
     end
 end)
@@ -534,13 +617,5 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
 end)
 
 windower.register_event('target change', function()
-    local now = os.time()
-    actionQueue = {}
-    actionQueue.burst = {}
-    actionQueue.ws = {}
-    actionQueue.other = {}
-
-    lastWeaponskillTime = nil
-    mylastWeaponskillTime = nil
-    lastSkillchainTime = nil
+    initializeQueues()
 end)

@@ -1,6 +1,6 @@
 _addon.name = 'autoFite'
 _addon.author = 'Risca'
-_addon.version = '1.3.6'
+_addon.version = '1.3.7'
 _addon.commands = {'autoFite', 'af'}
 
 packets = require('packets')
@@ -78,14 +78,7 @@ function initializeSessionVars(job, ...)
     end
 
     pullRateTimer = 0
-
-    -- af react initial vars if table exists
-    afReact = jobVars.afReact or nil
-    actionQueue = {}
-    actionQueue.burst = {}
-    actionQueue.ws = {}
-    actionQueue.other = {}
-
+    initializeQueues()
     writeLog(startMsg, 1)
 end
 
@@ -154,8 +147,9 @@ function autoFite()
 
     -- check buffs regardless of mode (but not if we're stopped)
     if player.status == engaged then
-        if afReact then
+        if afReact and (#burstQueue >= 1 or #wsQueue >= 1 or #generalQueue >= 1) then
             afReactHandler()
+            return
         end
         autoBuffHandler()
     end

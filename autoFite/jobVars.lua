@@ -1,9 +1,30 @@
+-- afVer 1.3.7
+
+--[[
+vars.JOB = {
+    autoBuffs = {
+
+    },
+    afReact = {
+        To close a skillchain:
+            ['Impulse Drive'] = {actor='any', response='/ws "Expiacion" <t>'},
+        To 2xBurst a skillchain:
+            ['Darkness'] = {actor='any', response='/ma "Blizzard 5 <t>', response2='/ma "Blizzard 4" <t>'}
+        Limit yourself to 1 WS every 10 seconds, rather than fire based on TP (give mages time to burst if desired):
+            ['Expiacion'] = {actor='self', response='preserveBurstWindow'}
+    },
+    ws = "Expiacion",
+    maintainAftermath = true/false,
+    targetTp = 1000,
+    pullCommand = '/ma "whateverspell" '
+}
+]]
+
 vars = {}
 vars.BLU = {
     autoBuffs = {},
     afReact = {
         --['Impulse Drive'] = {actor='any', response='/ws "Expiacion" <t>'},
-        --['Darkness'] = {actor='any', response='preserveBurstWindow'}
         --['Expiacion'] = {actor='self', response='preserveBurstWindow'}
     },
     ws = "Expiacion",
@@ -123,17 +144,4 @@ vars.BRD = {
     targetTp = 1500,
     pullCommand = '/ma "Carnage Elegy" ',
     meleeDistance = 999
-}
-
-
-vars.DEMO = {
-    autoBuffs = {
-        ["Swordplay"] = "Swordplay",
-        ["Last Resort"] = "Last Resort",
-        ["Battuta"] = "Battuta",
-    },
-    maintainAftermath = true,
-    ws = "Dimidiation",
-    targetTp = 1000,
-    pullCommand = '/ma "Flash" '
 }
