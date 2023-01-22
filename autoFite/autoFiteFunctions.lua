@@ -423,7 +423,9 @@ function afReactHandler()
             end
         end
         -- if skillchain window is closed remove command from queue
-        wsQueue:remove()
+        if (os.time() > chainWindow.close) then
+            wsQueue:remove()
+        end
     end
     
     -- Finally, process commands in generalQueue
@@ -499,7 +501,7 @@ windower.register_event('action',function (action)
         if wsName and damageDealt then
             chainWindow:set(os.time())
             if wsReaction then
-                wsQueue:add(reaction.response)
+                wsQueue:add(wsReaction.response)
                 return
             end
         end
@@ -617,5 +619,9 @@ windower.register_event('chat message', function(message, player, mode, is_gm)
 end)
 
 windower.register_event('target change', function()
+    if not active then
+        return
+    end
+    
     initializeQueues()
 end)

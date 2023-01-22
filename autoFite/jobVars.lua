@@ -40,14 +40,18 @@ vars.RUN = {
         -- ["Crusade"] = "Enmity Boost",
         -- ["Phalanx"] = "Phalanx",
         -- ["Temper"] = "Multi Strikes",
-        ["Swordplay"] = "Swordplay",
-        ["Last Resort"] = "Last Resort",
+        --["Swordplay"] = "Swordplay",
+        --["Last Resort"] = "Last Resort",
         --["Barwater"] = "Barwater",
-        ["Battuta"] = "Battuta",
+        --["Battuta"] = "Battuta",
         --["Valiance"] = "Valiance,One for All",
         --["One for All"] = "Valiance,One for All"
     },
-    afReact = {},
+    afReact = {
+        ['Brainshaker'] = {actor='any', response='/ws "Resolution" <t>'},
+        ['Resolution'] = {actor='self', response='preserveBurstWindow'},
+
+    },
     maintainAftermath = false,
     ws = "Resolution",
     targetTp = 1000,
