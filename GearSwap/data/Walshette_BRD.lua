@@ -219,6 +219,23 @@ function init_gear_sets()
         back=gear.magicAccCape,
     }
 
+    sets.midcast['Elemental Magic'] = {
+        --main="Carnwenhan",
+        --sub="Ammurapi Shield",
+        head="Bunzi's Hat",
+        body="Bunzi's Robe",
+        hands="Bunzi's Gloves",
+        legs="Bunzi's Pants",
+        feet="Bunzi's Sabots",
+        neck="Mnbw. Whistle +1",
+        ear1="Friomisi Earring",
+        ear2="Hecate's Earring",
+		ring1="Stikini Ring +1",
+		ring2="Stikini Ring +1",
+        --waist="Acuity Belt +1",
+        back=gear.magicAccCape,
+    }
+
     --sets.midcast.Dispelga = set_combine(sets.midcast['Enfeebling Magic'], {main="Daybreak", sub="Ammurapi Shield", waist="Shinjutsu-no-Obi +1"})
 	
 	------------------------------------------------------------------------------------------------
@@ -251,6 +268,19 @@ function init_gear_sets()
     })
 
     sets.precast.WS['Rudra\'s Storm'] = set_combine(sets.precast.WS, {
+        range=gear.Linos,
+        head="Nyame Helm", --head="Volte Tiara",
+        body="Nyame Mail",
+        hands="Nyame Gauntlets",
+        legs="Nyame Flanchard",
+        neck="Bard's Charm +2",     
+		ear1="Cessance Earring",
+		ear2="Mache Earring +1", --ear2="Telos Earring",
+		ring1="Chirich Ring +1",
+		ring2="Chirich Ring +1",
+        back=gear.meleeTPCape,
+        waist="Windbuffet Belt +1",
+        feet="Nyame Sollerets",
     })
 
     sets.precast.WS['Aeolian Edge'] = set_combine(sets.precast.WS, {
@@ -374,23 +404,23 @@ function init_modetables()
 	}	
 
     autoSongs = {
-        ['Honor March'] = {name="Honor March", expireTime=0, active=false},
-        ['Blade Madrigal'] = {name="Blade Madrigal", expireTime=0, active=false},
-        --['Archer\'s Prelude'] = {name="Archer's Prelude", expireTime=0, active=false},
-        ['Victory March'] = {name="Victory March", expireTime=0, active=false},
-        --['Sword Madrigal'] = {name="Sword Madrigal", expireTime=0, active=false},
-        --['Valor Minuet V'] = {name="Valor Minuet V", expireTime=0, active=false},
-        --['Valor Minuet IV'] = {name="Valor Minuet IV", expireTime=0, active=false},
+        ['Honor March'] = {0, name="Honor March", expireTime=0, active=false},
+        ['Victory March'] = {1, name="Victory March", expireTime=0, active=false},
+        ['Blade Madrigal'] = {2, name="Blade Madrigal", expireTime=0, active=false},
+        ['Valor Minuet V'] = {3, name="Valor Minuet V", expireTime=0, active=false},
+        ['Valor Minuet IV'] = {4, name="Valor Minuet IV", expireTime=0, active=false},
+        --['Archer\'s Prelude'] = {name="Archer's Prelude", expireTime=0, active=false},        
+        --['Sword Madrigal'] = {name="Sword Madrigal", expireTime=0, active=false},        
         --['Valor Minuet III'] = {name="Valor Minuet III", expireTime=0, active=false},    
         --['Valor Minuet II'] = {name="Valor Minuet II", expireTime=0, active=false},      
         --['Learned Etude'] = {name="Learned Etude", expireTime=0, active=false},
         --['Quick Etude'] = {name="Quick Etude", expireTime=0, active=false},
         --['Swift Etude'] = {name="Swift Etude", expireTime=0, active=false},
-        ['Sage Etude'] = {name="Sage Etude", expireTime=0, active=false},
-        ['Learned Etude'] = {name="Learned Etude", expireTime=0, active=false},
+        --['Sage Etude'] = {name="Sage Etude", expireTime=0, active=false},
+        --['Learned Etude'] = {name="Learned Etude", expireTime=0, active=false},
     }
 
-	sets.idle = gearMode[gearMode.index].idle
+    sets.idle = gearMode[gearMode.index].idle
 	sets.engaged = gearMode[gearMode.index].engaged
 	sets.weapons = weaponMode[weaponMode.index].set
 	modeHud('update')
@@ -486,10 +516,6 @@ function extendedJobMidcast(spell, action, spellMap, eventArgs)
     elseif spell.name:contains('Madrigal') then
         equip({head="Fili Calot +2"})
     end
-
-    if auto.sing[auto.sing.index] == 'On' and spell.type == 'BardSong' then
-        disable('head','body','hands','legs','feet','neck')
-    end
 end
 
 function extendedJobPostMidcast(spell, action, spellMap, eventArgs)	
@@ -547,9 +573,11 @@ songTimer = os.time()
 songInProgress = false
 -- How long your songs last with just gear
 -- TODO: Calculate this via equipped gear during song listener
-baseSongDuration = 230 
+baseSongDuration = 240 
 -- How long the song should have left on it before we re-sing
 songBuffer = 60 
+threnodyWatcher = false
+singTime = false
 
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()
@@ -568,74 +596,55 @@ function autoActions()
         return
     end]]--
 
-    if auto.sing[auto.sing.index] == 'On' and not songInProgress then
-        -- General theory is anything can be interrupted by other actions (mob hits you, AutoFite pulls or WSes, etc.)
-        -- Constantly re-evaluate current status and determine what to do next
-
-        -- If not all songs are active, try to get more up (only use clarion if Auto Fite is on)
-        if (countSongs() < tablelength(autoSongs) and countSongs() >= 2 and (clarionRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Clarion Call'])) then
-            add_to_chat(038, '! Clarion Call Needed !')
-            send_command('/clarioncall')
-            resetSongTimers()
-            return
-        elseif (countSongs() < tablelength(autoSongs)-1  and countSongs() >= 2 and (clarionRecast > 0 or auto.fite[auto.fite.index] == 'Off')) then
-            -- This is (hopefully) handled by job precast
-            add_to_chat(038, '! Bonus Song Needed !')
-        end
-        
-        -- Soul Voice (only if AutoFite is on)
-        if (soulVoiceRecast == 0 and auto.fite[auto.fite.index] == 'On' and not buffactive['Soul Voice']) then
-            send_command('/soulvoice')
-            resetSongTimers()
-            return
-        end
-
-        -- JAs: Nightingale/Troubadour/Marcato  
-        -- Marcato (if Soul Voice is not on, combine with Nitro)
-        if (not buffactive['Soul Voice'] and marcatoRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0) then
-            add_to_chat(013, '~ Marcato ~')
-            send_command('/marcato')
-            autoSongs['Honor March'].expireTime = -999
-            return
-        end
-        -- Nitro should be saved for SV if it's going to be used soon 
-        if (nightingaleRecast == 0 and troubadourRecast == 0 and ((soulVoiceRecast > 300 and auto.fite[auto.fite.index] == 'On') or auto.fite[auto.fite.index] == 'Off') and not buffactive['Nightingale']) then
-            -- TODO: Set first song's expiry to 0 so it plays next
-            -- TODO: Set other songs right after so they get re-sung with nitro duration
-            add_to_chat(013, '~ Nitro ~')
-            send_command('/nightingale')
-            return
-        end
-        if (buffactive['Nightingale'] and troubadourRecast == 0 and not buffactive['Troubadour']) then
-            send_command('/troubadour')
-            resetSongTimers()
-            return
-        end
-
-        if buffactive['Marcato'] then
-            add_to_chat(013, '~ Marcato - Honor March')
-            send_command('input /ma "Honor March" <me>')
-            return
-        end
-        -- Sing songs that expire soon
-        for name,info in pairs(autoSongs) do
-            if not info.active or info.expireTime - os.time() < songBuffer then                
-                add_to_chat(013, '~ Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
-                send_command('input /ma "'..name..'" <me>')
-                return
+    if auto.sing[auto.sing.index] == 'On' then
+        -- Only allow auto Clarion/SV in autofite mode
+		if auto.fite[auto.fite.index] == "On" then
+            if countSongs() < 5 and clarionRecast == 0 then
+                add_to_chat(013, '~ Adding to Queue: Clarion Call')
+                table.insert(multiStepAction, '/ja "Clarion Call" <me>')
+                addSongsToQueue(5)
+			elseif countSongs() == 5 and soulVoiceRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0 then
+                add_to_chat(013, '~ Adding to Queue: Soul Voice')
+                table.insert(multiStepAction, '/ja "Soul Voice" <me>')
+                add_to_chat(013, '~ Adding to Queue: Nightingale')
+                table.insert(multiStepAction, '/ja Nightingale <me>')
+                add_to_chat(013, '~ Adding to Queue: Troubadour')
+                table.insert(multiStepAction, '/ja Troubadour <me>')
+                addSongsToQueue(5)
+            elseif countSongs() == 5 and soulVoiceRecast > 0 and nightingaleRecast == 0 and troubadourRecast == 0 then
+                add_to_chat(013, '~ Adding to Queue: Nightingale')
+                table.insert(multiStepAction, '/ja Nightingale <me>')
+                add_to_chat(013, '~ Adding to Queue: Troubadour')
+                table.insert(multiStepAction, '/ja Troubadour <me>')
+                addSongsToQueue(5)
+            elseif singTime then
+                addSongsToQueue(5)
             end
-        end
-    end
+            return
+		end
 
-    -- Emergency mode -- maybe missed a song completion and stuck in songInProgress
-    if auto.sing[auto.sing.index] == 'On' and songInProgress then       
-        for name,info in pairs(autoSongs) do
-            if info.expireTime - os.time() < songBuffer*0.5 then                
-                add_to_chat(038, '~ Emergency Input: '..name..' (Expiry: '..(info.expireTime - os.time())..')')
-                send_command('input /ma "'..name..'" <me>')
-                return
+		if auto.fite[auto.fite.index] == "Off" then
+            if countSongs() < 4 then
+                addSongsToQueue(4)
+			elseif countSongs() == 4 and soulVoiceRecast == 0 and nightingaleRecast == 0 and troubadourRecast == 0 then
+                add_to_chat(013, '~ Adding to Queue: Marcato')
+                table.insert(multiStepAction, '/ja Marcato <me>')
+                add_to_chat(013, '~ Adding to Queue: Nightingale')
+                table.insert(multiStepAction, '/ja Nightingale <me>')
+                add_to_chat(013, '~ Adding to Queue: Troubadour')
+                table.insert(multiStepAction, '/ja Troubadour <me>')
+                addSongsToQueue(4)
+            elseif countSongs() == 4 and soulVoiceRecast > 0 and nightingaleRecast == 0 and troubadourRecast == 0 then
+                add_to_chat(013, '~ Adding to Queue: Nightingale')
+                table.insert(multiStepAction, '/ja Nightingale <me>')
+                add_to_chat(013, '~ Adding to Queue: Troubadour')
+                table.insert(multiStepAction, '/ja Troubadour <me>')
+                addSongsToQueue(4)
+            elseif singTime then
+                addSongsToQueue(4)
             end
-        end
+            return
+		end
     end
 
     --[[ Auto Buff includes: /DNC Haste Samba ]]--
@@ -647,11 +656,6 @@ function autoActions()
             return
         end
 	end
-
-    if auto.fite[auto.fite.index] == 'On' and not songInProgress and not buffactive['Food'] then
-        --send_command('input /item "Rolanberry Daifuku" <me>')
-        return
-    end
 end
 
 windower.register_event('action',function(act)
@@ -721,16 +725,6 @@ windower.register_event('action',function(act)
     end
 end)
 
-function countAutoSongs()
-    local count = 0
-    for k,v in pairs(autoSongs) do
-        if v.active == true then
-            count = count + 1
-        end        
-    end
-    return count
-end
-
 function countSongs()
     local count = 0
     for k,v in pairs(windower.ffxi.get_player().buffs) do
@@ -741,15 +735,27 @@ function countSongs()
     return count
 end
 
-function resetSongTimers()
-    -- Set all songs to buffer limit so they look like they need to be re-sung
-    for k,v in pairs(autoSongs) do
-        v.expireTime = os.time() + songBuffer   
-    end
-end
+function addSongsToQueue(numSongs)
+    song1 = "Honor March"
+    add_to_chat(013, '~ Adding to Queue: '..song1)
+    table.insert(multiStepAction, '/ma "'..song1..'" <me>')
 
-function tablelength(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
+    song2 = "Victory March"
+    add_to_chat(013, '~ Adding to Queue: '..song2)
+    table.insert(multiStepAction, '/ma "'..song2..'" <me>')
+
+    song3 = "Blade Madrigal"
+    add_to_chat(013, '~ Adding to Queue: '..song3)
+    table.insert(multiStepAction, '/ma "'..song3..'" <me>')
+
+    song4 = "Valor Minuet V"
+    add_to_chat(013, '~ Adding to Queue: '..song4)
+    table.insert(multiStepAction, '/ma "'..song4..'" <me>')
+
+    if numSongs == 5 then
+        song5 = "Valor Minuet IV"
+        add_to_chat(013, '~ Adding to Queue: '..song5)
+        table.insert(multiStepAction, '/ma "'..song5..'" <me>')
+    end
+    return
 end
