@@ -143,6 +143,11 @@ function init_gear_sets()
 		back=gear.WsCape,
 	}
 	
+--[[ 	sets.ForBuffDuration = {
+		['Berserk'] = {idle={head="Hashishin Kavuk +3"}, engaged={head="Hashishin Kavuk +3"}},
+		['Warcry'] = {engaged={feet="Hashishin Basmak +3"}},
+	} ]]
+
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
@@ -503,6 +508,93 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 		enable('neck','ring1','ring2')
 	end
 end
+
+function extendedActionEvent(action, actor, category, param)
+    if impetusCounter == nil then
+		impetusCounter = 0
+	end
+
+	-- is this event triggered by me performing a melee attack? If not byeeeeeeee
+	local iPunched = player.id == actor.id and category == 1 or false
+	if not iPunched then
+		return
+	end
+
+	-- did punch(es) land?
+	local handsThrown = action.targets[1].actions
+	for _,fist in ipairs(handsThrown) do
+		local theyGotFisted = fist.message == 1 or fist.message == 67 or false
+		if theyGotFisted then
+			impetusCounter = impetusCounter + 1
+		else
+			impetusCounter = 0
+		end
+	end
+	modeHud('update')
+end
+
+function extendedModeHud(hudText)
+	-- jobspecific location override?
+	--modeHud_xPos = 1200
+	--modeHud_yPos = 50
+
+	-- more color codes: https://www.rapidtables.com/web/color/RGB_Color.html
+	local tomato = "\\cs(255,99,71)"
+	local palegoldenrod = "\\cs(238,232,170)"
+	local palegreen = "\\cs(152,251,152)"
+	
+	if impetusCounter then
+		if impetusCounter <= 15 then
+			hudText:append(white..'HitStreak: '..tomato..tostring(impetusCounter)..white)
+		elseif impetusCounter > 15 and impetusCounter <= 30 then
+			hudText:append(white..'HitStreak: '..palegoldenrod..tostring(impetusCounter)..white)
+		elseif impetusCounter > 30 then
+			hudText:append(white..'HitStreak: '..palegreen..tostring(impetusCounter)..white)
+		end
+	end
+	return hudText
+end
+
+--[[ function extendedJobBuffChange(buff, active)
+	local buffTable = sets.ForBuffDuration[buff] or nil
+	if not buffTable then
+		return
+	end
+
+	if buffTable and active then
+		if buffTable.engaged then
+			add_to_chat(122, 'buff gain: '..buff..' modifying engaged set')	
+			sets.engaged = set_combine(sets.engaged, buffTable.engaged)
+		end
+		if buffTable.idle then
+			add_to_chat(122, 'buff gain: '..buff..' modifying idle set')
+			sets.idle = set_combine(sets.idle, buffTable.idle)
+		end
+	end
+
+	if buffTable and not active then
+		if buffTable.engaged then
+			sets.engaged = gearMode[gearMode.index].engaged
+			for otherBuff,otherBuffTable in pairs(sets.ForBuffDuration) do
+				if buffactive[buffName] and otherBuffTable.engaged then
+					add_to_chat(122, 'buff lost: '..buff..' but buff: '..otherBuff..'is still active!')
+					sets.engaged = set_combine(sets.engaged, otherBuffTable.engaged)
+				end
+			end
+		end
+		if buffTable.idle then
+			sets.idle = gearMode[gearMode.index].idle
+			for otherBuff,otherBuffTable in pairs(sets.ForBuffDuration) do
+				if buffactive[buffName] and otherBuffTable.idle then
+					add_to_chat(122, 'buff lost: '..buff..' but buff: '..otherBuff..'is still active!')
+					sets.idle = set_combine(sets.idle, otherBuffTable.idle)
+				end
+			end
+		end
+	end
+
+	evalState_equipGear()
+end ]]
 
 -------------------------------------------------------------------------------------------------------------------
 --  Helper functions

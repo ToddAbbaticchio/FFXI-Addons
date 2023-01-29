@@ -207,6 +207,7 @@ function init_gear_sets()
 	sets.wakeUp = {head="Frenzy Sallet"}
 	sets.obi = {waist="Hachirin-no-Obi"}
 	sets.oSash = {waist="Orpheus's Sash"}
+	sets.jseEarring = {ear2="Erilaz Earring +1"}
 	sets.TH = {waist='Chaac Belt', head='Wh. Rarab Cap +1', ammo='Per. Lucky Egg', hands="Herculean Gloves"}
 	sets.emDuration = {legs="Futhark Trousers +3",head="Erilaz Galea +3",}
 	sets.MagicFreeCast = set_combine(sets.MagicBurst, {ring1='Shiva Ring +1', ring2="Shiva Ring +1"})
@@ -558,9 +559,16 @@ function extendedModeHud(hudText)
 end
 
 function extendedActionEvent(action, actor, category, param)
+	if category == 8 then
+		local spellName = res.spells[action.targets[1].actions[1].param].en or nil
+		local isOnMe = action.targets[1] and action.targets[1].id and player.id == action.targets[1].id or false
+		if not isOnMe or not spellName or not spellName:startswith('Regen') then
+			return
+		end
 
-
-
+		equip(sets.jseEarring)
+		windower.add_to_chat(122, '-- '..actor.name..' is casting '..spellName..' on me. jseEarring gooooo! --')
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------------
