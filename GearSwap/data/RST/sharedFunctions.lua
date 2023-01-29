@@ -980,7 +980,7 @@ function job_buff_change(buff, active)
 			enable('neck','ring1','ring2')
 		end
 	end
-	
+
 	if state.Buff[buff] == nil and active then
 		state.Buff[buff] = true
 		--add_to_chat(122, 'Gained buff: '..buff)
