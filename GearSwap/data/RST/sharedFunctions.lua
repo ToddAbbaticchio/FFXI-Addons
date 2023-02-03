@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------------------------------------------
--- Ver 1.0.4
+-- Ver 1.0.5
 -------------------------------------------------------------------------------------------------------------------
 engaged = 1
 idle = 0
@@ -598,6 +598,11 @@ function tellXYZ(monsterName)
 	end
 end
 
+function toggleActionInProgress()
+	actionInProgress = false
+	--windower.add_to_chat(122, 'DelayFunctionCall: actionInProgress: '..tostring(actionInProgress))
+end
+
 -- Not good for buffs (like regen - it'll spam even though the target already has regen on)
 function partyLowHP(hpLevel, action)
 	local mostRipHp = hpLevel
@@ -903,6 +908,7 @@ function modeHud(action)
 		texts.visible(modeHudWindow, false)
 	end
 end
+
 function getModeColor(mode)
 	if mode == 'On' then
 		return green..mode..white
@@ -999,7 +1005,6 @@ end
 -------------------------------------------------------------------------------------------------------------------
 -- initial vars for autoCast looping
 local lastCycleTime = os.time()
-
 -- initial vars for movement detection / movespeed swap
 local playerInfo = windower.ffxi.get_mob_by_index(windower.ffxi.get_player().index)
 local mov = {
@@ -1009,7 +1014,6 @@ local mov = {
 	z = playerInfo.z or 0
 }
 moving = false
-
 windower.raw_register_event('prerender',function()
     -- determine if we're moving or not, handle movespeed gear swaps
 	mov.counter = mov.counter + 1;
@@ -1049,13 +1053,19 @@ windower.raw_register_event('prerender',function()
 	local now = os.time()
 	if now > lastCycleTime then
 		lastCycleTime = os.time()
-
+		-- Handle actionInProgress 'stuck' recovery
+		local actionInProgressStuck = actionInProgress and ((now - actionStartTime > spellDelay) or (now - actionEndTime > spellDelay)) or false
+		if actionInProgressStuck then
+			actionInProgress = false
+			--windower.add_to_chat(122, '-- actionInProgress got stuck? Set to false! --')
+		end
+		
 		-- if using elemental wheel, fade text after 3 seconds
 		if hudFadeTime ~= nil and (lastCycleTime - hudFadeTime > 3) then
 			texts.visible(eleWheelText, false)
 		end
 		
-		if autoActions and not midaction() then
+		if autoActions and not actionInProgress then
 			if #multiStepAction >= 1 then
 				if multiStepAction[1] == 'pause' then
 					add_to_chat(122, '     [Action queue PAUSE]     ')
@@ -1084,23 +1094,49 @@ windower.register_event('zone change', function()
 	end
 end)
 
+-- initial vars for actionInProgress handling
+actionStartTime = 0
+actionEndTime = 0
+spellDelay = 3
+abilDelay = 0.1
 windower.register_event('action',function(action)
-	if not action then return end
-	
-	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
-	if not actor or not player or not action then
+	if not action then
 		return
 	end
-
+	local actor = windower.ffxi.get_mob_by_id(action.actor_id) or nil
+	if not actor or not player then
+		return
+	end
 	local category = action.category
-    local param = action.param
-	if actor.id == player.id then
-    	-- a ws/spell/ja completes
-		if category == 3 or category == 4 or category == 6 then
-            tryCleanQueue(category, param)
-        end
-    end
+	local param = action.param
 
+	local myAction = player.id == actor.id or false
+	local startEvent = myAction and param and param == 24931 or false
+	local interruptedEvent = myAction and param and param == 28787 or false
+	local actionStartEvent = category == 3 or category == 7 or (category == 8 and startEvent) or (category == 9 and startEvent) or false
+	local actionEndEvent = category == 3 or category == 4 or category == 6 or (category == 8 and interruptedEvent) or (category == 9 and interruptedEvent) or false
+	local actionQueueEndEvent = category == 3 or category == 4 or category == 6 or false
+
+	-- HANDLE ACTIONS WE INITIATED -----
+	if myAction and actionStartEvent then
+		actionStartTime = os.time()
+		actionInProgress = true
+		--windower.add_to_chat(122, 'ActionEvent: actionInProgress: '..tostring(actionInProgress))
+	end
+	if myAction and actionEndEvent then
+		actionEndTime = os.time()
+		if category == 4 then
+			coroutine.schedule(toggleActionInProgress:prepare(), spellDelay)
+		else
+			coroutine.schedule(toggleActionInProgress:prepare(), abilDelay)
+		end
+	end
+	
+	if myAction and actionQueueEndEvent then
+		tryCleanQueue(category, param)
+	end
+
+	-- Call extension event if it exists
 	if extendedActionEvent ~= nil then
 		extendedActionEvent(action, actor, category, param)
 	end

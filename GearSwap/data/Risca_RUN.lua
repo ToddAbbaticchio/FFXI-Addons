@@ -595,9 +595,9 @@ function autoActions()
 		return
 	end
 
-	if auto.buff[auto.buff.index] == 'On' and not midaction() and not moving then
+	if auto.buff[auto.buff.index] == 'On' and not moving then
 		-- auto rune
-		if auto.rune[auto.rune.index] == 'On' and buffCheck(currRune, 3) then
+		if auto.rune[auto.rune.index] == 'On' and buffCheck(currRune, 3) and not actionInProgress then
 			windower.send_command('rh userune')
 			return
 		end
