@@ -263,7 +263,10 @@ function updateSetsFromModes(mode)
 	end
 	if mode == 'magic' then
 		local currModeSet = magicMode[magicMode.index].set or nil
-		local currModeMod = magicModeMod[magicModeMod.index] or nil
+		
+		if magicModeMod ~= nil then
+			local currModeMod = magicModeMod[magicModeMod.index] or nil
+		end
 		
 		if currModeSet == nil then
 			add_to_chat(122, 'Check magicMode table format')

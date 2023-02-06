@@ -86,7 +86,8 @@ function init_gear_sets()
 		back=gear.nukeCape,
 	}
 
-	sets.emSkill = {head="Befouled Crown", neck="Incanter's Torque", waist="Olympus Sash", ear1="Mimir Earring", ear2="Andoaa Earring", body="Telchine Chas.",}
+	sets.emSkill = {head="Befouled Crown", neck="Incanter's Torque", waist="Olympus Sash", ear1="Mimir Earring", ear2="Andoaa Earring", body="Pedagogy Gown +3"}
+	sets.emDuration = {main="Musa", sub="Enki Strap", waist="Embla Sash", head="Telchine Cap", body="Pedagogy Gown +3", hands="Telchine Gloves", legs="Telchine Braconi", feet="Telchine Pigaches"}
 	sets.enfeebSkill = {neck="Incanter's Torque", head="Befouled Crown", ring1="Kishar Ring"}
 	
 	sets.precast.FC = {									-- TOTAL: 73
@@ -160,9 +161,9 @@ function init_gear_sets()
 	sets.LightArtsWeapons = {main="Daybreak", sub="Genmei Shield"}
 	
     -- JA Sets
-	sets.precast.JA['Tabula Rasa'] = {--[[ legs="Peda. Pants +3" ]]}
-    sets.precast.JA['Enlightenment'] = {--[[ body="Peda. Gown +3" ]]}
-	sets.grimoireEffect = {head="Pedagogy Mortarboard +3", --[[ feet="Acad. Loafers +3" ]]}
+	sets.precast.JA['Tabula Rasa'] = {legs="Peda. Pants +3"}
+    sets.precast.JA['Enlightenment'] = {body="Peda. Gown +3"}
+	sets.grimoireEffect = {head="Pedagogy Mortarboard +3", feet="Acad. Loafers +3"}
 	sets.buff['Perpetuance'] = {hands="Arbatel Bracers +3"}
 	sets.buff['Klimaform'] = {feet="Arbatel Loafers +3"}
 	sets.buff['Ebullience'] = {head="Arbatel Bonnet +3"}
@@ -170,24 +171,33 @@ function init_gear_sets()
     
 	sets.precast.FC['Cure'] = set_combine(sets.precast.FC, {back="Pahtli Cape"})
 	sets.precast.FC['Enhancing Magic'] = set_combine(sets.precast.FC, {waist="Siegel Sash",})
-	sets.emDuration = {main="Musa", sub="Enki Strap", waist="Embla Sash", head="Telchine Cap", body="Telchine Chas.", hands="Telchine Gloves", legs="Telchine Braconi", feet="Telchine Pigaches"}
 
 	sets.midcast['Elemental Magic'] = sets.burst
 	sets.midcast['Enhancing Magic'] = set_combine(sets.emSkill, sets.emDuration)
+		-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
+		sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +3"})
+		sets.midcast['Refresh'] = sets.midcast['Enhancing Magic']
+		sets.midcast['Haste'] = sets.midcast['Enhancing Magic']
+		sets.midcast['Sneak'] = set_combine(sets.midcast['Enhancing Magic'], {feet="Dream Boots +1"})
+		sets.midcast['Invisible'] = set_combine(sets.midcast['Enhancing Magic'], {hands="Dream Mittens +1"})
+		sets.midcast['Deodorize'] = sets.midcast['Enhancing Magic']
+
 	sets.midcast['Enfeebling Magic'] = set_combine(sets.magicAcc, sets.enfeebSkill, {hands='Regal Cuffs', ring1='Kishar Ring'})
 	sets.midcast['Cure'] = sets.cure
 	
-	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {main="Rubicundity", sub="Culminus", waist="Fucho-no-Obi", ring1="Evanescence Ring", ring2="Archon Ring", feet="Merlinic Crackows", head="Pixie Hairpin +1", neck="Erra Pendant"})
+	sets.absorbSpells = set_combine(sets.midcast['Enfeebling Magic'], {
+		main="Rubicundity",
+		sub="Culminus",
+		waist="Fucho-no-Obi",
+		ring1="Evanescence Ring",
+		ring2="Archon Ring",
+		legs="Pedagogy Pants +3",
+		feet="Merlinic Crackows",
+		head="Pixie Hairpin +1",
+		neck="Erra Pendant"
+	})
 	sets.midcast['Aspir'] = sets.absorbSpells
 	sets.midcast['Drain'] = sets.absorbSpells
-
-	-- These should all be under 'Enhancing Magic' but dont get picked up for some reason
-    sets.midcast['Regen'] = set_combine(sets.midcast['Enhancing Magic'], {head="Arbatel Bonnet +3"})
-	sets.midcast['Refresh'] = sets.midcast['Enhancing Magic']
-	sets.midcast['Haste'] = sets.midcast['Enhancing Magic']
-	sets.midcast['Sneak'] = set_combine(sets.midcast['Enhancing Magic'], {feet="Dream Boots +1"})
-	sets.midcast['Invisible'] = set_combine(sets.midcast['Enhancing Magic'], {hands="Dream Mittens +1"})
-	sets.midcast['Deodorize'] = sets.midcast['Enhancing Magic']
 end
 
 -------------------------------------------------------------------------------------------------------------------
