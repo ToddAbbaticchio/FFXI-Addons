@@ -921,14 +921,6 @@ function extendedJobAftercast(spell, action, spellMap, eventArgs)
 
 end
 
-mbReady = false
-mbTimer = 0
-mbSpell1 = "Blizzard V"
-mbSpell1cmd = "/blizzard5"
-mbSpell2 = "Blizzard IV"
-mbSpell2cmd = "/blizzard4"
-needsDispel = false
-
 function autoActions()
     local abilRecast = windower.ffxi.get_ability_recasts()   
     local master = windower.ffxi.get_player()
@@ -936,7 +928,6 @@ function autoActions()
     local me = windower.ffxi.get_player()
 
     if auto.coop[auto.coop.index] == 'On' then
-
         --[[
         -- AoE regen5
 		if strategemCount() >= 2 and not buffactive['Regen'] then
@@ -1018,9 +1009,7 @@ function autoActions()
         end
     end
 
-    -- Auto Fite (Light Arts, Regen, Protect, Shell, Adloquium)
-    
-    -- AutoActions we only take when autoFite mode is on
+    -- Auto Fite (Myrkr and Lots Of Buffs)    
     if auto.fite[auto.fite.index] == 'On' and not actionInProgress and not moving then
 
         -- Myrkr!
@@ -1096,51 +1085,3 @@ function autoActions()
 		end
     end
 end
-
-windower.register_event('action',function(act)
-
-    if auto.coop[auto.coop.index] == 'On' then
-        local actor = windower.ffxi.get_mob_by_id(act.actor_id)
-        local self = windower.ffxi.get_player()
-        local category = act.category
-        local param = act.param -- WS ID (from weapon_skills resource)
-        local targets = act.targets
-        local targetsParam = targets.param
-
-        -- 03: Finish Weapon Skill
-        if category == 3 then            
-            local wsName = res.weapon_skills[param].en or nil
-
-            if wsName == "Tachi: Goten" then
-                add_to_chat(013, '~ WS1 Detected ('..wsName..') ~')   
-                mbReady = false          
-            elseif wsName == "Tachi: Jinpu" then
-                add_to_chat(013, '~ WS2 Detected ('..wsName..') | Starting Timer (8) ~')
-                mbReady = true
-                mbTimer = 8
-            end
-        end
-
-        -- 04: Finish spell casting 
-        if category == 4 and actor and self and actor.id == self.id then
-            local spellName = res.spells[param].en or nil
-
-            if spellName == mbSpell1 then
-                add_to_chat(013, '~ MB1 Complete ('..spellName..') ~')         
-            elseif spellName == mbSpell2 then
-                add_to_chat(013, '~ MB2 Complete ('..spellName..') ~') 
-                mbReady = false
-            end
-        end
-
-        local target = windower.ffxi.get_mob_by_target('t') or nil
-        --if category == 7 and param == 24931 and target and target.Id and target.Id == actor.Id then -- 24931: initiation
-        if category == 7 and param == 24931 and target.id == act.actor_id then
-            local spellName = res.monster_abilities[act.targets[1].actions[1].param].en
-            add_to_chat(013, '~ Mob Ability Used ('..spellName..') ~')
-            if spellName == "Bubble Curtain" or spellName == "Scissor Guard" then
-                needsDispel = true
-            end
-        end
-    end
-end)
