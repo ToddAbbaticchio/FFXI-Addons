@@ -22,6 +22,7 @@ function useEnchantedItem(command)
 		['warp'] = {id=28540, name='Warp Ring', slot=13, disable='ring1', displayRecast='600'},
 		['reraise'] = {id=25679, name='Wh. Rarab Cap +1', slot=4, disable='head', displayRecast=nil},
 		['sneakinvis'] = {id=26273, name='Tengu Shawl', slot=15, disable='back', displayRecast=nil},
+		['signet'] = {id=17585, name='Fed. Signet Staff', slot=0, disable='main, sub', displayRecast=nil},
 	}
 	local findItem = itemTable[command]
 	local itemArr = {}
@@ -61,7 +62,7 @@ function useEnchantedItem(command)
 						itemUseWarning = false
 						addToChat(204, findItem.name..' goooooooo!!!')
 					end
-				until ext.usable or delay > 30
+				until ext.usable or delay > 45
 			end
 			sendCommand('input /item "'..findItem.name..'" <me>')
 			sendCommand('input //gs enable '..findItem.disable)
@@ -205,7 +206,7 @@ windower.register_event('addon command',function(...)
 -- Use items
 -------------------------------------------------------------------------------------------------------------------
 	
-	local itemCmds = "warp,mea,holla,dem,reraise,sneakinvis"
+	local itemCmds = "warp,mea,holla,dem,reraise,sneakinvis,signet"
 	if itemCmds:contains(csCmd:lower()) then
 		useEnchantedItem(csCmd)
 	end 

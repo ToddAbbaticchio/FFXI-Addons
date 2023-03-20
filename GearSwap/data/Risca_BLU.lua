@@ -53,7 +53,7 @@ function init_gear_sets()
 		back=gear.IntCape,
 	}
 	sets.magic.bluSkill = {
-		head="Mirage Keffiyeh +1",
+		head="Mirage Keffiyeh +2",
 		body="Assim. Jubbah +3",
 		legs="hashishin Tayt +3",
 		neck="Mirage Stole +2",
@@ -142,11 +142,6 @@ function init_gear_sets()
 		ring2="Epaminondas's Ring",    --WSD 5%
 		back=gear.WsCape,
 	}
-	
---[[ 	sets.ForBuffDuration = {
-		['Berserk'] = {idle={head="Hashishin Kavuk +3"}, engaged={head="Hashishin Kavuk +3"}},
-		['Warcry'] = {engaged={feet="Hashishin Basmak +3"}},
-	} ]]
 
 	sets.baseIdle = {body="Hashishin Mintan +3", ring1="Karieyh Ring +1", ring2="Defending Ring", neck="Sibyl Scarf"}
 	sets.moveSpeed = {legs="Carmine Cuisses +1"}
@@ -211,7 +206,12 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
     sets.midcast['Blue Magic']['White Wind'] = set_combine(sets.maxHp, sets.curePotency)
 	sets.midcast['Blue Magic']['Cruel Joke'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
-    sets.midcast['Blue Magic'].Healing = set_combine(sets.magic.acc, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
+	
+	sets.midcast['Blue Magic']['Feather Tickle'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
+	sets.midcast['Blue Magic']['Reaving Wind'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
+	sets.midcast['Blue Magic']['Silent Storm'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
+    
+	sets.midcast['Blue Magic'].Healing = set_combine(sets.magic.acc, {head="Pinga Crown",hands="Pinga Mittens",body="Pinga Tunic",feet="Pinga Pumps"})
     sets.midcast['Blue Magic'].SkillBasedBuff = set_combine(sets.magic.acc, {body="Assim. Jubbah +3",legs="Hashishin Tayt +3",head="Mirage Keffiyeh +1",neck="Mirage Stole +2",})
     sets.midcast['Blue Magic'].Buff = {}
 	sets.midcast['Blue Magic'].Enmity = {}
@@ -498,15 +498,6 @@ function extendedJobSelfCommand(cmdParams, eventArgs)
 			windower.send_command('input /lockstyleset 4')
 		end
 	end
-
-	if cmd == 'doomed' then
-		equip(sets.holyWater)
-		disable('neck','ring1','ring2')
-	end
-
-	if cmd == 'undoomed' then
-		enable('neck','ring1','ring2')
-	end
 end
 
 function extendedActionEvent(action, actor, category, param)
@@ -618,17 +609,16 @@ function autoActions()
 	--[[ if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
 		return
 	end ]]
-
-	if player.equipment.main == 'empty' or player.equipment.sub == 'empty' then
-		equip(sets.weapons)
-	end
-
 	--tellXYZ("???") -- id of ring last run:17002672
 
 	if auto.buff[auto.buff.index] == 'On' and not moving then
 		-- auto.fite actions
 		if auto.fite[auto.fite.index] == 'On' then
 			if player.status == 'Idle' then
+				if not buffactive['Signet'] then
+					send_command('input //cs signet')
+				end
+				
 				-- auto mightyguard when diffusion is ready
 				if buffCheck('Mighty Guard') and (buffactive['Unbridled Learning'] or not onCooldown('Unbridled Learning')) and (buffactive['Diffusion'] or not onCooldown('Diffusion')) then
 					send_command('input /ma "Mighty Guard" <me>')
@@ -664,17 +654,13 @@ function autoActions()
 					send_command('input /ma "White Wind" <me>')
 					return
 				end
-
-				--[[ if not buffactive['Food'] then
-					send_command('/item "Dragon Steak"')
-				end ]]
 			end
 
 			-- heal party members at 50% or lower health
-			if bluSpellSet('Magic Fruit') then
-				partyLowHP(70, '/ma "Magic Fruit"')
+			--[[ if bluSpellSet('Magic Fruit') then
+				partyLowHP(50, '/ma "Magic Fruit"')
 				return
-			end
+			end ]]
 
 			if bluSpellSet('White Wind') and partyLowHP(50) then
 				send_command('input /ma "White Wind" <me>')
@@ -682,18 +668,18 @@ function autoActions()
 			end
 		end
 		
-		if buffCheck('Refresh', 'Battery Charge') and bluSpellSet('Battery Charge') then
+		if bluSpellSet('Battery Charge') and buffCheck('Refresh', 'Battery Charge') then
 			send_command('input /ma "Battery Charge" <me>')
 			return
 		end
 
 		--if not checkMagicalHasteCap() and buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
-		if buffCheck('Haste', 'Erratic Flutter') and bluSpellSet('Erratic Flutter') then
+		if bluSpellSet('Erratic Flutter') and buffCheck('Haste', 'Erratic Flutter') then
 			send_command('input /ma "Erratic Flutter" <me>')
 			return
 		end
 
-		if buffCheck('Attack Boost', 'Nat. Meditation') and bluSpellSet('Nat. Meditation') then
+		if bluSpellSet('Nat. Meditation') and buffCheck('Attack Boost', 'Nat. Meditation') then
 			send_command('input /ma "Nat. Meditation" <me>')
 			return
 		end

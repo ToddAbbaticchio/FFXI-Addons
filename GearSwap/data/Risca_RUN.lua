@@ -562,12 +562,20 @@ function extendedActionEvent(action, actor, category, param)
 	if category == 8 then
 		local spellName = res.spells[action.targets[1].actions[1].param].en or nil
 		local isOnMe = action.targets[1] and action.targets[1].id and player.id == action.targets[1].id or false
-		if not isOnMe or not spellName or not spellName:startswith('Regen') then
-			return
+
+		-- detect AoE regens where we're not the primary target, but getting hit anyway
+		if action.targets then
+			for k,v in pairs(action.targets) do
+				if v.id == player.id then
+					isOnMe = true
+				end
+			end
 		end
 
-		equip(sets.jseEarring)
-		windower.add_to_chat(122, '-- '..actor.name..' is casting '..spellName..' on me. jseEarring gooooo! --')
+		if isOnMe and spellName and spellName:startswith('Regen') then
+			equip(sets.jseEarring)
+			windower.add_to_chat(122, '-- '..actor.name..' is casting '..spellName..' on me. jseEarring gooooo! --')
+		end
 	end
 end
 

@@ -178,6 +178,9 @@ function job_self_command(cmdParams, eventArgs)
 		add_to_chat(122, '-- Cleared multiStepAction queue! --')
 	end
 
+	if cmdParams[1]:lower() == 'equipweaps' then
+		equip(sets.weapons)
+	end
 
 	-- Forward self commands on to the job_SelfCommand function in the job specific .lua, if it exists
 	if extendedJobSelfCommand ~= nil then
@@ -768,16 +771,13 @@ function job_precast(spell, action, spellMap, eventArgs)
 		end
 	end
 	if spell.type == 'WeaponSkill' then
-		local isRanged = ranged_weaponskills:contains(spell.name)
+		local isRanged = ranged_weaponskills:contains(spell.name) or false
 		if (spell.target.distance > 25 and isRanged) or (spell.target.distance > 6 and not isRanged) then
 			add_to_chat(167, 'Action stopped: Target is out of range for '..spell.name..'!')
 			eventArgs.cancel = true
 			return
 		end
-	end
-	
-	-- if weaponskill: face target and check/apply belt override conditions
-	if spell.type == 'WeaponSkill' then
+
 		faceTarget()
 		if eleWeaponSkills:contains(spell.name) then
 			local checkBelt = bestEleWsBelt(spell)
@@ -795,6 +795,11 @@ function job_precast(spell, action, spellMap, eventArgs)
 		if buffactive['Copy Image'] or buffactive['Copy Image (2)'] then
 			send_command('cancel 66; cancel 444; cancel Copy Image; cancel Copy Image (2)')
 		end
+	end
+
+	-- HolyWater helper
+	if sets.holyWater and spell.english == 'Holy Water' then
+		equip(sets.holyWater)
 	end
 
 	-- If on cooldown and in spellStep table, tryAutoStepSpell
@@ -1068,6 +1073,14 @@ windower.raw_register_event('prerender',function()
 			texts.visible(eleWheelText, false)
 		end
 		
+		-- requip weapons if something happens
+		if sets.weapons and sets.weapons.main and sets.weapons.sub then
+			if player.equipment.main ~= sets.weapons.main or player.equipment.sub ~= sets.weapons.sub then
+				send_command('input //gs c equipweaps')
+			end
+		end
+	
+
 		if autoActions and not actionInProgress then
 			if #multiStepAction >= 1 then
 				if multiStepAction[1] == 'pause' then
