@@ -206,7 +206,8 @@ function init_gear_sets()
     sets.midcast['Blue Magic'].Stun = set_combine(sets.midcast['Blue Magic'].MagicAccuracy, {})
     sets.midcast['Blue Magic']['White Wind'] = set_combine(sets.maxHp, sets.curePotency)
 	sets.midcast['Blue Magic']['Cruel Joke'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
-	
+	sets.midcast['Blue Magic']['Absolute Terror'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
+
 	sets.midcast['Blue Magic']['Feather Tickle'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
 	sets.midcast['Blue Magic']['Reaving Wind'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
 	sets.midcast['Blue Magic']['Silent Storm'] = set_combine(sets.magic.acc, sets.magic.bluSkill)
@@ -604,6 +605,9 @@ end
 -- Autoaction Handler
 -------------------------------------------------------------------------------------------------------------------
 function autoActions()
+	local idleAoEHealThreshold = 50
+	local activeAoEHealThreshold = 50
+	
 	--add_to_chat(144, "autoActions heartbeat")
 	
 	--[[ if auto.fite[auto.fite.index] == 'On' and not player.status == engaged then
@@ -615,10 +619,6 @@ function autoActions()
 		-- auto.fite actions
 		if auto.fite[auto.fite.index] == 'On' then
 			if player.status == 'Idle' then
-				if not buffactive['Signet'] then
-					send_command('input //cs signet')
-				end
-				
 				-- auto mightyguard when diffusion is ready
 				if buffCheck('Mighty Guard') and (buffactive['Unbridled Learning'] or not onCooldown('Unbridled Learning')) and (buffactive['Diffusion'] or not onCooldown('Diffusion')) then
 					send_command('input /ma "Mighty Guard" <me>')
@@ -650,7 +650,7 @@ function autoActions()
 					return
 				end
 		
-				if bluSpellSet('White Wind') and partyLowHP(75) then
+				if bluSpellSet('White Wind') and partyLowHP(idleAoEHealThreshold) then
 					send_command('input /ma "White Wind" <me>')
 					return
 				end
@@ -662,10 +662,11 @@ function autoActions()
 				return
 			end ]]
 
-			if bluSpellSet('White Wind') and partyLowHP(50) then
+			if bluSpellSet('White Wind') and partyLowHP(activeAoEHealThreshold) then
 				send_command('input /ma "White Wind" <me>')
 				return
 			end
+			return
 		end
 		
 		if bluSpellSet('Battery Charge') and buffCheck('Refresh', 'Battery Charge') then

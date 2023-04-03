@@ -125,21 +125,21 @@ function init_gear_sets()
 		ring2="Supershear Ring",          --5
 		back=gear.EnmityCape,             --10                      P10
 	}
-	sets.interrupt = set_combine(sets.baseTank, {   --Total: 103
+	sets.interrupt = {                              --SIR: 103               DT: 32 + 4phys
 		ammo="Impatiens",                           --10
 		head="Erilaz Galea +3",                     --20
-		--body="Taeon Tabard",
+		body="Nyame Mail",                          --..                         09
 		hands="Rawhide Gloves",                     --15
 		legs="Carmine Cuisses +1",                  --20
-		--feet
-		--neck
-		waist="Audumbla Sash",                      --10
+		feet="Erilaz Greaves +3",                   --..                         11
+		neck="Futhark Torque +2",                   --..                         07
+		waist="Audumbla Sash",                      --10                        p04
 		ear1="Halasz Earring",                      --05
 		ear2="Magnetic Earring",                    --08
 		ring1="Evanescence Ring",                   --05
-		ring2="Moonlight Ring",
+		ring2="Moonlight Ring",                     --..                         05
 		back=gear.CASTCape,                         --10
-	})
+	}
 	sets.emSkill = {
 		--ammo="",
 		--head="",            			  
@@ -495,6 +495,19 @@ function extendedTWM(cmdParams, eventArgs)
 	else
 		if not dwSwordsHidden then
 			weaponMode[4].hidden = true
+		end
+	end
+end
+
+function extendedTGM(cmdParams, eventArgs)
+	local currWeapMode = weaponMode[weaponMode.index]
+	local evaSet = gearMode[3]
+
+	if currWeapMode.name == 'Lionheart' and not evaSet.hidden then
+		evaSet.hidden = true
+	else
+		if evaSet.hidden then
+			evaSet.hidden = false
 		end
 	end
 end
